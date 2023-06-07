@@ -11,6 +11,33 @@ from sklearn import metrics
 from sklearn.svm import SVC
 import seaborn as sns
 
+# Generators
+def generador_pares(cota_minima, cota_maxima):
+    # Genera 20 pares de numeros enteros aleatorios según una cota mínima y máxima
+    rango = np.arange(cota_minima, cota_maxima)
+
+    # Para evitar errores de un mismo valor xi con varios yi, el replace=False hace que no peudan repetirse esos 
+    # numeros aleatorios. En el caso de yi puede repetirse. Cumpliendo con la Inyectividad
+    x_set = np.random.choice(rango, size=20, replace=True)
+    y_set = np.random.choice(rango, size=20, replace=True)
+
+    # Ordena los pares de forma ascendente
+    lista_pares = list(zip(x_set, y_set))
+    return sorted(lista_pares, key=lambda x: x[0])
+
+
+def separador_pares_x_y(pares):
+    print()
+    # Establece dos listas vacias para llenar con los valores de y y x
+    pares_x = []
+    pares_y = []
+    # Agrega en cada una los valores
+    for i in range(len(pares)):
+        pares_x.append(pares[i][0])
+        pares_y.append(pares[i][1])
+    pares_x = np.array(pares_x)
+    pares_y = np.array(pares_y)
+    return pares_x, pares_y
 
 # Se separa aleatoriamente los sets de Train y Test para X e Y
 x_train, x_test, y_train, y_test = train_test_split(x, y, test_size= 0.2, random_state = 0)
