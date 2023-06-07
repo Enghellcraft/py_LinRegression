@@ -1,46 +1,87 @@
-import numpy as np
 import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+from sklearn.impute import SimpleImputer
+from sklearn.preprocessing import LabelEncoder
+from sklearn.preprocessing import OneHotEncoder
+from sklearn.compose import make_column_transformer
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LinearRegression
+from sklearn import metrics
+from sklearn.svm import SVC
+import seaborn as sns
 
-# Function to generate pairs of XY from input pairs of 2 arrays
-def generate_xy_pairs(xy_arrays):
-    x_values = np.array([pair[0] for pair in xy_arrays])
-    y_values = np.array([pair[1] for pair in xy_arrays])
-    return x_values, y_values
 
-# Function to compute the coefficients for each type of regression
-def compute_regression_coefficients(x_values, y_values):
-    x, y = np.meshgrid(x_values, y_values)
-    z = np.exp(x)  # Exponential function
-    linear_coeff = np.polyfit(x, y, 1)
-    quadratic_coeff = np.polyfit(x, y**2, 2)
-    return linear_coeff, quadratic_coeff, z
+# Se separa aleatoriamente los sets de Train y Test para X e Y
+x_train, x_test, y_train, y_test = train_test_split(x, y, test_size= 0.2, random_state = 0)
+print('La matriz de Variables independientes Train es: \n')
+print(x_train)
+print('La matriz de Variables independientes Test es: \n')
+print(x_test)
+print('El array de Variable dependiente Train es: \n')
+print(y_train)
+print('El array de Variable dependiente Test es: \n')
+print(y_test)
 
-# Function to plot the regression curves
-def plot_regression_curves(x_values, y_values, z_values, coeffs):
-    linear_coeff, quadratic_coeff, z = coeffs
-    plt.plot(x_values, y_values, label='Data')
-    plt.plot(x_values, z, label='Exponential Regression')
-    plt.plot(x_values, z**2, label='Quadratic Regression')
-    plt.xlabel('X-axis')
-    plt.ylabel('Y-axis')
-    plt.legend()
-    plt.show()
+# Se procesan los datos para la Regresion Lineal
+df_aux = pd.DataFrame({'x_train': x_train.flatten(), 'y_train': y_train.flatten()})
+print('El set Train es: \n')
+print(df_aux)
+df_aux = pd.DataFrame({'x_test': x_test.flatten(), 'y_test': y_test.flatten()})
+print('El set Test es: \n')
+print(df_aux)
 
-# Sample pairs of XY
-xy_pairs = [
-    (np.array([1, 2, 3]), np.array([6, 7, 8])),
-    (np.array([4, 5, 6]), np.array([12, 15, 18])),
-]
+# Se plantea la Regresion con los datos de entrenamiento
+regression = LinearRegression()
+regression.fit(x_train, y_train)
 
-# Generate XY pairs
-x_values, y_values = generate_xy_pairs(xy_pairs)
-print("x_values shape:", x_values.shape)
-print("x_values:", x_values)
-print("y_values shape:", y_values.shape)
-print("y_values:", y_values)
+# Se obtiene el interceptor:
+print("El interceptor es: ")
+print(regression.intercept_)
+# Se obtiene la pendiente
+print("La pendiente es: ")
+print(regression.coef_)
 
-# Compute regression coefficients
-linear_coeff, quadratic_coeff, z_values = compute_regression_coefficients(x_values, y_values)
+# Se arman las Predicciones
+y_pred = regression.predict(x_test)
 
-# Plot the regression curves
-plot_regression_curves(x_values, y_values, z_values, (linear_coeff, quadratic_coeff, z_values))
+# Se plantea el grafico correspondiente al Train
+fig = plt.figure(figsize=(6,5), facecolor='ivory')
+plt.scatter(x_train, y_train, color = "blue")
+plt.plot(x_train, regression.predict(x_train), color = "red")
+plt.title("Demencia vs Volumen Cerebral (Train Set)",size = 18, color = 'black')
+plt.xlabel("Volumen Cerebral")
+plt.ylabel("Demencia")
+plt.show()
+
+# Se plantea el grafico correspondiente al Test
+fig = plt.figure(figsize=(6,5), facecolor='ivory')
+plt.scatter(x_test, y_test, color = "orange")
+plt.plot(x_train, regression.predict(x_train), color = "red")
+plt.title("Demencia vs Volumen Cerebral (Test Set)",size = 18, color = 'black')
+plt.xlabel("Volumen Cerebral")
+plt.ylabel("Demencia")
+plt.show()
+
+# Se plantea un Grafico de Barras para Regresion Lineal Simple con Train y Test
+df1 = pd.DataFrame({'Actual': y_test.flatten(), 'Predicted': y_pred.flatten()})
+df1 = df1.head(50)
+df1.plot(kind='bar',figsize=(12,7))
+plt.grid(which='major', linestyle='-', linewidth='0.5', color='grey')
+plt.grid(which='minor', linestyle='dotted', linewidth='1', color='green')
+plt.title("Demencia vs Volumen Cerebral (Actual y Prediccion)",size = 18, color = 'black')
+plt.xlabel("Cantidad de registros")
+plt.ylabel("Demencia")
+plt.show()
+
+
+# Se plantean las Metricas de Evaluacion
+print('Error Medio Absoluto (MAE) del Caso 1:', metrics.mean_absolute_error(y_test, y_pred))
+print('Error cuadrático medio (MSE) del Caso 1:', metrics.mean_squared_error(y_test, y_pred))
+print('Raíz cuadrada del error cuadrático medio (RMSE) del Caso 1:', np.sqrt(metrics.mean_squared_error(y_test, y_pred)))
+# Error Medio Absoluto (MAE) del Caso 1: 0.14066423665478933
+# Error cuadrático medio (MSE) del Caso 1: 0.04189760470831364
+# Raíz cuadrada del error cuadrático medio (RMSE) del Caso 1: 0.20468904393814938
+
+
+
