@@ -6,6 +6,20 @@
 # Compararlos
 
 
+
+# PENDIENTES:
+# * Hacer la funcion lineal una sola funcion que imprima todo
+# * Hacer la funcion cuadratica en base a la teoria que hice
+# * Hacer que la cuadratica imprima todo igual que la lineal
+# * hacer la funcion exponencial en base a la teoria que hice
+# * Hacer que la exponencial imprima todo igual que la lineal
+# * Hacer grafico para las 3 juntas donde diga el error de cada una
+# * Hacer una funcion que tome los 3 errores y diga cual es el mejor fit
+# * Buscar 3 dataset: uno ideal para lineal, otro para cuadrática y otro para exponencial
+# * Dejar los numeros aleatorios pq ese va  a ser el tercer test
+# COMENTAR EL CODIGO APB
+
+
 #
 # TP Métodos Numéricos - 2023
 # Alumnos: 
@@ -32,6 +46,7 @@ from sklearn.linear_model import LinearRegression
 from sklearn import metrics
 from sklearn.svm import SVC
 import seaborn as sns
+from fractions import Fraction
 
 # ------------------------------------------------------------------------------------------------------------
 # Funs
@@ -65,86 +80,42 @@ def separador_pares_x_y(pares):
     return pares_x, pares_y
 
 # Lineal Regression
+def my_lineal_regression(pares):
+    X, Y = separador_pares_x_y(pares)
+    len_pares = len(pares)
+    print(f"Los pares ordenados son:\n {pares}")
+    print(X)
+    print(Y)
+    sumaX = sum(X)
+    sumaY = sum(Y)
+    sumaXY = sum(X*Y)
+    suma_X2 = sum(X**2)
+    sumaX2 = (sum(X))**2
+    print(f"\nLa suma total de todos los X: {sumaX}"
+        f"\nLa suma total de todos los Y: {sumaY}"
+        f"\nLa suma total de todos los X.Y: {sumaXY}"
+        f"\nLa suma total de todos los X al cuadrado: {suma_X2}"
+        f"\nEl cuadrado de la suma de todos los X: {sumaX2}")
+    print("                                                                                  ")
+    # Cálculo de 'a'(pendiente) y 'b'(ordenada de origen) de la ecuacion 'y = ax + b' para encontrar
+    # la mejor recta que se aproxime a todos los puntos, con el minimo valor de error posible
+    a = (len_pares*sumaXY - sumaX*sumaY) / (len_pares*suma_X2 - sumaX2)
+    b = (suma_X2*sumaY - sumaX*sumaXY) / (len_pares*suma_X2 - sumaX2)
+    errorCuadratico = sum((a*X + b - Y)**2)
+    print(f"\nValor de 'a': {a:.2f}"
+        f"\nValor de 'b': {b:.2f}"
+        f"\nError cuadratico: {errorCuadratico:.2f}")
+    
+    reg_lineal_graph(X, Y, a, b)
 
-""" # Se separa aleatoriamente los sets de Train y Test para X e Y
-x_train, x_test, y_train, y_test = train_test_split(x, y, test_size= 0.2, random_state = 0)
-print('La matriz de Variables independientes Train es: \n')
-print(x_train)
-print('La matriz de Variables independientes Test es: \n')
-print(x_test)
-print('El array de Variable dependiente Train es: \n')
-print(y_train)
-print('El array de Variable dependiente Test es: \n')
-print(y_test)
 
-# Se procesan los datos para la Regresion Lineal
-df_aux = pd.DataFrame({'x_train': x_train.flatten(), 'y_train': y_train.flatten()})
-print('El set Train es: \n')
-print(df_aux)
-df_aux = pd.DataFrame({'x_test': x_test.flatten(), 'y_test': y_test.flatten()})
-print('El set Test es: \n')
-print(df_aux)
-
-# Se plantea la Regresion con los datos de entrenamiento
-regression = LinearRegression()
-regression.fit(x_train, y_train)
-
-# Se obtiene el interceptor:
-print("El interceptor es: ")
-print(regression.intercept_)
-# Se obtiene la pendiente
-print("La pendiente es: ")
-print(regression.coef_)
-
-# Se arman las Predicciones
-y_pred = regression.predict(x_test)
 
 # ------------------------------------------------------------------------------------------------------------
 # Plots
-
-# Se plantea el grafico correspondiente al Train
-fig = plt.figure(figsize=(6,5), facecolor='ivory')
-plt.scatter(x_train, y_train, color = "blue")
-plt.plot(x_train, regression.predict(x_train), color = "red")
-plt.title("Demencia vs Volumen Cerebral (Train Set)",size = 18, color = 'black')
-plt.xlabel("Volumen Cerebral")
-plt.ylabel("Demencia")
-plt.show()
-
-# Se plantea el grafico correspondiente al Test
-fig = plt.figure(figsize=(6,5), facecolor='ivory')
-plt.scatter(x_test, y_test, color = "orange")
-plt.plot(x_train, regression.predict(x_train), color = "red")
-plt.title("Demencia vs Volumen Cerebral (Test Set)",size = 18, color = 'black')
-plt.xlabel("Volumen Cerebral")
-plt.ylabel("Demencia")
-plt.show()
-
-# Se plantea un Grafico de Barras para Regresion Lineal Simple con Train y Test
-df1 = pd.DataFrame({'Actual': y_test.flatten(), 'Predicted': y_pred.flatten()})
-df1 = df1.head(50)
-df1.plot(kind='bar',figsize=(12,7))
-plt.grid(which='major', linestyle='-', linewidth='0.5', color='grey')
-plt.grid(which='minor', linestyle='dotted', linewidth='1', color='green')
-plt.title("Demencia vs Volumen Cerebral (Actual y Prediccion)",size = 18, color = 'black')
-plt.xlabel("Cantidad de registros")
-plt.ylabel("Demencia")
-plt.show()
-
-
-# Se plantean las Metricas de Evaluacion
-print('Error Medio Absoluto (MAE) del Caso 1:', metrics.mean_absolute_error(y_test, y_pred))
-print('Error cuadrático medio (MSE) del Caso 1:', metrics.mean_squared_error(y_test, y_pred))
-print('Raíz cuadrada del error cuadrático medio (RMSE) del Caso 1:', np.sqrt(metrics.mean_squared_error(y_test, y_pred)))
-# Error Medio Absoluto (MAE) del Caso 1: 0.14066423665478933
-# Error cuadrático medio (MSE) del Caso 1: 0.04189760470831364
-# Raíz cuadrada del error cuadrático medio (RMSE) del Caso 1: 0.20468904393814938 """
-
-
-# nuevo plot
+# Linear Regression
 def reg_lineal_graph(X, Y, a, b):
-    plt.plot(X, Y, "o", label="Puntos")
-    plt.plot(X, a*X + b, label="Recta")
+    plt.plot(X, Y, "o", label="Dataset")
+    plt.plot(X, a*X + b, label="Regresión Lineal")
     plt.xlabel("X")
     plt.ylabel("Y")
     plt.title("Recta que mejor se ajusta a los puntos con criterio de cuadrados minimos")
@@ -173,7 +144,7 @@ print("                                                                         
 print("**********************************************************************************")
 print("*                                   CONSIGNAS                                    *")
 print("**********************************************************************************")
-print("                       ")
+print("                                                                                  ")
 print("                                                                                  ")
 
 
@@ -184,13 +155,14 @@ print("*                                      TEORIA                            
 print("**********************************************************************************")
 print("                                                                                  ")
 print("                       ********* REGRESION LINEAL *********                       ")
+print("                                                                                  ")
 print(" El método de Regresion Lineal relaciona puntos de un dataset y puede proveer alguna")
 print(" predicción sobre nuevos puntos.                                                  ")
 print(" Modela la relación entre una variable dependientre y una o más variables independientes")
 print(" utilizando la ecuación lineal: y = a*x + b, donde 'a' es la pendiente y 'b' la   ")
 print(" ordenada al origen y son las variables que caracterizaran a la recta encontrada. ")
 print(" Para que la recta sea lo mas fidedigna al dataset, es importante minimizar el    ")
-print(" error respecto a cada una de las coordenadas.                                    ")
+print(" error respecto a cada una de las coordenadas y trabjar con datos aproximadamente lineales.")
 print(" • ERROR: para hallar extremos locales (mínimos, máximos, puntos de inflexión) de ")
 print("          una función de varias variables, es necesario derivarla en función a cada")
 print("          variable y luego igualarlas a cero.                                   ")
@@ -212,8 +184,64 @@ print("                                           n Σ xi^2 – (Σ xi)^2       
 print("          - la ordenada al origen:        Σ xi^2 Σ yi – Σ xi Σ xiyi               ")
 print("                                     b = ________________________                 ")
 print("                                           n Σ xi^2 – (Σ xi)^2                    ")
-print(" • EXISTENCIA Y UNICIDAD:  ")
+print("          + Si existen sólo dos pares en el dataset, el error será cero, pues la recta")
+print("            pasará obligadamente por ambos (siempre que tengan ≠ x). También dará ")
+print("            cero en caso de tener todas las coordenadas alineadas.                ")
+print(" • EXISTENCIA Y UNICIDAD: pueden verificarse mediante la determinante del sistema,")
+print("                          si el determinante es ≠ 0 entonces existe una sola recta")
+print("                          si es = 0, hay infinitas rectas (esto puede suceder cuando")
+print("                          los valores Xi son iguales) = sistema compatible indeterminado.")
+print("          - Para que 'a' y 'b' queden indefinidos debería haber sólo un punto como")
+print("            dataset dejando infinitas rectas como solución del sistema.           ")
+print("          - En el caso de que todos los Yi sean iguales, la pendiente = 0.        ")
 print("                                                                                  ")
+print("                      ********* REGRESION CUADRATICA *********                    ")
+print("                                                                                  ")
+print(" Similar método de Regresion Lineal, la Regresión Cuadrática relaciona puntos de  ")
+print(" un dataset y puede proveer algun tipo de predicción sobre nuevos puntos.         ")
+print(" Aquí se utiliza una parábola sin el término lineal: y = a * x^2 + b , donde 'a'  ")
+print(" es el coeficiente principal y 'b' la ordenada al origen.                         ")
+print(" • ERROR: para hallar extremos locales (mínimos, máximos, puntos de inflexión) de ")
+print("          una función de varias variables, es necesario derivarla en función a cada")
+print("          variable y luego igualarlas a cero.                                     ")
+print("          Siendo el Error Cuadrático: Σ(a*xi^2+b-yi)^2, se deriva y despeja en base a:")
+print("          - el Coeficiente Principal: E'a(a,b) = 0                                ")
+print("                          a Σ xi^4 + b Σ xi^2 = Σ xi^2yi                             ")
+print("          - la ordenada al origen: E'b(a,b) = 0                                   ")
+print("                          a Σ xi^2 + b n = Σ yi                                    ")
+print("          Para hallar a y b, se realiza un sistema matricial de 2*2:              ")
+print("          a Σ xi^4 + b Σ xi^2 = Σ xi^2yi [1]                                      ")
+print("          a Σ xi^2 + b n      = Σ yi     [2]                                      ")
+print("          Despejando ambos valores se pueden obtener mediante:                    ")
+print("          - el coeficiente pricipal:       n Σ xi^2yi – Σ xi2 Σ yi                ")
+print("                                     a = ___________________________              ")
+print("                                           n Σ xi^4 – (Σ xi^2)^2                  ")
+print("          - la ordenada al origen:       Σ xi^4 Σ yi – Σ xi^2 Σ xi^2yi            ")
+print("                                     b = ___________________________              ")
+print("                                            n Σ xi^4 – (Σ xi^2)^2                 ")
+print("          + Las parábolas, incluyen en su cálculo a la familia de las rectas, por lo ")
+print("            tanto para un data set, el Error de una parábola es ≤ el de una recta. ")
+print("                                                                                  ")
+print("                     ********* REGRESION EXPONENCIAL *********                    ")
+print("                                                                                  ")
+print(" La Regresión Exponencial es una técnica utilizada para encontrar una función     ")
+print(" exponencial que mejor se acomode a lospuntos de un dataset y puede proveer algun ")
+print(" tipo de predicción sobre nuevos puntos.                                          ")
+print(" Aquí se utiliza: y = a*b^x , donde 'a' ≠ 0.                                      ")
+print(" Se utiliza en casos donde los datos crecen lentamente al principio y luego muy   ")  
+print(" aceleradamente.                                                                  ")
+print(" • ERROR: para hallar extremos locales (mínimos, máximos, puntos de inflexión) de ")
+print("          una función de varias variables, es necesario derivarla en función a cada")
+print("          variable y luego igualarlas a cero.                                     ")
+print("          Siendo el Error Cuadrático:  Σ(y_i - (a * b^x_i))^2, se deriva y despeja.")
+print("          Los valores obtenidos son:                                              ")
+print("          - la constante:                     Σy_i * ln(x_i)                      ")
+print("                                     a = ___________________________              ")
+print("                                                   Σln(x_i)                       ")
+print("          - la base:       Σ(yi*ln(xi))*Σ(ln(xi))*Σ(ln(xi) *ln(xi)) / Σ(ln(xi))^3 - Σ(yi*ln(xi))*Σ(ln(xi)) / Σ(ln(xi))^2 ")
+print("                        b = _____________________________________________________________________________________________ ")
+print("                                                 Σ(ln(xi))*Σ(ln(xi)*ln(xi)) / Σ(ln(xi))^2                                 ")
+
 
 #  II) Examples
 print("                                                                                  ")
@@ -221,47 +249,63 @@ print("*************************************************************************
 print("*                                    EJEMPLOS                                    *")
 print("**********************************************************************************")
 pares = generador_pares(0, 50)
-X, Y = separador_pares_x_y(pares)
-len_pares = len(pares)
-print(f"Los pares ordenados son:\n {pares}")
-print(X)
-print(Y)
-sumaX = sum(X)
-sumaY = sum(Y)
-sumaXY = sum(X*Y)
-suma_X2 = sum(X**2)
-sumaX2 = (sum(X))**2
-print(f"\nLa suma total de todos los X: {sumaX}"
-      f"\nLa suma total de todos los Y: {sumaY}"
-      f"\nLa suma total de todos los X.Y: {sumaXY}"
-      f"\nLa suma total de todos los X al cuadrado: {suma_X2}"
-      f"\nEl cuadrado de la suma de todos los X: {sumaX2}")
-print("                                                                                  ")
-# Calculo de 'a'(pendiente) y 'b'(ordenada de origen) de la ecuacion 'y = ax + b' para encontrar
-# la mejor recta que se aproxime a todos los puntos, con el minimo valor de error posible
-a = (len_pares*sumaXY - sumaX*sumaY) / (len_pares*suma_X2 - sumaX2)
-b = (suma_X2*sumaY - sumaX*sumaXY) / (len_pares*suma_X2 - sumaX2)
-errorCuadratico = sum((a*X + b - Y)**2)
-print(f"\nValor de 'a': {a}"
-      f"\nValor de 'b': {b}"
-      f"\nError cuadratico: {errorCuadratico}")
+my_lineal_regression(pares)
 
-reg_lineal_graph(X, Y, a, b)
 
 ## IV) Conclusions
 print("                                                                                  ")
 print("**********************************************************************************")
 print("*                                  CONCLUSIONES                                  *")
 print("**********************************************************************************")
-print(" •La regresión lineal es una herramienta poderosa para analizar las relaciones entre")
+print(" • La Regresión Lineal es una herramienta poderosa para analizar las relaciones entre")
 print(" variables y pronosticar, pero tiene sus limitaciones debido a sus supuestos de   ")
 print(" linealidad y distribución normal. Es crucial comprender estos supuestos y sus    ")
 print(" implicaciones cuando se utiliza la regresión lineal para aplicaciones prácticas. ")
 print("                                                                                  ")
-print(" • NOTA1: en las líneas 178 y 179 se encuentra el generador de pares, donde dice: ")
-print("   size, se puede modificar el valor para visualizar mejor y con menos cambios abruptos")
-print("   la interpolación de los polinomios, por ejemplo en 3 podrán verse las funciones")
-print("   cuadráticas con curvas mas suaves y más probabilidad de encontrar una raíz.    ")
+print(" • VENTAJAS DE REGRESION LINEAL:                                                  ")
+print("   + Simplicidad para su implementación                                           ")
+print("   + Transparente e interpretable (visualy analíticamente)                        ")
+print("   + Versátil y flexible para distintos tipos de datos                            ")
+print("                                                                                  ")
+print(" • DESVENTAJAS DE REGRESION LINEAL:                                               ")
+print("   + Sensibilidad a datos: cuando las variables independientes tengan alta correlatividad")
+print("     puede afectar la estabilidad y presición de los coeficientes                 ")
+print("   + Pobre performance por ser proclibe a overfitting y underfitting (mucha exactitud")
+print("     o muy poca).                                                                 ")
+print("   + Asume relación lineal entre las variables cuando podría no ser el caso.      ")
+print("   + Requiere valores Gaussianos de distribución para mejor calce (normalización) ")
+print("                                                                                  ")
+print("                                 ****************                                 ")
+print("                                                                                  ")
+print(" • La Regresión Cuadrática es una extensión de la regersión lineal, como regresión")
+print(" lineal múltiple, donde la relación entre la variable dependiente y la independiente")
+print(" se modela al grado del polinomio (en este caso 2).                               ")
+print("                                                                                  ")
+print(" • VENTAJAS DE REGRESION CUADRATICA:                                              ")
+print("   + Mejora el calce respecto a la regesión lineal.                               ")
+print("   + Las curvas de las parábolas son mas flexibles para acomodarse mejor al dataset.")
+print("                                                                                  ")
+print(" • DESVENTAJAS DE REGRESION CUADRATICA:                                           ")
+print("   + Al ser mas flexible también puede traer mas errores de overfitting.          ")
+print("   + Más complejo de entender e interpretar que la lineal.                        ")
+print("   + Computacionalmente más costoso.                                              ")
+print("                                                                                  ")
+print("                                 ****************                                 ")
+print("                                                                                  ")
+print(" • La Regresión Exponencial es ideal para casos de crecimiento o decrecimiento    ")
+print(" exponencial, es de técnica robusta pero no sirve para todos los sistemas.        ")
+print(" Su poder predictivo se toma como R^2 entre 0 y 1 (más cercano al 1, mejor es).        ")
+print("                                                                                  ")
+print(" • VENTAJAS DE REGRESION EXPONENCIAL:                                              ")
+print("   + Es excelente en casos de crecimiento o decrecimiento exponencial.             ")
+print("   + Suele ser mas robusta incluso que algunos polinomios.                        ")
+print("                                                                                  ")
+print(" • DESVENTAJAS DE REGRESION EXPONENCIAL:                                           ")
+print("   + No es bueno con casos de variacion de datos.                                 ")
+print("   + No es confiable en casos que no tengas relaciones tipo exponencial.          ")
+print("   + Asume continuidad de datos y peude afectar las predicciones.                 ")
+print("                                                                                  ")
+print(" • NOTA1:  ")
 print("                                                                                  ")
 
 
