@@ -1,3 +1,25 @@
+# TP: 
+# Con el generador de pares
+# Hacer regresion lineal -> funcion lineal
+# hacer la cuadrática
+# hacer la exponencial
+# Compararlos
+
+
+#
+# TP Métodos Numéricos - 2023
+# Alumnos: 
+#          • Bianchi, Guillermo
+#          • Martin, Denise
+#          • Nava, Alejandro
+
+# Profesores: para poder correr adecuadamente el programa es necesario tenes instaladas las
+#             bibliotecas de sympy, numpy y matplotlib.
+#             Se puede ver el código comentado pero con "play" toda la teoría y práctica aplicada
+
+
+# ------------------------------------------------------------------------------------------------------------
+# Imports
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
@@ -10,6 +32,9 @@ from sklearn.linear_model import LinearRegression
 from sklearn import metrics
 from sklearn.svm import SVC
 import seaborn as sns
+
+# ------------------------------------------------------------------------------------------------------------
+# Funs
 
 # Generators
 def generador_pares(cota_minima, cota_maxima):
@@ -39,7 +64,9 @@ def separador_pares_x_y(pares):
     pares_y = np.array(pares_y)
     return pares_x, pares_y
 
-# Se separa aleatoriamente los sets de Train y Test para X e Y
+# Lineal Regression
+
+""" # Se separa aleatoriamente los sets de Train y Test para X e Y
 x_train, x_test, y_train, y_test = train_test_split(x, y, test_size= 0.2, random_state = 0)
 print('La matriz de Variables independientes Train es: \n')
 print(x_train)
@@ -71,6 +98,9 @@ print(regression.coef_)
 
 # Se arman las Predicciones
 y_pred = regression.predict(x_test)
+
+# ------------------------------------------------------------------------------------------------------------
+# Plots
 
 # Se plantea el grafico correspondiente al Train
 fig = plt.figure(figsize=(6,5), facecolor='ivory')
@@ -108,7 +138,142 @@ print('Error cuadrático medio (MSE) del Caso 1:', metrics.mean_squared_error(y_
 print('Raíz cuadrada del error cuadrático medio (RMSE) del Caso 1:', np.sqrt(metrics.mean_squared_error(y_test, y_pred)))
 # Error Medio Absoluto (MAE) del Caso 1: 0.14066423665478933
 # Error cuadrático medio (MSE) del Caso 1: 0.04189760470831364
-# Raíz cuadrada del error cuadrático medio (RMSE) del Caso 1: 0.20468904393814938
+# Raíz cuadrada del error cuadrático medio (RMSE) del Caso 1: 0.20468904393814938 """
 
+
+# nuevo plot
+def reg_lineal_graph(X, Y, a, b):
+    plt.plot(X, Y, "o", label="Puntos")
+    plt.plot(X, a*X + b, label="Recta")
+    plt.xlabel("X")
+    plt.ylabel("Y")
+    plt.title("Recta que mejor se ajusta a los puntos con criterio de cuadrados minimos")
+    plt.grid()
+    plt.legend()
+    plt.show()
+
+
+# ------------------------------------------------------------------------------------------------------------
+# Prints
+#  null) Task + Pres
+print("                                                                                  ")
+print("**********************************************************************************")
+print("*              METODOS NUMERICOS - 2023 - TP METODOS DE REGRESION                *")
+print("**********************************************************************************")
+print("    ALUMNOS:                                                                      ")
+print("            • Bianchi, Guillermo                                                  ")
+print("            • Martin, Denise                                                      ")
+print("            • Nava, Alejandro                                                     ")
+print("                                                                                  ")
+print("**********************************************************************************")
+print("*                                   OBJETIVO                                     *")
+print("**********************************************************************************")
+print("  Lograr regresión lineal, cuadrática y exponencial de un set de datos dados      ")
+print("                                                                                  ")
+print("**********************************************************************************")
+print("*                                   CONSIGNAS                                    *")
+print("**********************************************************************************")
+print("                       ")
+print("                                                                                  ")
+
+
+#  I) Theory
+print("                                                                                  ")
+print("**********************************************************************************")
+print("*                                      TEORIA                                    *")
+print("**********************************************************************************")
+print(" Los Métodos de Interpolación son técnicas utilizadas en cálculo para aproximar una")
+print(" función desconocida a partir de un conjunto finito de puntos conocidos, hallando ")
+print(" un polinomio de grado mínimo que pase por esos puntos                            ")
+print("                                                                                  ")
+print("                             ********* NEWTON *********                           ")
+print(" El método de Newton utiliza un polinomio interpolante que se construye como una  ")
+print(" suma de términos de los polinomios conocidos a los que se agrega el producto entre ")
+print(" una constante y las raices de los puntos hasta allí utilizados en el polinomio.  ")
+print(" Logicamente el primer polinomio es de grado cero, es decir una constante y       ")
+print(" Teniendo un polinomio Pm(x) con varios puntos tomados en cuenta, podriamos agregar")
+print(" el siguiente punto como: Pm+1(x) = P(x) + c * (x - x0) (x - x1) ... (x - xm)     ")
+print(" Donde cada valor de x0, x1 ... xm, representan los valores que anulan al segundo ")
+print(" término, para usar el polinomio anterior que se ajustaba a dichos puntos del set")
+print(" C es una conmstante que despejada en cada nuevo polinomio, tiene formato:        ")
+print("                 ym+1 - Pm(xm+1)                                                  ")
+print(" C = ________________________________________                                     ")
+print("     (xm+1 - x0) * (xm+1 - x0) *  (xm+1 - x0)                                     ")
+print(" Donde ym+1 es el valor correspondiente al par de xm+1, y Pm(xm+1) es el polinomio")
+print(" anterior evaluado en el x del set actual: xm+1                                   ")
+print(" La cantidad de datos (n) condiciona el grado del polinomio (P):  gr(P) <= n      ")
+print("                                                                                  ")
+print("                           ********* LAGRANGE *********                           ")
+print(" El método de Lagrange utiliza un polinomio interpolante que se construye como una")
+print(" suma de polinomios para cada uno de los puntos del set:                          ")
+print(" P(x) = L0(x) y0 + L1(x) y1 + … + Ln(x) yn                                        ")
+print(" Donde cada polinomio de lagrange ( L ) evaluado en cada punto del set, puede ser ")
+print(" expresado genéricamente como:                                                    ")
+print("            (x - x0) * (x - x1) ..... ( x - xn )                                  ")
+print(" Li(x) = _________________________________________                                ")
+print("            (xi - x0) * (xi - x1) .... (xi - xn)                                  ")
+print(" En el demonimador ueda logicamente una constante que depende del valor evaluado  ")
+print(" y en el numerador las variables que permiten hacer el polinomio.                 ")
+print(" La cantidad de datos (n) condiciona el grado del polinomio (P):  gr(P) <= n      ")
+print("                                                                                  ")
+print("                     ********* DIFERENCIAS DIVIDIDAS *********                    ")
+print(" El método de Diferencias Divididas utiliza un polinomio interpolante que se      ")
+print(" construye como una sumatoria de diferencias dvididas, según sea:                 ")
+print(" • Progresivo:                                                                    ")
+print(" Pn−1(x) = f [x0] + f [x0, x1] * (x − x0) + f [x0, x1, x2] * (x − x0) * (x − x1) ···")
+print(" .... + f [x0, x1, ... , xn] · (x − x0) · (x − x1) ... (x − xn−1)                 ")
+print(" • Regresivo:                                                                    ")
+print(" Pn−1(x) = f [xn] + f [xn, xn−1] * (x − xn) + f [xn, xn−1, xn−2] * (x − xn) * (x − xn−1)")
+print(" .... + f [xn, xn−1, ... , x1] * (x − xn) · (x − xn−1) ... (x − x1)                ")
+print(" Donde se toma todo el dataset y se realiza las diferencias divididas de todos.   ")
+print(" En ambos casos el resultado debería ser igual o similar.                         ")
+print("                                                                                  ")
+
+#  II) Examples
+print("                                                                                  ")
+print("**********************************************************************************")
+print("*                                    EJEMPLOS                                    *")
+print("**********************************************************************************")
+pares = generador_pares(0, 50)
+X, Y = separador_pares_x_y(pares)
+len_pares = len(pares)
+print(f"Los pares ordenados son:\n {pares}")
+print(X)
+print(Y)
+sumaX = sum(X)
+sumaY = sum(Y)
+sumaXY = sum(X*Y)
+suma_X2 = sum(X**2)
+sumaX2 = (sum(X))**2
+print(f"\nLa suma total de todos los X: {sumaX}"
+      f"\nLa suma total de todos los Y: {sumaY}"
+      f"\nLa suma total de todos los X.Y: {sumaXY}"
+      f"\nLa suma total de todos los X al cuadrado: {suma_X2}"
+      f"\nEl cuadrado de la suma de todos los X: {sumaX2}")
+print("                                                                                  ")
+# Calculo de 'a'(pendiente) y 'b'(ordenada de origen) de la ecuacion 'y = ax + b' para encontrar
+# la mejor recta que se aproxime a todos los puntos, con el minimo valor de error posible
+a = (len_pares*sumaXY - sumaX*sumaY) / (len_pares*suma_X2 - sumaX2)
+b = (suma_X2*sumaY - sumaX*sumaXY) / (len_pares*suma_X2 - sumaX2)
+errorCuadratico = sum((a*X + b - Y)**2)
+print(f"\nValor de 'a': {a}"
+      f"\nValor de 'b': {b}"
+      f"\nError cuadratico: {errorCuadratico}")
+
+reg_lineal_graph(X, Y, a, b)
+
+## IV) Conclusions
+print("                                                                                  ")
+print("**********************************************************************************")
+print("*                                  CONCLUSIONES                                  *")
+print("**********************************************************************************")
+print(" • .                                        ")
+print("                                                                                  ")
+print("                                                                                  ")
+print(" • NOTA1: en las líneas 178 y 179 se encuentra el generador de pares, donde dice: ")
+print("   size, se puede modificar el valor para visualizar mejor y con menos cambios abruptos")
+print("   la interpolación de los polinomios, por ejemplo en 3 podrán verse las funciones")
+print("   cuadráticas con curvas mas suaves y más probabilidad de encontrar una raíz.    ")
+print("                                                                                  ")
 
 
