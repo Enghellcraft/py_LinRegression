@@ -6,7 +6,6 @@
 # Compararlos
 
 
-
 # PENDIENTES:
 # * Hacer la funcion lineal una sola funcion que imprima todo
 # * Hacer la funcion cuadratica en base a la teoria que hice
@@ -48,6 +47,7 @@ from sklearn.svm import SVC
 import seaborn as sns
 from fractions import Fraction
 
+
 # ------------------------------------------------------------------------------------------------------------
 # Funs
 
@@ -79,6 +79,7 @@ def separador_pares_x_y(pares):
     pares_y = np.array(pares_y)
     return pares_x, pares_y
 
+
 # Lineal Regression
 def my_lineal_regression(pares):
     X, Y = separador_pares_x_y(pares)
@@ -88,26 +89,25 @@ def my_lineal_regression(pares):
     print(Y)
     sumaX = sum(X)
     sumaY = sum(Y)
-    sumaXY = sum(X*Y)
-    suma_X2 = sum(X**2)
-    sumaX2 = (sum(X))**2
+    sumaXY = sum(X * Y)
+    suma_X2 = sum(X ** 2)
+    sumaX2 = (sum(X)) ** 2
     print(f"\nLa suma total de todos los X: {sumaX}"
-        f"\nLa suma total de todos los Y: {sumaY}"
-        f"\nLa suma total de todos los X.Y: {sumaXY}"
-        f"\nLa suma total de todos los X al cuadrado: {suma_X2}"
-        f"\nEl cuadrado de la suma de todos los X: {sumaX2}")
+          f"\nLa suma total de todos los Y: {sumaY}"
+          f"\nLa suma total de todos los X.Y: {sumaXY}"
+          f"\nLa suma total de todos los X al cuadrado: {suma_X2}"
+          f"\nEl cuadrado de la suma de todos los X: {sumaX2}")
     print("                                                                                  ")
     # Cálculo de 'a'(pendiente) y 'b'(ordenada de origen) de la ecuacion 'y = ax + b' para encontrar
     # la mejor recta que se aproxime a todos los puntos, con el minimo valor de error posible
-    a = (len_pares*sumaXY - sumaX*sumaY) / (len_pares*suma_X2 - sumaX2)
-    b = (suma_X2*sumaY - sumaX*sumaXY) / (len_pares*suma_X2 - sumaX2)
-    errorCuadratico = sum((a*X + b - Y)**2)
+    a = (len_pares * sumaXY - sumaX * sumaY) / (len_pares * suma_X2 - sumaX2)
+    b = (suma_X2 * sumaY - sumaX * sumaXY) / (len_pares * suma_X2 - sumaX2)
+    errorCuadratico = sum((a * X + b - Y) ** 2)
     print(f"\nValor de 'a': {a:.2f}"
-        f"\nValor de 'b': {b:.2f}"
-        f"\nError cuadratico: {errorCuadratico:.2f}")
-    
-    reg_lineal_graph(X, Y, a, b)
+          f"\nValor de 'b': {b:.2f}"
+          f"\nError cuadratico: {errorCuadratico:.2f}")
 
+    reg_lineal_graph(X, Y, a, b)
 
 
 # ------------------------------------------------------------------------------------------------------------
@@ -115,7 +115,7 @@ def my_lineal_regression(pares):
 # Linear Regression
 def reg_lineal_graph(X, Y, a, b):
     plt.plot(X, Y, "o", label="Dataset")
-    plt.plot(X, a*X + b, label="Regresión Lineal")
+    plt.plot(X, a * X + b, label="Regresión Lineal")
     plt.xlabel("X")
     plt.ylabel("Y")
     plt.title("Recta que mejor se ajusta a los puntos con criterio de cuadrados minimos")
@@ -146,7 +146,6 @@ print("*                                   CONSIGNAS                            
 print("**********************************************************************************")
 print("                                                                                  ")
 print("                                                                                  ")
-
 
 #  I) Theory
 print("                                                                                  ")
@@ -228,7 +227,7 @@ print(" La Regresión Exponencial es una técnica utilizada para encontrar una f
 print(" exponencial que mejor se acomode a lospuntos de un dataset y puede proveer algun ")
 print(" tipo de predicción sobre nuevos puntos.                                          ")
 print(" Aquí se utiliza: y = a*b^x , donde 'a' ≠ 0.                                      ")
-print(" Se utiliza en casos donde los datos crecen lentamente al principio y luego muy   ")  
+print(" Se utiliza en casos donde los datos crecen lentamente al principio y luego muy   ")
 print(" aceleradamente.                                                                  ")
 print(" • ERROR: para hallar extremos locales (mínimos, máximos, puntos de inflexión) de ")
 print("          una función de varias variables, es necesario derivarla en función a cada")
@@ -238,10 +237,12 @@ print("          Los valores obtenidos son:                                     
 print("          - la constante:                     Σy_i * ln(x_i)                      ")
 print("                                     a = ___________________________              ")
 print("                                                   Σln(x_i)                       ")
-print("          - la base:       Σ(yi*ln(xi))*Σ(ln(xi))*Σ(ln(xi) *ln(xi)) / Σ(ln(xi))^3 - Σ(yi*ln(xi))*Σ(ln(xi)) / Σ(ln(xi))^2 ")
-print("                        b = _____________________________________________________________________________________________ ")
-print("                                                 Σ(ln(xi))*Σ(ln(xi)*ln(xi)) / Σ(ln(xi))^2                                 ")
-
+print(
+    "          - la base:       Σ(yi*ln(xi))*Σ(ln(xi))*Σ(ln(xi) *ln(xi)) / Σ(ln(xi))^3 - Σ(yi*ln(xi))*Σ(ln(xi)) / Σ(ln(xi))^2 ")
+print(
+    "                        b = _____________________________________________________________________________________________ ")
+print(
+    "                                                 Σ(ln(xi))*Σ(ln(xi)*ln(xi)) / Σ(ln(xi))^2                                 ")
 
 #  II) Examples
 print("                                                                                  ")
@@ -250,7 +251,6 @@ print("*                                    EJEMPLOS                            
 print("**********************************************************************************")
 pares = generador_pares(0, 50)
 my_lineal_regression(pares)
-
 
 ## IV) Conclusions
 print("                                                                                  ")
@@ -307,5 +307,3 @@ print("   + Asume continuidad de datos y peude afectar las predicciones.        
 print("                                                                                  ")
 print(" • NOTA1:  ")
 print("                                                                                  ")
-
-
