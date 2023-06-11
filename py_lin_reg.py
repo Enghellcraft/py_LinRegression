@@ -81,7 +81,7 @@ def separador_pares_x_y(pares):
 
 
 # Lineal Regression
-def my_lineal_regression(pares):
+def my_regressions(pares):
     X, Y = separador_pares_x_y(pares)
     len_pares = len(pares)
     print(f"Los pares ordenados son:\n {pares}")
@@ -92,11 +92,12 @@ def my_lineal_regression(pares):
     sumaXY = sum(X * Y)
     suma_X2 = sum(X ** 2)
     sumaX2 = (sum(X)) ** 2
-    print(f"\nLa suma total de todos los X: {sumaX}"
-          f"\nLa suma total de todos los Y: {sumaY}"
-          f"\nLa suma total de todos los X.Y: {sumaXY}"
-          f"\nLa suma total de todos los X al cuadrado: {suma_X2}"
-          f"\nEl cuadrado de la suma de todos los X: {sumaX2}")
+    print("===[REGRESIÓN LINEAL]===")
+    print(f"\n\t- La suma total de todos los X: {sumaX}"
+          f"\n\t- La suma total de todos los Y: {sumaY}"
+          f"\n\t- La suma total de todos los X.Y: {sumaXY}"
+          f"\n\t- La suma total de todos los X al cuadrado: {suma_X2}"
+          f"\n\t- El cuadrado de la suma de todos los X: {sumaX2}")
     print("                                                                                  ")
     # Cálculo de 'a'(pendiente) y 'b'(ordenada de origen) de la ecuacion 'y = ax + b' para encontrar
     # la mejor recta que se aproxime a todos los puntos, con el minimo valor de error posible
@@ -157,7 +158,7 @@ print("                       ********* REGRESION LINEAL *********              
 print("                                                                                  ")
 print(" El método de Regresion Lineal relaciona puntos de un dataset y puede proveer alguna")
 print(" predicción sobre nuevos puntos.                                                  ")
-print(" Modela la relación entre una variable dependientre y una o más variables independientes")
+print(" Modela la relación entre una variable dependiente y una o más variables independientes")
 print(" utilizando la ecuación lineal: y = a*x + b, donde 'a' es la pendiente y 'b' la   ")
 print(" ordenada al origen y son las variables que caracterizaran a la recta encontrada. ")
 print(" Para que la recta sea lo mas fidedigna al dataset, es importante minimizar el    ")
@@ -250,8 +251,7 @@ print("*************************************************************************
 print("*                                    EJEMPLOS                                    *")
 print("**********************************************************************************")
 pares = generador_pares(0, 50)
-my_lineal_regression(pares)
-
+my_regressions(pares)
 ## IV) Conclusions
 print("                                                                                  ")
 print("**********************************************************************************")
