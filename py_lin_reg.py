@@ -108,15 +108,88 @@ def my_regressions(pares):
           f"\nValor de 'b': {b:.2f}"
           f"\nError cuadratico: {errorCuadratico:.2f}")
 
-    reg_lineal_graph(X, Y, a, b)
+    suma_X4 = sum(X ** 4)
+    suma_X3 = sum(X ** 3)
+    sumaX2_Y = sum((X ** 2) * Y)
+
+    # # [VERSION DE ENUNCIADO ORIGINAL - DA RARO]
+    # sumaX2_2 = sum((X ** 2) * 2)
+    # a_diapo =  (len_pares * sumaX2_Y - sumaX2 * sumaY) / (len_pares * suma_X4 - sumaX2_2)
+    # b_diapo = (suma_X4 * sumaY - suma_X2 * sumaX2_Y) / (len_pares * suma_X4 - sumaX2_2)
+    # error_cuad_diapo = sum((a_diapo * X**2 + b_diapo - Y) ** 2)
+    # print("===[REGRESIÓN CUADRATICA (DIAPO)]===")
+    # print(f"\nPara este sistema:"
+    #       f"\nValor de 'a': {a_diapo:.2f}"
+    #       f"\nValor de 'b': {b_diapo:.2f}"
+    #       f"\nError cuadratico: {error_cuad_diapo:.2f}")
+
+    # Calculo de los tres coeficientes del sistema cuadratico. Al ser más complejo se resuelve via numpy.
+    cuad_mat = np.array([[suma_X4, suma_X3, suma_X2], [suma_X3, suma_X2, sumaX], [suma_X2, sumaX, len_pares]])
+    cuad_resmat = np.array([sumaX2_Y, sumaXY, sumaY])
+
+    cuad_abc_mat = np.linalg.solve(cuad_mat, cuad_resmat)
+    error_cuad_cuad = sum((cuad_abc_mat[0] * X ** 2 + cuad_abc_mat[1] * X + cuad_abc_mat[2] - Y) ** 2)
+    print("===[REGRESIÓN CUADRATICA]===")
+    print(f"\nSe agregan a lo anterior:"
+          f"\n\t- La suma total de todos los X al cubo: {suma_X3}"
+          f"\n\t- La suma total de todos los X a la cuarta: {suma_X4}"
+          f"\n\t- La suma total de todos los X^2 por Y: {sumaX2_Y}")
+    print(f"\nPara este sistema:"
+          f"\nValor de 'a': {cuad_abc_mat[0]:.2f}"
+          f"\nValor de 'b': {cuad_abc_mat[1]:.2f}"
+          f"\nValor de 'c': {cuad_abc_mat[2]:.2f}"
+          f"\nError cuadratico: {error_cuad_cuad:.2f}")
+
+    suma_lnX = sum(np.log(X))
+    suma_lnX_lnX = sum(np.log(X) * np.log(X))
+    suma_lnX_2 = sum(np.log(X)) ** 2
+    suma_lnX_3 = sum(np.log(X)) ** 3
+    suma_lnY = sum(np.log(Y))
+    suma_x_lnY = sum(X * np.log(Y))
+    suma_y_lnX = sum(Y * np.log(X))
+    sumaX_2 = sum(X) ** 2
+
+    # Intento 1 de resolver exponencial (y = a * b^x) como dice el desarrollo original
+    a_exp = (sumaY * suma_lnX) / (suma_lnX)
+    b_exp = ((suma_y_lnX * suma_lnX * suma_lnX_lnX) / (suma_lnX_3 - suma_y_lnX * suma_lnX / suma_lnX_2)) / (suma_lnX * suma_lnX_lnX / suma_lnX_2)
+
+    # Intento 2 de resolver exponencial ( y = a * e^(bx) ), versión de guille.
+    exp_mat = np.array([[len_pares, sumaX], [sumaX, sumaX2]])
+    exp_resmat = np.array([suma_lnY, suma_x_lnY])
+    exp_ab_mat = np.linalg.solve(exp_mat, exp_resmat)
+    exp_ab_mat = (np.exp(exp_ab_mat[0]), exp_ab_mat[1]) # Lo de arriba resuelve "ln(y) = ln(a) * bx"
+
+    # exp_ab_mat = (a_exp, b_exp) # Comentar para usar versión guille, dejar activo para version OG.
+    error_cuad_exp = sum(exp_ab_mat[0] * (np.e ** (exp_ab_mat[1] * X)))
+    print("===[REGRESIÓN EXPONENCIAL]===")
+    print(f"\nSe agregan a lo anterior:"
+          f"\n\t- La suma total de todos los ln(Y): {suma_lnY}"
+          f"\n\t- La suma total de todos los X * ln(Y): {suma_x_lnY}")
+    print(f"\nPara este sistema:"
+          f"\nValor de 'a': {exp_ab_mat[0]:.2f}"
+          f"\nValor de 'b': {exp_ab_mat[1]:.2f}"
+          f"\nError cuadratico: {error_cuad_exp:.2f}")
+
+    # reg_lineal_graph(X, Y, a, b, a_cuadratica, b_cuadratica)
+
+    # reg_lineal_graph(X, Y, (a, b), (a_diapo, b_diapo), abc_mat)
+    reg_lineal_graph(X, Y, (a, b), cuad_abc_mat, exp_ab_mat)
 
 
 # ------------------------------------------------------------------------------------------------------------
 # Plots
 # Linear Regression
-def reg_lineal_graph(X, Y, a, b):
+def reg_lineal_graph(X, Y, ab_lineal, cuad_mat, exp_mat):
     plt.plot(X, Y, "o", label="Dataset")
+    # plt.ylim(0, Y.max() * 1.2)
+    a, b = ab_lineal
     plt.plot(X, a * X + b, label="Regresión Lineal")
+    # a_diapo, b_diapo = ab_diapo
+    # plt.plot(X, a_diapo * (X ** 2) + b_diapo, label="Regresión Cuadrática (Diapo)")
+    a_cuad, b_cuad, c_cuad = cuad_mat
+    plt.plot(X, a_cuad * (X ** 2) + b_cuad * X + c_cuad, label="Regresión Cuadrática")
+    a_exp, b_exp = exp_mat
+    plt.plot(X, a_exp * np.exp(b_exp * X), label="Regresión Exp.")
     plt.xlabel("X")
     plt.ylabel("Y")
     plt.title("Recta que mejor se ajusta a los puntos con criterio de cuadrados minimos")
@@ -244,13 +317,61 @@ print(
     "                        b = _____________________________________________________________________________________________ ")
 print(
     "                                                 Σ(ln(xi))*Σ(ln(xi)*ln(xi)) / Σ(ln(xi))^2                                 ")
+print("                                                                                  ")
+print("                     ********* REGRESION CUADRÁTICA (GUILLE) *********                     ")
+print(" El método de Regresion Cuadrática es similar al lineal, solo que modela para una parábola en vez de una recta.")
+print(" Modela la relación entre una variable dependientre y una o más variables independientes")
+print(" utilizando la ecuación lineal: y = a*x^2 + bx + c, donde 'a' es la curvatura (a != 0), 'b' es el")
+print("desplazamiento horizontal y 'c' el desplazamiento vertical de la parábola encontrada. ")
+print(" • ERROR: En este caso para minimizar el error de los puntos a la recta utilizaremos")
+print("          el método de cuadrados mínimos como en el caso lineal, ")
+print("          Siendo el Error Cuadrático: Σ[ a*(xi^2) + b*xi + c - yi ]^2, se deriva y despeja en base a:")
+print("          - la curvatura:")
+print("                            E'a(a,b,c) = 0                                            ")
+print("                            a * Σ[xi^4] + b * Σ[xi^3] + c * Σ[xi] = Σ[ yi * (xi^2) ]                 ")
+print("          - el desplazamiento horizontal:")
+print("                            E'b(a,b,c) = 0                                   ")
+print("                            a * Σ[xi^3] + b * Σ[xi^2] + c * Σ[xi] = Σ[yi*xi]                 ")
+print("          - el desplazamiento vertical:")
+print("                            E'c(a,b,c) = 0                                   ")
+print("                            a * Σ[xi^2] + b * Σ[xi] + c * n = Σ[yi]                 ")
+print("          Para hallar a y b, se realiza un sistema matricial de 3*3:              ")
+print("          a Σ xi4 + b Σ xi3 + c Σ xi2 = Σ [xi2 * yi]    [1]                                     ")
+print("          a Σ xi3 + b Σ xi2 + c Σ xi  = Σ xiyi          [2]                                     ")
+print("          a Σ xi2 + b Σ xi  + c * n   = Σ yi            [3]                                     ")
+print("                                                                                                ")
+print("          Podemos hacer uso de este sistema, reemplazar con los valores calculados              ")
+print("          para este dataset y despejar los valores de a, b y c.                                 ")
+print("                                                                                  ")
+print("                     ********* REGRESION EXPONENCIAL (GUILLE) *********                     ")
+print(" El método de Regresion Exponencial utiliza la ecuación: y = a * e(b*x), donde 'a' es la constante")
+print("y 'b' el modificador de la curvatura en la exponencial. ")
+print(" • ERROR: En este caso para minimizar el error de los puntos a la recta utilizaremos")
+print("          el método de cuadrados mínimos como en el caso lineal, ")
+print("          Siendo el Error Cuadrático: Σ[ a*e^(b*x) - yi ]^2, se deriva y despeja en base a:")
+print("          - la constante:")
+print("                            E'a(a,b) = 0                                            ")
+print("                            a * Σ[b * x * e^(b*x)] + b * n = Σ[ b * yi * xi ]                 ")
+print("          - la curvatura:")
+print("                            E'b(a,b,c) = 0                                   ")
+print("                            a * Σ[xi^3] + b * Σ[xi^2] + c * Σ[xi] = Σ[yi*xi]                 ")
+print("          - el desplazamiento vertical:")
+print("                            E'c(a,b,c) = 0                                   ")
+print("                            a * Σ[xi^2] + b * Σ[xi] + c * n = Σ[yi]                 ")
+print("          Para hallar a y b, se realiza un sistema matricial de 3*3:              ")
+print("          a Σ xi4 + b Σ xi3 + c Σ xi2 = Σ [xi2 * yi]    [1]                                     ")
+print("          a Σ xi3 + b Σ xi2 + c Σ xi  = Σ xiyi          [2]                                     ")
+print("          a Σ xi2 + b Σ xi  + c * n   = Σ yi            [3]                                     ")
+print("                                                                                                ")
+print("          Podemos hacer uso de este sistema, reemplazar con los valores calculados              ")
+print("          para este dataset y despejar los valores de a, b y c.                                 ")
 
 #  II) Examples
 print("                                                                                  ")
 print("**********************************************************************************")
 print("*                                    EJEMPLOS                                    *")
 print("**********************************************************************************")
-pares = generador_pares(0, 50)
+pares = generador_pares(1, 50)
 my_regressions(pares)
 ## IV) Conclusions
 print("                                                                                  ")
