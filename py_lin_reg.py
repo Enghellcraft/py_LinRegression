@@ -7,15 +7,15 @@
 
 
 # PENDIENTES:
-# * Hacer la funcion lineal una sola funcion que imprima todo
-# * Hacer la funcion cuadratica en base a la teoria que hice
-# * Hacer que la cuadratica imprima todo igual que la lineal
-# * hacer la funcion exponencial en base a la teoria que hice
-# * Hacer que la exponencial imprima todo igual que la lineal
-# * Hacer grafico para las 3 juntas donde diga el error de cada una
-# * Hacer una funcion que tome los 3 errores y diga cual es el mejor fit
-# * Buscar 3 dataset: uno ideal para lineal, otro para cuadrática y otro para exponencial
-# * Dejar los numeros aleatorios pq ese va  a ser el tercer test
+# [*] Hacer la funcion lineal una sola funcion que imprima todo
+# [*] Hacer la funcion cuadratica en base a la teoria que hice
+# [*] Hacer que la cuadratica imprima todo igual que la lineal
+# [ ] hacer la funcion exponencial en base a la teoria que hice
+# [ ] Hacer que la exponencial imprima todo igual que la lineal
+# [*] Hacer grafico para las 3 juntas donde diga el error de cada una
+# [ ] Hacer una funcion que tome los 3 errores y diga cual es el mejor fit
+# [ ] Buscar 3 dataset: uno ideal para lineal, otro para cuadrática y otro para exponencial
+# [ ] Dejar los numeros aleatorios pq ese va  a ser el tercer test
 # COMENTAR EL CODIGO APB
 
 
