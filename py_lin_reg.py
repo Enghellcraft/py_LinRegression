@@ -103,10 +103,10 @@ def my_regressions(pares):
     # la mejor recta que se aproxime a todos los puntos, con el minimo valor de error posible
     a = (len_pares * sumaXY - sumaX * sumaY) / (len_pares * suma_X2 - sumaX2)
     b = (suma_X2 * sumaY - sumaX * sumaXY) / (len_pares * suma_X2 - sumaX2)
-    errorCuadratico = sum((a * X + b - Y) ** 2)
+    error_cuad_lineal = sum((a * X + b - Y) ** 2)
     print(f"\nValor de 'a': {a:.2f}"
           f"\nValor de 'b': {b:.2f}"
-          f"\nError cuadratico: {errorCuadratico:.2f}")
+          f"\nError cuadratico: {error_cuad_lineal:.2f}")
 
     suma_X4 = sum(X ** 4)
     suma_X3 = sum(X ** 3)
@@ -151,13 +151,14 @@ def my_regressions(pares):
 
     # Intento 1 de resolver exponencial (y = a * b^x) como dice el desarrollo original
     a_exp = (sumaY * suma_lnX) / (suma_lnX)
-    b_exp = ((suma_y_lnX * suma_lnX * suma_lnX_lnX) / (suma_lnX_3 - suma_y_lnX * suma_lnX / suma_lnX_2)) / (suma_lnX * suma_lnX_lnX / suma_lnX_2)
+    b_exp = ((suma_y_lnX * suma_lnX * suma_lnX_lnX) / (suma_lnX_3 - suma_y_lnX * suma_lnX / suma_lnX_2)) / (
+            suma_lnX * suma_lnX_lnX / suma_lnX_2)
 
     # Intento 2 de resolver exponencial ( y = a * e^(bx) ), versión de guille.
     exp_mat = np.array([[len_pares, sumaX], [sumaX, sumaX2]])
     exp_resmat = np.array([suma_lnY, suma_x_lnY])
     exp_ab_mat = np.linalg.solve(exp_mat, exp_resmat)
-    exp_ab_mat = (np.exp(exp_ab_mat[0]), exp_ab_mat[1]) # Lo de arriba resuelve "ln(y) = ln(a) * bx"
+    exp_ab_mat = (np.exp(exp_ab_mat[0]), exp_ab_mat[1])  # Lo de arriba resuelve "ln(y) = ln(a) * bx"
 
     # exp_ab_mat = (a_exp, b_exp) # Comentar para usar versión guille, dejar activo para version OG.
     error_cuad_exp = sum(exp_ab_mat[0] * (np.e ** (exp_ab_mat[1] * X)))
@@ -170,31 +171,36 @@ def my_regressions(pares):
           f"\nValor de 'b': {exp_ab_mat[1]:.2f}"
           f"\nError cuadratico: {error_cuad_exp:.2f}")
 
-    # reg_lineal_graph(X, Y, a, b, a_cuadratica, b_cuadratica)
+    # regressions_graph(X, Y, a, b, a_cuadratica, b_cuadratica)
 
-    # reg_lineal_graph(X, Y, (a, b), (a_diapo, b_diapo), abc_mat)
-    reg_lineal_graph(X, Y, (a, b), cuad_abc_mat, exp_ab_mat)
+    # regressions_graph(X, Y, (a, b), (a_diapo, b_diapo), abc_mat)
+    regressions_graph(X, Y, (a, b), error_cuad_lineal, cuad_abc_mat, error_cuad_cuad, exp_ab_mat, error_cuad_exp)
 
 
 # ------------------------------------------------------------------------------------------------------------
 # Plots
 # Linear Regression
-def reg_lineal_graph(X, Y, ab_lineal, cuad_mat, exp_mat):
+def regressions_graph(X, Y, ab_lineal, err_lineal, cuad_mat, err_cuad, exp_mat, err_exp):
     plt.plot(X, Y, "o", label="Dataset")
     # plt.ylim(0, Y.max() * 1.2)
     a, b = ab_lineal
-    plt.plot(X, a * X + b, label="Regresión Lineal")
+    label_lin = f"Regresión Lineal\n[E = {err_lineal:.2f}]"
+    plt.plot(X, a * X + b, label=label_lin)
     # a_diapo, b_diapo = ab_diapo
     # plt.plot(X, a_diapo * (X ** 2) + b_diapo, label="Regresión Cuadrática (Diapo)")
     a_cuad, b_cuad, c_cuad = cuad_mat
-    plt.plot(X, a_cuad * (X ** 2) + b_cuad * X + c_cuad, label="Regresión Cuadrática")
+    label_cuad = f"Regresión Cuadrática\n[E = {err_cuad:.2f}]"
+    plt.plot(X, a_cuad * (X ** 2) + b_cuad * X + c_cuad, label=label_cuad)
     a_exp, b_exp = exp_mat
-    plt.plot(X, a_exp * np.exp(b_exp * X), label="Regresión Exp.")
+    label_exp = f"Regresión Exponencial\n[E = {err_exp:.2f}]"
+    plt.plot(X, a_exp * np.exp(b_exp * X), label=label_exp)
     plt.xlabel("X")
     plt.ylabel("Y")
     plt.title("Recta que mejor se ajusta a los puntos con criterio de cuadrados minimos")
     plt.grid()
+    # plt.legend(loc='upper right', bbox_to_anchor=(1.2, 0.6))
     plt.legend()
+    plt.tight_layout()
     plt.show()
 
 
