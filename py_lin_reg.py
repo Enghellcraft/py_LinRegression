@@ -143,6 +143,13 @@ def create_f_sym_exponential_euler(a_exp, b_exp):
     f = sym.lambdify(x, f_sym_euler)
     return f
 
+def pretty_print_sym_exp(f_sym):
+    x = sym.symbols('x')
+    f_lambda = sym.sympify(sym.lambdify(x, f_sym))
+    f_lambda_str = str(f_lambda)
+    return f_lambda_str
+
+
 # Lineal Regression
 def my_regressions(pares):
     X, Y = separador_pares_x_y(pares)
@@ -193,7 +200,7 @@ def my_regressions(pares):
     f_cuad = np.poly1d(cuad_abc_mat)
     print("La expresion de la función cuadrática es:")
     print(f_cuad)
-    regressions_graph_unit(X, Y, f_cuad, error_cuad_cuad, "Regresion cuadrática", 'cornflowerblue')
+    regressions_graph_unit(X, Y, f_cuad, error_cuad_cuad, "Regresion cuadrática", 'purple')
 
     suma_lnX = np.sum(np.log(X))
     suma_lnX_lnX = np.sum(np.log(X) * np.log(X))
@@ -222,6 +229,7 @@ def my_regressions(pares):
     # Plot Funcion Exponencial
     f_exp = create_f_sym_exponential(a_exp, b_exp)
     print("La expresion de la función exponencial es:")
+    # print( pretty_print_sym_exp(f_exp) )
     print(str(f_exp))
     regressions_graph_unit(X, Y, f_exp, error_cuad_exp, "Regresion exponencial", 'sienna')
 
@@ -252,30 +260,38 @@ def my_regressions(pares):
 # Plots
 # Linear Regression
 def regressions_graph(X, Y, ab_lineal, err_lineal, cuad_mat, err_cuad, exp_mat, err_exp, euler_lambda_exp, err_euler):
-    plt.plot(X, Y, "o", label="Dataset")
-    plt.ylim(0, Y.max() * 1.2)
+    plt.plot(X, Y, "o", label="Dataset", color='turquoise')
+
     a, b = ab_lineal
     label_lin = f"Regresión Lineal\n[E = {err_lineal:.2f}]"
-    plt.plot(X, a * X + b, label=label_lin)
+    plt.plot(X, a * X + b, label=label_lin, color='orange')
+
     # a_diapo, b_diapo = ab_diapo
     # plt.plot(X, a_diapo * (X ** 2) + b_diapo, label="Regresión Cuadrática (Diapo)")
     a_cuad, b_cuad, c_cuad = cuad_mat
     label_cuad = f"Regresión Cuadrática\n[E = {err_cuad:.2f}]"
-    plt.plot(X, a_cuad * (X ** 2) + b_cuad * X + c_cuad, label=label_cuad)
+    plt.plot(X, a_cuad * (X ** 2) + b_cuad * X + c_cuad, label=label_cuad, color='purple')
+    
     a_exp, b_exp = exp_mat
     label_exp = f"Regresión Exponencial\n[E = {err_exp:.2f}]"
-    plt.plot(X, b_exp * (X ** a_exp), label=label_exp)
+    plt.plot(X, b_exp * (X ** a_exp), label=label_exp, color='sienna')
     label_euler = f"Regresión Exp. (Euler)\n[E = {err_euler:.2f}]"
     # a_euler, b_euler = euler_mat
     # VER CON GUILLE. CAMBIO LA FUNCION PARA QUE RECIBA LA EXPRESION LAMBDA
     # plt.plot(X, b_exp * np.exp(a_exp * X), label=label_euler)
-    plt.plot(X, euler_lambda_exp(X), label=label_euler)
-    plt.xlabel("X")
-    plt.ylabel("Y")
+    
+    plt.ylim(-(Y.max() / 4), Y.max() * 1.1)
+    yax = plt.gca().yaxis
+    for item in yax.get_ticklabels(): 
+        item.set_rotation(45)
+    
+    plt.plot(X, euler_lambda_exp(X), label=label_euler, color='tomato')
+    plt.xlabel("Días", fontweight='bold')
+    plt.ylabel("Acumulación de individuos infectados", fontweight='bold')
+    plt.legend() 
     plt.title("Grafico de cuadrados mínimos")
     plt.grid()
     # plt.legend(loc='upper right', bbox_to_anchor=(1.2, 0.6))
-    plt.legend()
     plt.tight_layout()
     plt.show()
 
