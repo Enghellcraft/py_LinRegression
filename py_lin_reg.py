@@ -29,6 +29,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import sympy as sym
+from scipy.optimize import curve_fit
 from numpy.compat import long
 from sklearn.impute import SimpleImputer
 from sklearn.preprocessing import LabelEncoder
@@ -184,6 +185,7 @@ def my_regressions(pares):
     #       f"\nValor de 'b': {b_diapo:.2f}"
     #       f"\nError cuadratico: {error_cuad_diapo:.2f}")
 
+#***************************************************************************************************
     print("===[REGRESIÓN CUADRATICA]===")
 
     # Calculo de los tres coeficientes del sistema cuadratico. Al ser más complejo se resuelve via numpy.
@@ -191,6 +193,22 @@ def my_regressions(pares):
 
     error_cuad_cuad = np.sum((cuad_abc_mat[0] * X ** 2 + cuad_abc_mat[1] * X + cuad_abc_mat[2] - Y) ** 2)
     print(f"\nError cuadratico: {error_cuad_cuad:.2f}")
+    
+    # Cálculo R Cuadrática
+    def quad_func(x, a, b, c):
+        return a*x**2 + b*x + c
+    
+    # Fit the quadratic function to the data
+    a, b, c = find_abc_quad_reg(X, Y)
+    popt = [a, b, c]
+
+    # Calculate the R-squared value
+    residuals = Y - quad_func(X, *popt)
+    ss_res = np.sum(residuals**2)
+    ss_tot = np.sum((Y - np.mean(Y))**2)
+    r_squared = 1 - (ss_res / ss_tot)
+
+    print("\nR para cuadrática es:", r_squared)
 
     # Plot Funcion Cuadratica
     f_cuad = np.poly1d(cuad_abc_mat)
@@ -207,7 +225,9 @@ def my_regressions(pares):
     suma_y_lnX = np.sum(Y * np.log(X))
     sumaX_2 = np.sum(X) ** 2
 
-    print("===[REGRESIÓN EXPONENCIAL: y = b * x^a]===")
+#***************************************************************************************************
+
+    print("===[REGRESIÓN POLINOMICA: y = b * x^a]===")
 
     # # Intento 1 de resolver exponencial (y = a * b^x) como dice el desarrollo original
     # a_exp = (sumaY * suma_lnX) / suma_lnX
@@ -221,6 +241,21 @@ def my_regressions(pares):
     b_exp = np.exp(ln_b_exp)
     error_cuad_exp = np.sum(b_exp * (X ** a_exp))
     print(f"\nError cuadratico: {error_cuad_exp:.2f}")
+    
+    # Cálculo R polinómica
+    def exp_func(x, a, b):
+        return b * x**a
+
+    a_exp, ln_b_exp = find_ab_lin_reg(np.log(X), np.log(Y), X_name="ln(X)", Y_name="ln(Y)", b_name="ln(b)")
+    b_exp = np.exp(ln_b_exp)
+    popt = [a_exp, b_exp]
+
+    residuals = Y - exp_func(X, *popt)
+    ss_res = np.sum(residuals**2)
+    ss_tot = np.sum((Y - np.mean(Y))**2)
+    r_squared = 1 - (ss_res / ss_tot)
+
+    print("\nR para cuadrática es:", r_squared)
 
     # Plot Funcion Exponencial
     f_exp = create_f_sym_exponential(a_exp, b_exp)
@@ -229,12 +264,32 @@ def my_regressions(pares):
     print(str(f_exp))
     regressions_graph_unit(X, Y, f_exp, error_cuad_exp, "Regresion exponencial", 'sienna')
 
+#***************************************************************************************************
+
     print("===[REGRESIÓN EXPONENCIAL EULER: y = b * e^(a*x)]===")
 
     # Intento de resolver exponencial ( y = b * e^(ax) ).
     a_exp_euler, ln_b_exp_euler = find_ab_lin_reg(X, np.log(Y), Y_name="ln(Y)", b_name="ln(b)")
     b_exp_euler = np.exp(ln_b_exp_euler)
     error_cuad_exp_euler = np.sum(b_exp * np.exp(a_exp_euler * X))
+    
+    # Define the exponential function to fit
+    def exp_func(x, a, b):
+        return b * np.exp(a * x)
+    
+    # Fit the exponential function to the data
+    ln_Y = np.log(Y)
+    a_exp_euler, ln_b_exp_euler = np.polyfit(X, ln_Y, 1)
+    b_exp_euler = np.exp(ln_b_exp_euler)
+    popt, _ = curve_fit(exp_func, X, Y, p0=[a_exp_euler, b_exp_euler])
+    
+    # Cálculo R^2 de Exponencial Euler
+    residuals = Y - exp_func(X, *popt)
+    ss_res = np.sum(residuals**2)
+    ss_tot = np.sum((Y - np.mean(Y))**2)
+    r_squared = 1 - (ss_res / ss_tot)
+
+    print("\rR para exponencial Euler es:", r_squared)
 
     # Plot Funcion Exponencial de Euler
     f_exp_euler = create_f_sym_exponential_euler(a_exp_euler, b_exp_euler)
@@ -470,8 +525,10 @@ print("          para este dataset y despejar los valores de a, b y c.          
 #  II) Examples
 print("                                                                                  ")
 print("**********************************************************************************")
-print("*                                    EJEMPLOS                                    *")
+print("*                                   SOLUCION                                     *")
 print("**********************************************************************************")
+print(" Para este proyecto contamos con un dataset provisto donde se toman la cantidad de")
+print(" días trasncurridos vs la cantidad de contagiados.")
 # pares = generador_pares(1, 50)
 # my_regressions(pares)
 
@@ -522,7 +579,6 @@ print("                                 ****************                        
 print("                                                                                  ")
 print(" • La Regresión Exponencial es ideal para casos de crecimiento o decrecimiento    ")
 print(" exponencial, es de técnica robusta pero no sirve para todos los sistemas.        ")
-print(" Su poder predictivo se toma como R^2 entre 0 y 1 (más cercano al 1, mejor es).        ")
 print("                                                                                  ")
 print(" • VENTAJAS DE REGRESION EXPONENCIAL:                                              ")
 print("   + Es excelente en casos de crecimiento o decrecimiento exponencial.             ")
@@ -533,5 +589,6 @@ print("   + No es bueno con casos de variacion de datos.                        
 print("   + No es confiable en casos que no tengas relaciones tipo exponencial.          ")
 print("   + Asume continuidad de datos y peude afectar las predicciones.                 ")
 print("                                                                                  ")
+print(" Su poder predictivo se toma como R^2 entre 0 y 1 (más cercano al 1, mejor es).        ")
 print(" • NOTA1:  ")
 print("                                                                                  ")
