@@ -1,11 +1,3 @@
-# TP: 
-# Con el generador de pares
-# Hacer regresion lineal -> funcion lineal
-# hacer la cuadrática
-# hacer la exponencial
-# Compararlos
-
-
 # PENDIENTES:
 # [*] Hacer la funcion lineal una sola funcion que imprima todo
 # [*] Hacer la funcion cuadratica en base a la teoria que hice
@@ -82,6 +74,8 @@ def separador_pares_x_y(pares):
     return pares_x, pares_y
 
 
+# Regressions
+# a) Linear
 def find_ab_lin_reg(X_set, Y_set, X_name="X", Y_name="Y", a_name="a", b_name="b"):
     len_pares = len(X_set)
     sumaX = np.sum(X_set)
@@ -101,7 +95,7 @@ def find_ab_lin_reg(X_set, Y_set, X_name="X", Y_name="Y", a_name="a", b_name="b"
           f"\nValor de '{b_name}': {b:.2f}")
     return a, b
 
-
+# b) Cuadratic
 def find_abc_quad_reg(X_set, Y_set):
     len_pares = len(X_set)
     sumaX = np.sum(X_set)
@@ -131,6 +125,7 @@ def find_abc_quad_reg(X_set, Y_set):
           f"\nValor de 'c': {c:.2f}")
     return a, b, c
 
+# c) Exponential
 def create_f_sym_exponential(a_exp, b_exp):
     x = sym.symbols('x')
     f_sym = b_exp * (x ** a_exp)
@@ -149,8 +144,8 @@ def pretty_print_sym_exp(f_sym):
     f_lambda_str = str(f_lambda)
     return f_lambda_str
 
-
-# Lineal Regression
+# Prints
+# All Regressions
 def my_regressions(pares):
     X, Y = separador_pares_x_y(pares)
     len_pares = len(X)
@@ -160,6 +155,7 @@ def my_regressions(pares):
     print(f"Los pares ordenados son:\n {pares}")
     print(X)
     print(Y)
+    
     print("===[REGRESIÓN LINEAL]===")
     # Cálculo de 'a'(pendiente) y 'b'(ordenada de origen) de la ecuacion 'y = ax + b' para encontrar
     # la mejor recta que se aproxime a todos los puntos, con el minimo valor de error posible
@@ -253,7 +249,6 @@ def my_regressions(pares):
         (a_exp, b_exp), error_cuad_exp,
         f_exp_euler, error_cuad_exp_euler
     )
-
 
 
 # ------------------------------------------------------------------------------------------------------------
@@ -384,7 +379,7 @@ print("          - Para que 'a' y 'b' queden indefinidos debería haber sólo un
 print("            dataset dejando infinitas rectas como solución del sistema.           ")
 print("          - En el caso de que todos los Yi sean iguales, la pendiente = 0.        ")
 print("                                                                                  ")
-print("                      ********* REGRESION CUADRATICA *********                    ")
+print("         ********* REGRESION CUADRATICA SIN COEFICIENTE LINEAL *********          ")
 print("                                                                                  ")
 print(" Similar método de Regresion Lineal, la Regresión Cuadrática relaciona puntos de  ")
 print(" un dataset y puede proveer algun tipo de predicción sobre nuevos puntos.         ")
@@ -411,12 +406,33 @@ print("                                            n Σ xi^4 – (Σ xi^2)^2    
 print("          + Las parábolas, incluyen en su cálculo a la familia de las rectas, por lo ")
 print("            tanto para un data set, el Error de una parábola es ≤ el de una recta. ")
 print("                                                                                  ")
+print("         ********* REGRESION CUADRATICA CON COEFICIENTE LINEAL *********          ")
+print(" De mismo modo que sin coeficiente, modela una relación tipo parábola del dataset.")
+print(" Utiliza la ecuación lineal: y = a*x^2 + bx + c, donde 'a' es la curvatura (a != 0),")
+print(" 'b' desplazamiento y 'c' la ordenada al origen.                                  ")
+print(" • ERROR: En este caso para minimizar el error de los puntos a la parábola        ")
+print("          utilizaremos el método de cuadrados mínimos como en el caso anterior,   ")
+print("          Siendo el Error Cuadrático: Σ[ a*(xi^2) + b*xi + c - yi ]^2,            ")
+print("           se deriva y despeja en base a:                                         ")
+print("          - la curvatura: E'a(a,b,c) = 0                                          ")
+print("                            a * Σ[xi^4] + b * Σ[xi^3] + c * Σ[xi] = Σ[yi * (xi^2)]")
+print("          - el desplazamiento: E'b(a,b,c) = 0                                     ")
+print("                            a * Σ[xi^3] + b * Σ[xi^2] + c * Σ[xi] = Σ[yi*xi]      ")
+print("          - la ordenada al origen: E'c(a,b,c) = 0                                 ")
+print("                            a * Σ[xi^2] + b * Σ[xi] + c * n = Σ[yi]               ")
+print("          Para hallar a y b, se realiza un sistema matricial de 3*3:              ")
+print("          a Σ xi4 + b Σ xi3 + c Σ xi2 = Σ [xi2 * yi]    [1]                       ")
+print("          a Σ xi3 + b Σ xi2 + c Σ xi  = Σ xiyi          [2]                       ")
+print("          a Σ xi2 + b Σ xi  + c * n   = Σ yi            [3]                       ")
+print("          Podemos hacer uso de este sistema, reemplazar con los valores calculados")
+print("          para este dataset y despejar los valores de a, b y c.                   ")
+print("                                                                                  ")
 print("                     ********* REGRESION EXPONENCIAL *********                    ")
 print("                                                                                  ")
 print(" La Regresión Exponencial es una técnica utilizada para encontrar una función     ")
 print(" exponencial que mejor se acomode a lospuntos de un dataset y puede proveer algun ")
 print(" tipo de predicción sobre nuevos puntos.                                          ")
-print(" Aquí se utiliza: y = a*b^x , donde 'a' ≠ 0.                                      ")
+print(" Aquí se utiliza: y = a*b^x , donde 'a' ≠ 0 y constante, y 'b' la base.           ")
 print(" Se utiliza en casos donde los datos crecen lentamente al principio y luego muy   ")
 print(" aceleradamente.                                                                  ")
 print(" • ERROR: para hallar extremos locales (mínimos, máximos, puntos de inflexión) de ")
@@ -427,57 +443,29 @@ print("          Los valores obtenidos son:                                     
 print("          - la constante:                     Σy_i * ln(x_i)                      ")
 print("                                     a = ___________________________              ")
 print("                                                   Σln(x_i)                       ")
-print("          - la base:       Σ(yi*ln(xi))*Σ(ln(xi))*Σ(ln(xi) *ln(xi)) / Σ(ln(xi))^3 - Σ(yi*ln(xi))*Σ(ln(xi)) / Σ(ln(xi))^2 ")
-print("                        b = _____________________________________________________________________________________________ ")
-print("                                                 Σ(ln(xi))*Σ(ln(xi)*ln(xi)) / Σ(ln(xi))^2                                 ")
+print("          - la base:     Σ(yi*ln(xi))*Σ(ln(xi))*Σ(ln(xi) *ln(xi)) / Σ(ln(xi))^3 - Σ(yi*ln(xi))*Σ(ln(xi)) / Σ(ln(xi))^2 ")
+print("                     b = _____________________________________________________________________________________________ ")
+print("                                               Σ(ln(xi))*Σ(ln(xi)*ln(xi)) / Σ(ln(xi))^2                                ")
 print("                                                                                  ")
-print("                     ********* REGRESION CUADRÁTICA (GUILLE) *********                     ")
-print(" El método de Regresion Cuadrática es similar al lineal, solo que modela para una parábola en vez de una recta.")
-print(" Modela la relación entre una variable dependientre y una o más variables independientes")
-print(" utilizando la ecuación lineal: y = a*x^2 + bx + c, donde 'a' es la curvatura (a != 0), 'b' es el")
-print("desplazamiento horizontal y 'c' el desplazamiento vertical de la parábola encontrada. ")
+print("                   ********* REGRESION EXPONENCIAL EULER *********                ")
+print(" El método de Regresion Exponencial utiliza la ecuación: y = a * e^(b*x), donde    ")
+print(" donde 'a' ≠ 0 y constante, y 'b' el modificador de la curvatura en la exponencial.")
 print(" • ERROR: En este caso para minimizar el error de los puntos a la recta utilizaremos")
-print("          el método de cuadrados mínimos como en el caso lineal, ")
-print("          Siendo el Error Cuadrático: Σ[ a*(xi^2) + b*xi + c - yi ]^2, se deriva y despeja en base a:")
-print("          - la curvatura:")
-print("                            E'a(a,b,c) = 0                                            ")
-print("                            a * Σ[xi^4] + b * Σ[xi^3] + c * Σ[xi] = Σ[ yi * (xi^2) ]                 ")
-print("          - el desplazamiento horizontal:")
-print("                            E'b(a,b,c) = 0                                   ")
-print("                            a * Σ[xi^3] + b * Σ[xi^2] + c * Σ[xi] = Σ[yi*xi]                 ")
-print("          - el desplazamiento vertical:")
-print("                            E'c(a,b,c) = 0                                   ")
-print("                            a * Σ[xi^2] + b * Σ[xi] + c * n = Σ[yi]                 ")
+print("          el método de cuadrados mínimos como en el caso lineal,                  ")
+print("          Siendo el Error Cuadrático: Σ[ a*e^(b*x) - yi ]^2, se deriva y despeja: ")
+print("          - la constante: E'a(a,b) = 0                                            ")
+print("                            a * Σ[b * x * e^(b*x)] + b * n = Σ[ b * yi * xi ]     ")
+print("          - la curvatura: E'b(a,b,c) = 0                                          ")
+print("                            a * Σ[xi^3] + b * Σ[xi^2] + c * Σ[xi] = Σ[yi*xi]      ")
+print("          - el desplazamiento vertical: E'c(a,b,c) = 0                            ")
+print("                            a * Σ[xi^2] + b * Σ[xi] + c * n = Σ[yi]               ")
 print("          Para hallar a y b, se realiza un sistema matricial de 3*3:              ")
-print("          a Σ xi4 + b Σ xi3 + c Σ xi2 = Σ [xi2 * yi]    [1]                                     ")
-print("          a Σ xi3 + b Σ xi2 + c Σ xi  = Σ xiyi          [2]                                     ")
-print("          a Σ xi2 + b Σ xi  + c * n   = Σ yi            [3]                                     ")
-print("                                                                                                ")
-print("          Podemos hacer uso de este sistema, reemplazar con los valores calculados              ")
-print("          para este dataset y despejar los valores de a, b y c.                                 ")
+print("          a Σ xi4 + b Σ xi3 + c Σ xi2 = Σ [xi2 * yi]    [1]                       ")
+print("          a Σ xi3 + b Σ xi2 + c Σ xi  = Σ xiyi          [2]                       ")
+print("          a Σ xi2 + b Σ xi  + c * n   = Σ yi            [3]                       ")
 print("                                                                                  ")
-print("                     ********* REGRESION EXPONENCIAL (GUILLE) *********                     ")
-print(" El método de Regresion Exponencial utiliza la ecuación: y = a * e(b*x), donde 'a' es la constante")
-print("y 'b' el modificador de la curvatura en la exponencial. ")
-print(" • ERROR: En este caso para minimizar el error de los puntos a la recta utilizaremos")
-print("          el método de cuadrados mínimos como en el caso lineal, ")
-print("          Siendo el Error Cuadrático: Σ[ a*e^(b*x) - yi ]^2, se deriva y despeja en base a:")
-print("          - la constante:")
-print("                            E'a(a,b) = 0                                            ")
-print("                            a * Σ[b * x * e^(b*x)] + b * n = Σ[ b * yi * xi ]                 ")
-print("          - la curvatura:")
-print("                            E'b(a,b,c) = 0                                   ")
-print("                            a * Σ[xi^3] + b * Σ[xi^2] + c * Σ[xi] = Σ[yi*xi]                 ")
-print("          - el desplazamiento vertical:")
-print("                            E'c(a,b,c) = 0                                   ")
-print("                            a * Σ[xi^2] + b * Σ[xi] + c * n = Σ[yi]                 ")
-print("          Para hallar a y b, se realiza un sistema matricial de 3*3:              ")
-print("          a Σ xi4 + b Σ xi3 + c Σ xi2 = Σ [xi2 * yi]    [1]                                     ")
-print("          a Σ xi3 + b Σ xi2 + c Σ xi  = Σ xiyi          [2]                                     ")
-print("          a Σ xi2 + b Σ xi  + c * n   = Σ yi            [3]                                     ")
-print("                                                                                                ")
-print("          Podemos hacer uso de este sistema, reemplazar con los valores calculados              ")
-print("          para este dataset y despejar los valores de a, b y c.                                 ")
+print("          Podemos hacer uso de este sistema, reemplazar con los valores calculados")
+print("          para este dataset y despejar los valores de a, b y c.                   ")
 
 #  II) Examples
 print("                                                                                  ")
