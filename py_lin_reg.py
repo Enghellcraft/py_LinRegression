@@ -176,7 +176,7 @@ def my_regressions(pares):
     ss_res = np.sum(residuals**2)
     ss_tot = np.sum((Y - np.mean(Y))**2)
     r_lineal = 1 - (ss_res / ss_tot)
-    print("\nR para lineal es:", r_lineal)
+    print(f"\nR para lineal es: {r_lineal:.2f} \n")
     
     # Plot Funcion Lineal
     f_lin = np.poly1d((a_lin, b_lin))
@@ -221,7 +221,7 @@ def my_regressions(pares):
     ss_res = np.sum(residuals**2)
     ss_tot = np.sum((Y - np.mean(Y))**2)
     r_cuad = 1 - (ss_res / ss_tot)
-    print("\nR para cuadrática es:", r_cuad)
+    print(f"\nR para cuadrática es: {r_cuad:.2f} \n")
 
     # Plot Funcion Cuadratica
     f_cuad = np.poly1d(cuad_abc_mat)
@@ -270,7 +270,7 @@ def my_regressions(pares):
     ss_res = np.sum(residuals**2)
     ss_tot = np.sum((Y - np.mean(Y))**2)
     r_poly = 1 - (ss_res / ss_tot)
-    print("\nR para cuadrática es:", r_poly)
+    print(f"\nR para polinómica es: {r_poly:.f} \n")
 
     # Plot Funcion Exponencial
     f_poly, f_poly_str = create_f_sym_exponential(a_poly, b_poly)
@@ -303,7 +303,7 @@ def my_regressions(pares):
     ss_res = np.sum(residuals**2)
     ss_tot = np.sum((Y - np.mean(Y))**2)
     r_exp_euler = 1 - (ss_res / ss_tot)
-    print("\rR para exponencial Euler es:", r_exp_euler)
+    print(f"\rR para exponencial Euler es: {r_exp_euler:.2f}\n")
 
     # Plot Funcion Exponencial de Euler
     f_exp_euler, f_exp_euler_str = create_f_sym_exponential_euler(a_exp_euler, b_exp_euler)
