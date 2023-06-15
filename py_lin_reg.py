@@ -270,7 +270,7 @@ def my_regressions(pares):
     ss_res = np.sum(residuals**2)
     ss_tot = np.sum((Y - np.mean(Y))**2)
     r_poly = 1 - (ss_res / ss_tot)
-    print(f"\nR para polinómica es: {r_poly:.f} \n")
+    print(f"\nR para polinómica es: {r_poly:.2f} \n")
 
     # Plot Funcion Exponencial
     f_poly, f_poly_str = create_f_sym_exponential(a_poly, b_poly)
@@ -321,7 +321,7 @@ def my_regressions(pares):
 
     regressions_graph(
         X, Y,
-        (a_lin, b_lin), error_cuad_lineal,  # TODO: hacer el calc de r lineal y ponerlo aca -->>> es este: r_lineal
+        (a_lin, b_lin), r_lineal,
         cuad_abc_mat, r_cuad,
         (a_poly, b_poly), r_poly,
         f_exp_euler, r_exp_euler,
@@ -354,7 +354,7 @@ def regressions_graph(X, Y,
     label_euler = f"Regresión Exp. (Euler)\n[r = {r_euler:.2f}]"
     plt.plot(X, euler_lambda_exp(X), label=label_euler, color='tomato')
 
-    plt.ylim(-(Y.max() / 4), Y.max() * 1.1)
+    plt.ylim(0, Y.max() * 1.1)
     yax = plt.gca().yaxis
     for item in yax.get_ticklabels():
         item.set_rotation(45)
@@ -385,7 +385,7 @@ def regressions_graph_unit(X, Y, func, err, msg, c):
 
     plt.grid(True, linestyle='--', alpha=0.5)
     plt.tight_layout()
-    plt.ylim(-(Y.max() / 4), Y.max() * 1.1)
+    plt.ylim(0, Y.max() * 1.1)
     plt.show()
 
 
