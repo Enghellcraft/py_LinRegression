@@ -235,19 +235,19 @@ def my_regressions(pares):
 
     # Intento 2 de resolver exponencial (y = b * x^a) con la funcion modularizada
     # Resuelvo ln(y) = ln(b) + a * ln(x)
-    a_exp, ln_b_exp = find_ab_lin_reg(np.log(X), np.log(Y), X_name="ln(X)", Y_name="ln(Y)", b_name="ln(b)")
+    a_poly, ln_b_poly = find_ab_lin_reg(np.log(X), np.log(Y), X_name="ln(X)", Y_name="ln(Y)", b_name="ln(b)")
     # Luego potencio con euler para obtener los valores que quiero
-    b_exp = np.exp(ln_b_exp)
-    error_cuad_exp = np.sum(b_exp * (X ** a_exp))
-    print(f"\nError cuadratico: {error_cuad_exp:.2f}")
+    b_poly = np.exp(ln_b_poly)
+    error_cuad_poly = np.sum(b_poly * (X ** a_poly))
+    print(f"\nError cuadratico: {error_cuad_poly:.2f}")
     
     # Cálculo R polinómica
     def exp_func(x, a, b):
         return b * x**a
 
-    a_exp, ln_b_exp = find_ab_lin_reg(np.log(X), np.log(Y), X_name="ln(X)", Y_name="ln(Y)", b_name="ln(b)")
-    b_exp = np.exp(ln_b_exp)
-    popt = [a_exp, b_exp]
+    a_poly, ln_b_poly = find_ab_lin_reg(np.log(X), np.log(Y), X_name="ln(X)", Y_name="ln(Y)", b_name="ln(b)")
+    b_poly = np.exp(ln_b_poly)
+    popt = [a_poly, b_poly]
 
     residuals = Y - exp_func(X, *popt)
     ss_res = np.sum(residuals**2)
@@ -257,10 +257,10 @@ def my_regressions(pares):
     print("\nR para cuadrática es:", r_squared)
 
     # Plot Funcion Exponencial
-    f_exp, f_exp_str = create_f_sym_exponential(a_exp, b_exp)
+    f_exp, f_exp_str = create_f_sym_exponential(a_poly, b_poly)
     print("La expresion de la función exponencial es:")
     print(f_exp_str)
-    regressions_graph_unit(X, Y, f_exp, error_cuad_exp, "Regresion exponencial", 'sienna')
+    regressions_graph_unit(X, Y, f_exp, error_cuad_poly, "Regresion exponencial", 'sienna')
     print()
 
 #***************************************************************************************************
@@ -270,16 +270,19 @@ def my_regressions(pares):
     # Intento de resolver exponencial ( y = b * e^(ax) ).
     a_exp_euler, ln_b_exp_euler = find_ab_lin_reg(X, np.log(Y), Y_name="ln(Y)", b_name="ln(b)")
     b_exp_euler = np.exp(ln_b_exp_euler)
-    error_cuad_exp_euler = np.sum(b_exp * np.exp(a_exp_euler * X))
+    print(f"b es {b_exp_euler}")
+    error_cuad_exp_euler = np.sum(b_exp_euler * np.exp(a_exp_euler * X))
     
     # Define the exponential function to fit
     def exp_func(x, a, b):
         return b * np.exp(a * x)
     
-    # Fit the exponential function to the data
-    ln_Y = np.log(Y)
-    a_exp_euler, ln_b_exp_euler = np.polyfit(X, ln_Y, 1)
-    b_exp_euler = np.exp(ln_b_exp_euler)
+    # # Fit the exponential function to the data
+    # ln_Y = np.log(Y)
+    # a_exp_euler, ln_b_exp_euler = np.polyfit(X, ln_Y, 1)
+    # b_exp_euler = np.exp(ln_b_exp_euler)
+
+
     popt, _ = curve_fit(exp_func, X, Y, p0=[a_exp_euler, b_exp_euler])
     
     # Cálculo R^2 de Exponencial Euler
@@ -297,11 +300,19 @@ def my_regressions(pares):
     regressions_graph_unit(X, Y, f_exp_euler, error_cuad_exp_euler, "Regresion exponencial Euler", 'tomato')
     print()
 
+#***************************************************************************************************
+
+    print("===[REGRESIÓN EXPONENCIAL SIN EULER: y = b * a^x]===")
+
+    print("TODO")
+
+# ***************************************************************************************************
+
     regressions_graph(
         X, Y,
         (a, b), error_cuad_lineal,
         cuad_abc_mat, error_cuad_cuad,
-        (a_exp, b_exp), error_cuad_exp,
+        (a_poly, b_poly), error_cuad_poly,
         f_exp_euler, error_cuad_exp_euler
     )
 
