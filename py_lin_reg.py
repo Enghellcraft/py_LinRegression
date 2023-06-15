@@ -129,9 +129,10 @@ def find_abc_quad_reg(X_set, Y_set):
 # c) Exponential
 def create_f_sym_exponential(a_exp, b_exp):
     x = sym.symbols('x')
-    f_sym = b_exp * (x ** a_exp)
+    f_sym = round(b_exp, 2) * (x ** round(a_exp, 2))
     f = sym.lambdify(x, f_sym)
-    return f
+    f_str = str(sym.sympify(f_sym)).replace("**", "^").replace("*", " ") 
+    return f, f_str
 
 def create_f_sym_exponential_euler(a_exp, b_exp):
     x = sym.symbols('x')
@@ -140,10 +141,8 @@ def create_f_sym_exponential_euler(a_exp, b_exp):
     return f
 
 def pretty_print_sym_exp(f_sym):
-    x = sym.symbols('x')
-    f_lambda = sym.sympify(sym.lambdify(x, f_sym))
-    f_lambda_str = str(f_lambda)
-    return f_lambda_str
+    f_sym_str = f_sym #dejo asi para que no rompa
+    return f_sym_str
 
 # Prints
 # All Regressions
@@ -258,10 +257,9 @@ def my_regressions(pares):
     print("\nR para cuadrática es:", r_squared)
 
     # Plot Funcion Exponencial
-    f_exp = create_f_sym_exponential(a_exp, b_exp)
+    f_exp, f_exp_str = create_f_sym_exponential(a_exp, b_exp)
     print("La expresion de la función exponencial es:")
-    # print( pretty_print_sym_exp(f_exp) )
-    print(str(f_exp))
+    print(f_exp_str)
     regressions_graph_unit(X, Y, f_exp, error_cuad_exp, "Regresion exponencial", 'sienna')
 
 #***************************************************************************************************
@@ -294,7 +292,7 @@ def my_regressions(pares):
     # Plot Funcion Exponencial de Euler
     f_exp_euler = create_f_sym_exponential_euler(a_exp_euler, b_exp_euler)
     print("La expresion de la función exponencial Euler es:")
-    print(str(f_exp_euler))
+    print(pretty_print_sym_exp(f_exp_euler))
     regressions_graph_unit(X, Y, f_exp_euler, error_cuad_exp_euler, "Regresion exponencial Euler", 'tomato')
 
     regressions_graph(
