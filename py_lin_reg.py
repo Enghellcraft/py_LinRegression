@@ -136,13 +136,11 @@ def create_f_sym_exponential(a_exp, b_exp):
 
 def create_f_sym_exponential_euler(a_exp, b_exp):
     x = sym.symbols('x')
-    f_sym_euler = b_exp * sym.exp(a_exp * x)
+    f_sym_euler = round(b_exp, 2) * sym.exp(round(a_exp, 2) * x)
     f = sym.lambdify(x, f_sym_euler)
-    return f
+    f_str = f"{round(b_exp, 2)} e^({round(a_exp, 2)} x)"
+    return f, f_str
 
-def pretty_print_sym_exp(f_sym):
-    f_sym_str = f_sym #dejo asi para que no rompa
-    return f_sym_str
 
 # Prints
 # All Regressions
@@ -168,6 +166,7 @@ def my_regressions(pares):
     print("La expresion de la función lineal es:")
     print(f_lin)
     regressions_graph_unit(X, Y, f_lin, error_cuad_lineal, "Regresion lineal", 'orange')
+    print()
 
     suma_X4 = np.sum(X ** 4)
     suma_X3 = np.sum(X ** 3)
@@ -214,6 +213,7 @@ def my_regressions(pares):
     print("La expresion de la función cuadrática es:")
     print(f_cuad)
     regressions_graph_unit(X, Y, f_cuad, error_cuad_cuad, "Regresion cuadrática", 'purple')
+    print()
 
     suma_lnX = np.sum(np.log(X))
     suma_lnX_lnX = np.sum(np.log(X) * np.log(X))
@@ -261,6 +261,7 @@ def my_regressions(pares):
     print("La expresion de la función exponencial es:")
     print(f_exp_str)
     regressions_graph_unit(X, Y, f_exp, error_cuad_exp, "Regresion exponencial", 'sienna')
+    print()
 
 #***************************************************************************************************
 
@@ -290,10 +291,11 @@ def my_regressions(pares):
     print("\rR para exponencial Euler es:", r_squared)
 
     # Plot Funcion Exponencial de Euler
-    f_exp_euler = create_f_sym_exponential_euler(a_exp_euler, b_exp_euler)
+    f_exp_euler, f_exp_euler_str = create_f_sym_exponential_euler(a_exp_euler, b_exp_euler)
     print("La expresion de la función exponencial Euler es:")
-    print(pretty_print_sym_exp(f_exp_euler))
+    print(f_exp_euler_str)
     regressions_graph_unit(X, Y, f_exp_euler, error_cuad_exp_euler, "Regresion exponencial Euler", 'tomato')
+    print()
 
     regressions_graph(
         X, Y,
