@@ -8,6 +8,7 @@
 # [ ] Hacer una funcion que tome los 3 errores y diga cual es el mejor fit
 # [ ] Buscar 3 dataset: uno ideal para lineal, otro para cuadrática y otro para exponencial
 # [ ] Dejar los numeros aleatorios pq ese va  a ser el tercer test
+# [*] Cambiar error a los R al grafico donde estan todas juntas
 # COMENTAR EL CODIGO APB
 
 
@@ -96,6 +97,7 @@ def find_ab_lin_reg(X_set, Y_set, X_name="X", Y_name="Y", a_name="a", b_name="b"
           f"\nValor de '{b_name}': {b:.2f}")
     return a, b
 
+
 # b) Cuadratic
 def find_abc_quad_reg(X_set, Y_set):
     len_pares = len(X_set)
@@ -126,13 +128,15 @@ def find_abc_quad_reg(X_set, Y_set):
           f"\nValor de 'c': {c:.2f}")
     return a, b, c
 
+
 # c) Exponential
 def create_f_sym_exponential(a_exp, b_exp):
     x = sym.symbols('x')
     f_sym = round(b_exp, 2) * (x ** round(a_exp, 2))
     f = sym.lambdify(x, f_sym)
-    f_str = str(sym.sympify(f_sym)).replace("**", "^").replace("*", " ") 
+    f_str = str(sym.sympify(f_sym)).replace("**", "^").replace("*", " ")
     return f, f_str
+
 
 def create_f_sym_exponential_euler(a_exp, b_exp):
     x = sym.symbols('x')
@@ -147,30 +151,30 @@ def create_f_sym_exponential_euler(a_exp, b_exp):
 def my_regressions(pares):
     X, Y = separador_pares_x_y(pares)
     len_pares = len(X)
-    sumaX = np.sum(X)
-    sumaY = np.sum(Y)
-    suma_X2 = np.sum(X ** 2)
+    # sumaX = np.sum(X)
+    # sumaY = np.sum(Y)
+    # suma_X2 = np.sum(X ** 2)
     print(f"Los pares ordenados son:\n {pares}")
     print(X)
     print(Y)
-    
+
     print("===[REGRESIÓN LINEAL]===")
     # Cálculo de 'a'(pendiente) y 'b'(ordenada de origen) de la ecuacion 'y = ax + b' para encontrar
     # la mejor recta que se aproxime a todos los puntos, con el minimo valor de error posible
-    a, b = find_ab_lin_reg(X, Y)
-    error_cuad_lineal = np.sum((a * X + b - Y) ** 2)
+    a_lin, b_lin = find_ab_lin_reg(X, Y)
+    error_cuad_lineal = np.sum((a_lin * X + b_lin - Y) ** 2)
     print(f"Error cuadratico: {error_cuad_lineal:.2f}")
 
     # Plot Funcion Lineal
-    f_lin = np.poly1d((a, b))
+    f_lin = np.poly1d((a_lin, b_lin))
     print("La expresion de la función lineal es:")
     print(f_lin)
     regressions_graph_unit(X, Y, f_lin, error_cuad_lineal, "Regresion lineal", 'orange')
     print()
 
-    suma_X4 = np.sum(X ** 4)
-    suma_X3 = np.sum(X ** 3)
-    sumaX2_Y = np.sum((X ** 2) * Y)
+    # suma_X4 = np.sum(X ** 4)
+    # suma_X3 = np.sum(X ** 3)
+    # sumaX2_Y = np.sum((X ** 2) * Y)
 
     # # [VERSION DE ENUNCIADO ARIEL - DA RARO]
     # sumaX2_2 = sum((X ** 2) * 2)
@@ -183,7 +187,7 @@ def my_regressions(pares):
     #       f"\nValor de 'b': {b_diapo:.2f}"
     #       f"\nError cuadratico: {error_cuad_diapo:.2f}")
 
-#***************************************************************************************************
+    # ***************************************************************************************************
     print("===[REGRESIÓN CUADRATICA]===")
 
     # Calculo de los tres coeficientes del sistema cuadratico. Al ser más complejo se resuelve via numpy.
@@ -191,19 +195,19 @@ def my_regressions(pares):
 
     error_cuad_cuad = np.sum((cuad_abc_mat[0] * X ** 2 + cuad_abc_mat[1] * X + cuad_abc_mat[2] - Y) ** 2)
     print(f"\nError cuadratico: {error_cuad_cuad:.2f}")
-    
+
     # Cálculo R Cuadrática
     def quad_func(x, a, b, c):
-        return a*x**2 + b*x + c
-    
+        return a * x ** 2 + b * x + c
+
     # Fit the quadratic function to the data
-    a, b, c = find_abc_quad_reg(X, Y)
-    popt = [a, b, c]
+    a_quad, b_quad, c_quad = find_abc_quad_reg(X, Y)
+    popt = [a_quad, b_quad, c_quad]
 
     # Calculate the R-squared value
     residuals = Y - quad_func(X, *popt)
-    ss_res = np.sum(residuals**2)
-    ss_tot = np.sum((Y - np.mean(Y))**2)
+    ss_res = np.sum(residuals ** 2)
+    ss_tot = np.sum((Y - np.mean(Y)) ** 2)
     r_squared = 1 - (ss_res / ss_tot)
 
     print("\nR para cuadrática es:", r_squared)
@@ -215,16 +219,16 @@ def my_regressions(pares):
     regressions_graph_unit(X, Y, f_cuad, error_cuad_cuad, "Regresion cuadrática", 'purple')
     print()
 
-    suma_lnX = np.sum(np.log(X))
-    suma_lnX_lnX = np.sum(np.log(X) * np.log(X))
-    suma_lnX_2 = np.sum(np.log(X)) ** 2
-    suma_lnX_3 = np.sum(np.log(X)) ** 3
-    suma_lnY = np.sum(np.log(Y))
-    suma_x_lnY = np.sum(X * np.log(Y))
-    suma_y_lnX = np.sum(Y * np.log(X))
-    sumaX_2 = np.sum(X) ** 2
+    # suma_lnX = np.sum(np.log(X))
+    # suma_lnX_lnX = np.sum(np.log(X) * np.log(X))
+    # suma_lnX_2 = np.sum(np.log(X)) ** 2
+    # suma_lnX_3 = np.sum(np.log(X)) ** 3
+    # suma_lnY = np.sum(np.log(Y))
+    # suma_x_lnY = np.sum(X * np.log(Y))
+    # suma_y_lnX = np.sum(Y * np.log(X))
+    # sumaX_2 = np.sum(X) ** 2
 
-#***************************************************************************************************
+    # ***************************************************************************************************
 
     print("===[REGRESIÓN POLINOMICA: y = b * x^a]===")
 
@@ -238,60 +242,60 @@ def my_regressions(pares):
     a_poly, ln_b_poly = find_ab_lin_reg(np.log(X), np.log(Y), X_name="ln(X)", Y_name="ln(Y)", b_name="ln(b)")
     # Luego potencio con euler para obtener los valores que quiero
     b_poly = np.exp(ln_b_poly)
+    print(f"Valor de 'b': {round(b_poly, 2)}")
     error_cuad_poly = np.sum(b_poly * (X ** a_poly))
     print(f"\nError cuadratico: {error_cuad_poly:.2f}")
-    
+
     # Cálculo R polinómica
     def exp_func(x, a, b):
-        return b * x**a
+        return b * x ** a
 
     a_poly, ln_b_poly = find_ab_lin_reg(np.log(X), np.log(Y), X_name="ln(X)", Y_name="ln(Y)", b_name="ln(b)")
     b_poly = np.exp(ln_b_poly)
     popt = [a_poly, b_poly]
 
     residuals = Y - exp_func(X, *popt)
-    ss_res = np.sum(residuals**2)
-    ss_tot = np.sum((Y - np.mean(Y))**2)
-    r_squared = 1 - (ss_res / ss_tot)
+    ss_res = np.sum(residuals ** 2)
+    ss_tot = np.sum((Y - np.mean(Y)) ** 2)
+    r_poly = 1 - (ss_res / ss_tot)
 
-    print("\nR para cuadrática es:", r_squared)
+    print("\nR para polinómica es:", r_poly)
 
     # Plot Funcion Exponencial
-    f_exp, f_exp_str = create_f_sym_exponential(a_poly, b_poly)
-    print("La expresion de la función exponencial es:")
-    print(f_exp_str)
-    regressions_graph_unit(X, Y, f_exp, error_cuad_poly, "Regresion exponencial", 'sienna')
+    f_poly, f_poly_str = create_f_sym_exponential(a_poly, b_poly)
+    print("La expresion de la función polinomica es:")
+    print(f_poly_str)
+    regressions_graph_unit(X, Y, f_poly, error_cuad_poly, "Regresion polinómica", 'sienna')
     print()
 
-#***************************************************************************************************
+    # ***************************************************************************************************
 
     print("===[REGRESIÓN EXPONENCIAL EULER: y = b * e^(a*x)]===")
 
     # Intento de resolver exponencial ( y = b * e^(ax) ).
     a_exp_euler, ln_b_exp_euler = find_ab_lin_reg(X, np.log(Y), Y_name="ln(Y)", b_name="ln(b)")
     b_exp_euler = np.exp(ln_b_exp_euler)
-    print(f"b es {b_exp_euler}")
+    print(f"Valor de 'b': {round(b_exp_euler, 2)}")
     error_cuad_exp_euler = np.sum(b_exp_euler * np.exp(a_exp_euler * X))
-    
+
     # Define the exponential function to fit
     def exp_func(x, a, b):
         return b * np.exp(a * x)
-    
+
     # # Fit the exponential function to the data
     # ln_Y = np.log(Y)
     # a_exp_euler, ln_b_exp_euler = np.polyfit(X, ln_Y, 1)
     # b_exp_euler = np.exp(ln_b_exp_euler)
 
-
     popt, _ = curve_fit(exp_func, X, Y, p0=[a_exp_euler, b_exp_euler])
-    
+
     # Cálculo R^2 de Exponencial Euler
     residuals = Y - exp_func(X, *popt)
-    ss_res = np.sum(residuals**2)
-    ss_tot = np.sum((Y - np.mean(Y))**2)
-    r_squared = 1 - (ss_res / ss_tot)
+    ss_res = np.sum(residuals ** 2)
+    ss_tot = np.sum((Y - np.mean(Y)) ** 2)
+    r_exp_euler = 1 - (ss_res / ss_tot)
 
-    print("\rR para exponencial Euler es:", r_squared)
+    print("\rR para exponencial Euler es:", r_exp_euler)
 
     # Plot Funcion Exponencial de Euler
     f_exp_euler, f_exp_euler_str = create_f_sym_exponential_euler(a_exp_euler, b_exp_euler)
@@ -300,80 +304,82 @@ def my_regressions(pares):
     regressions_graph_unit(X, Y, f_exp_euler, error_cuad_exp_euler, "Regresion exponencial Euler", 'tomato')
     print()
 
-#***************************************************************************************************
+    # ***************************************************************************************************
 
     print("===[REGRESIÓN EXPONENCIAL SIN EULER: y = b * a^x]===")
-
     print("TODO")
 
-# ***************************************************************************************************
+    # ***************************************************************************************************
 
     regressions_graph(
         X, Y,
-        (a, b), error_cuad_lineal,
-        cuad_abc_mat, error_cuad_cuad,
-        (a_poly, b_poly), error_cuad_poly,
-        f_exp_euler, error_cuad_exp_euler
+        (a_lin, b_lin), error_cuad_lineal,  # TODO: hacer el calc de r lineal y ponerlo aca
+        cuad_abc_mat, r_squared,
+        (a_poly, b_poly), r_poly,
+        f_exp_euler, r_exp_euler,
+        # TODO: poner aca la exponencial sin euler + el r
     )
 
 
 # ------------------------------------------------------------------------------------------------------------
 # Plots
 # Linear Regression
-def regressions_graph(X, Y, ab_lineal, err_lineal, cuad_mat, err_cuad, exp_mat, err_exp, euler_lambda_exp, err_euler):
+def regressions_graph(X, Y,
+                      ab_lineal, r_lineal,
+                      cuad_mat, r_cuad,
+                      exp_mat, r_exp,
+                      euler_lambda_exp, r_euler):
     plt.plot(X, Y, "o", label="Dataset", color='turquoise')
 
     a, b = ab_lineal
-    label_lin = f"Regresión Lineal\n[E = {err_lineal:.2f}]"
+    label_lin = f"Regresión Lineal\n[r = {r_lineal:.2f}]"
     plt.plot(X, a * X + b, label=label_lin, color='orange')
 
-    # a_diapo, b_diapo = ab_diapo
-    # plt.plot(X, a_diapo * (X ** 2) + b_diapo, label="Regresión Cuadrática (Diapo)")
     a_cuad, b_cuad, c_cuad = cuad_mat
-    label_cuad = f"Regresión Cuadrática\n[E = {err_cuad:.2f}]"
+    label_cuad = f"Regresión Cuadrática\n[r = {r_cuad:.2f}]"
     plt.plot(X, a_cuad * (X ** 2) + b_cuad * X + c_cuad, label=label_cuad, color='purple')
-    
+
     a_exp, b_exp = exp_mat
-    label_exp = f"Regresión Exponencial\n[E = {err_exp:.2f}]"
+    label_exp = f"Regresión Polinómica\n[r = {r_exp:.2f}]"
     plt.plot(X, b_exp * (X ** a_exp), label=label_exp, color='sienna')
-    label_euler = f"Regresión Exp. (Euler)\n[E = {err_euler:.2f}]"
-    # a_euler, b_euler = euler_mat
-    # VER CON GUILLE. CAMBIO LA FUNCION PARA QUE RECIBA LA EXPRESION LAMBDA
-    # plt.plot(X, b_exp * np.exp(a_exp * X), label=label_euler)
-    
+
+    label_euler = f"Regresión Exp. (Euler)\n[r = {r_euler:.2f}]"
+    plt.plot(X, euler_lambda_exp(X), label=label_euler, color='tomato')
+
     plt.ylim(-(Y.max() / 4), Y.max() * 1.1)
     yax = plt.gca().yaxis
-    for item in yax.get_ticklabels(): 
+    for item in yax.get_ticklabels():
         item.set_rotation(45)
-    
-    plt.plot(X, euler_lambda_exp(X), label=label_euler, color='tomato')
+
     plt.xlabel("Días", fontweight='bold')
     plt.ylabel("Acumulación de individuos infectados", fontweight='bold')
-    plt.legend() 
+    plt.legend()
     plt.title("Grafico de cuadrados mínimos")
     plt.grid()
     # plt.legend(loc='upper right', bbox_to_anchor=(1.2, 0.6))
     plt.tight_layout()
     plt.show()
 
+
 def regressions_graph_unit(X, Y, func, err, msg, c):
     plt.title(msg)
 
     plt.plot(X, Y, 'o', color='turquoise', markersize=5, label="Dataset")
-    plt.plot(X, func(X), color=c, linestyle='-', linewidth=2, label=msg+f" [E = {err:.2f}]")
+    plt.plot(X, func(X), color=c, linestyle='-', linewidth=2, label=msg + f" [E = {err:.2f}]")
 
     plt.xlabel("Días", fontweight='bold')
     plt.ylabel("Acumulación de individuos infectados", fontweight='bold')
-    plt.legend()    
-    
+    plt.legend()
+
     yax = plt.gca().yaxis
-    for item in yax.get_ticklabels(): 
+    for item in yax.get_ticklabels():
         item.set_rotation(45)
 
     plt.grid(True, linestyle='--', alpha=0.5)
     plt.tight_layout()
     plt.ylim(-(Y.max() / 4), Y.max() * 1.1)
     plt.show()
+
 
 # ------------------------------------------------------------------------------------------------------------
 # Prints
@@ -604,10 +610,29 @@ print("*                                   SOLUCION                             
 print("**********************************************************************************")
 print(" Para este proyecto contamos con un dataset provisto donde se toman la cantidad de")
 print(" días trasncurridos vs la cantidad de contagiados.")
-# pares = generador_pares(1, 50)
-# my_regressions(pares)
+pares = generador_pares(1, 50)
+my_regressions(pares)
 
-pares_ejercicio = ((1, 1), (2, 1), (3, 2), (4, 8), (5, 9), (6, 12), (7, 17), (8, 19), (9, 21), (10, 31), (11, 34), (12, 45), (13, 56), (14, 76), (15, 78), (16, 97), (17, 128), (18, 158), (19, 225), (20, 265), (21, 301), (22, 385), (23, 502), (24, 588), (25, 689), (26, 744), (27, 819), (28, 965), (29, 1053), (30, 1132), (31, 1264), (32, 1352), (33, 1450), (34, 1553), (35, 1627), (36, 1715), (37, 1795), (38, 1894), (39, 1975), (40, 2142), (41, 2208), (42, 2277), (43, 2443), (44, 2571), (45, 2669), (46, 2758), (47, 2839), (48, 2941), (49, 3031), (50, 3144), (51, 3288), (52, 3435), (53, 3607), (54, 3780), (55, 3892), (56, 4003), (57, 4127), (58, 4285), (59, 4428), (60, 4532), (61, 4681), (62, 4783), (63, 4887), (64, 5020), (65, 5208), (66, 5371), (67, 5611), (68, 5776), (69, 6034), (70, 6265), (71, 6563), (72, 6879), (73, 7134), (74, 7479), (75, 7805), (76, 8068), (77, 8371), (78, 8809), (79, 9283), (80, 9931), (81, 10649), (82, 11353), (83, 12076), (84, 12628), (85, 13228), (86, 13933), (87, 14702), (88, 15419), (89, 16214), (90, 16851), (91, 17415), (92, 18319), (93, 19268), (94, 20197), (95, 21037), (96, 22020), (97, 22794), (98, 23620), (99, 24761), (100, 25987), (101, 27373), (102, 28764), (103, 30295), (104, 31577), (105, 32785), (106, 34159), (107, 35552), (108, 37510), (109, 39570), (110, 41204), (111, 42785), (112, 44931), (113, 47216), (114, 49851), (115, 52457), (116, 55343), (117, 57744), (118, 59933), (119, 62268), (120, 64530), (121, 67197), (122, 69941), (123, 72786), (124, 75376), (125, 77815), (126, 80447), (127, 83426), (128, 87030), (129, 90694), (130, 94060), (131, 97059), (132, 100166), (133, 103265), (134, 106910), (135, 111160), (136, 114783), (137, 119301), (138, 122524), (139, 126755), (140, 130774), (141, 136118), (142, 141900), (143, 148027), (144, 153520), (145, 158334), (146, 162526), (147, 167416), (148, 173355), (149, 178996), (150, 185373), (151, 191302), (152, 196543), (153, 201919), (154, 206743), (155, 213535), (156, 220682), (157, 228195), (158, 235677), (159, 241811), (160, 246499), (161, 253868), (162, 260911), (163, 268574), (164, 276072), (165, 282437), (166, 289100), (167, 294569), (168, 299126), (169, 305966))
+pares_ejercicio = (
+(1, 1), (2, 1), (3, 2), (4, 8), (5, 9), (6, 12), (7, 17), (8, 19), (9, 21), (10, 31), (11, 34), (12, 45), (13, 56),
+(14, 76), (15, 78), (16, 97), (17, 128), (18, 158), (19, 225), (20, 265), (21, 301), (22, 385), (23, 502), (24, 588),
+(25, 689), (26, 744), (27, 819), (28, 965), (29, 1053), (30, 1132), (31, 1264), (32, 1352), (33, 1450), (34, 1553),
+(35, 1627), (36, 1715), (37, 1795), (38, 1894), (39, 1975), (40, 2142), (41, 2208), (42, 2277), (43, 2443), (44, 2571),
+(45, 2669), (46, 2758), (47, 2839), (48, 2941), (49, 3031), (50, 3144), (51, 3288), (52, 3435), (53, 3607), (54, 3780),
+(55, 3892), (56, 4003), (57, 4127), (58, 4285), (59, 4428), (60, 4532), (61, 4681), (62, 4783), (63, 4887), (64, 5020),
+(65, 5208), (66, 5371), (67, 5611), (68, 5776), (69, 6034), (70, 6265), (71, 6563), (72, 6879), (73, 7134), (74, 7479),
+(75, 7805), (76, 8068), (77, 8371), (78, 8809), (79, 9283), (80, 9931), (81, 10649), (82, 11353), (83, 12076),
+(84, 12628), (85, 13228), (86, 13933), (87, 14702), (88, 15419), (89, 16214), (90, 16851), (91, 17415), (92, 18319),
+(93, 19268), (94, 20197), (95, 21037), (96, 22020), (97, 22794), (98, 23620), (99, 24761), (100, 25987), (101, 27373),
+(102, 28764), (103, 30295), (104, 31577), (105, 32785), (106, 34159), (107, 35552), (108, 37510), (109, 39570),
+(110, 41204), (111, 42785), (112, 44931), (113, 47216), (114, 49851), (115, 52457), (116, 55343), (117, 57744),
+(118, 59933), (119, 62268), (120, 64530), (121, 67197), (122, 69941), (123, 72786), (124, 75376), (125, 77815),
+(126, 80447), (127, 83426), (128, 87030), (129, 90694), (130, 94060), (131, 97059), (132, 100166), (133, 103265),
+(134, 106910), (135, 111160), (136, 114783), (137, 119301), (138, 122524), (139, 126755), (140, 130774), (141, 136118),
+(142, 141900), (143, 148027), (144, 153520), (145, 158334), (146, 162526), (147, 167416), (148, 173355), (149, 178996),
+(150, 185373), (151, 191302), (152, 196543), (153, 201919), (154, 206743), (155, 213535), (156, 220682), (157, 228195),
+(158, 235677), (159, 241811), (160, 246499), (161, 253868), (162, 260911), (163, 268574), (164, 276072), (165, 282437),
+(166, 289100), (167, 294569), (168, 299126), (169, 305966))
 pares_ejercicio = [(long(x), long(y)) for (x, y) in pares_ejercicio]
 
 my_regressions(pares_ejercicio)
