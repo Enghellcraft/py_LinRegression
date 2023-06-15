@@ -611,7 +611,7 @@ print("*************************************************************************
 print(" Para este proyecto contamos con un dataset provisto donde se toman la cantidad de")
 print(" días trasncurridos vs la cantidad de contagiados.")
 pares = generador_pares(1, 50)
-my_regressions(pares)
+# my_regressions(pares)
 
 pares_ejercicio = (
 (1, 1), (2, 1), (3, 2), (4, 8), (5, 9), (6, 12), (7, 17), (8, 19), (9, 21), (10, 31), (11, 34), (12, 45), (13, 56),
