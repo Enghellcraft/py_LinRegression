@@ -585,7 +585,7 @@ print("                                                                         
 print("                                                                                  ")
 print("                                                                                  ")
 print("                                                                                  ")
-print("                      ********* Coeficiente de Correlación *********              ")
+print("                   ********* Coeficiente de Correlación *********                 ")
 print("                                                                                  ")
 print(" r es una medida que cuantifica cuán estrecha es la relación lineal entre dos     ")
 print(" variables, es decir, determina el grado de movimiento de asociación de ambas variables.")
@@ -595,7 +595,7 @@ print(" • FUERZA: varía entre -1 y 1, siendo -1 indicativo de una correlació
 print("           negativa, 0 indica que no existe correlación, y 1 una relación fuertemente")
 print("           positiva.                                                              ")
 print("                                                                                  ")
-print("                            ********* R Cuadrado *********                        ")
+print("                          ********* R Cuadrado *********                          ")
 print("                                                                                  ")
 print(" R es una medida estadística que representa la proporción de varianza entre la    ")
 print(" variable dependiente y la independiente. Se calcula como el cuasdrado del        ")
@@ -610,6 +610,77 @@ print(" * Calcular R como el cociente entre la sumatoria de errores cuadrados y 
 print("   de varianza, y al resultado se lo resta de 1.                                  ")
 print(" • PODER PREDICTIVO: varía entre 0 y 1, siendo 0 indicativo de que el modelo no explica")
 print("                     la varianza en absoluto, y 1 explica el 100 %, del mismo.     ")
+print("                                                                                  ")
+print("                          ********* Derivadas *********                           ")
+print("                                                                                  ")
+print(" * DERIVADA PRIMERA de una función representa la tasa de cambio de la función en  ")
+print("   cualquier punto dado.                                                          ")
+print(" * DERIVADA SEGUNDA de una función proporciona información sobre la concavidad    ")
+print("   o curvatura de la función.                                                     ")
+print(" • LINEAL:                                                                        ")
+print("    a) Derivada Primera: mide la tasa de cambio instantánea, que es constante para")
+print("                         una función lineal, ya que la derivada da por resultado  ")
+print("                         la pendiente de la misma.                                ")
+print("    a) Derivada Segunda: siempre es cero. Esto significa que la gráfica de una    ")
+print("                         función lineal es una línea recta sin curvatura, ya que  ")
+print("                         mide la velocidad a la que cambia la pendiente de la función.")
+print(" • CUADRATICA:                                                                    ")
+print("    a) Derivada Primera: mide la tasa de cambio instantáneaen cualquier punto dado.")
+print("                         En la forma f(x) = ax^2 + bx + c, la primera derivada está")
+print("                         dada por f'(x) = 2x + b.                                 ")
+print("                         Proporciona información sobre la pendiente en cuanto a si")
+print("                         la función es creciente (cuando la derivada es positiva) o")
+print("                         decreciente (cuando la derivada es negativa) en un punto ")
+print("                         específico, y también ayuda a identificar puntos críticos.")
+print("    a) Derivada Segunda: brinda información sobre la concavidad o curvatura de la función.")
+print("                         La segunda derivada es f''(x) = 2a, es decir, que la     ")
+print("                         es positiva (a > 0), la función cuadrática es cóncava    ")
+print("                         hacia arriba, si es negativa (a < 0), la función cuadrática")
+print("                         es cóncava hacia abajo. También ayuda a identificar los  ")
+print("                         puntos de inflexión.                                     ")
+print(" • POLINOMICA:                                                                    ")
+print("    a) Derivada Primera: brinda información sobre la pendiente y el comportamiento ")
+print("                         creciente o decreciente de la función en cualquier punto dado.")
+print("                         Para una función polinómica de la forma: ")
+print("                         f(x) = a_nx^n + a_{n-1}x^{n-1} + ... + a_1x + a_0, la primera")
+print("                         derivada se obtiene diferenciando cada término con respecto a X.")
+print("                         Representa la tasa de cambio de la función y puede ayudar a")
+print("                         identificar puntos críticos, extremos locales e intervalos")
+print("                         de comportamiento creciente o decreciente.                ")
+print("    a) Derivada Segunda: brinda información sobre la concavidad o curvatura de la función.")
+print("                         La segunda derivada es f''(x) = 2a, es decir, que la     ")
+print("                         es positiva (a > 0), la función cuadrática es cóncava    ")
+print("                         hacia arriba, si es negativa (a < 0), la función cuadrática")
+print("                         es cóncava hacia abajo. También ayuda a identificar los  ")
+print("                         puntos de inflexión.                                     ")
+
+"""
+ la segunda derivada de una función polinomial proporciona información sobre la concavidad o curvatura de la función. Te dice cómo está cambiando la pendiente de la función. Para una función polinomial f(x), la segunda derivada se obtiene derivando la primera derivada con respecto a x. La segunda derivada ayuda a identificar los puntos de inflexión, donde cambia la concavidad de la función. Si la segunda derivada es positiva, la función es cóncava hacia arriba, y si es negativa, la función es cóncava hacia abajo.
+
+
+
+
+derivar una función exponencial le da un resultado que destaca las propiedades únicas de la función exponencial, como la tasa de cambio constante (cuando la base es e) o una tasa de cambio proporcional al logaritmo natural de la base (cuando la base no es e).
+
+la segunda derivada f''(x) proporciona información sobre la curvatura de la función f(x) en cualquier punto x. Puede ayudarlo a comprender cómo la función cambia su tasa de cambio y cómo evoluciona su forma a medida que cambia x.
+
+a segunda derivada de una función exponencial le brinda información sobre la curvatura y la tasa de cambio de la función, lo que le permite analizar su comportamiento y forma más a fondo.
+
+Primera derivada: La primera derivada de una función exponencial representa la tasa de cambio de la función en cualquier punto dado. Para una función exponencial de la forma f(x) = a^x, donde a es la base, la primera derivada se obtiene derivando la función con respecto a x. La derivada de una función exponencial es proporcional a la propia función original. En otras palabras, la primera derivada de una función exponencial es igual a la función multiplicada por una constante. Esta propiedad es exclusiva de las funciones exponenciales y es el resultado de que la función exponencial es su propia derivada. Por ejemplo, si f(x) = e^x, entonces f'(x) = e^x.
+
+Segunda derivada: la segunda derivada de una función exponencial proporciona información sobre la curvatura de la función. Le dice cómo está cambiando la tasa de cambio. La segunda derivada de una función exponencial también es proporcional a la propia función original. En otras palabras, la segunda derivada de una función exponencial es igual a la función multiplicada por una constante. La constante se deriva de la base de la función exponencial. Por ejemplo, si f(x) = a^x, entonces la segunda derivada es f''(x) = (ln(a))^2 * a^x.
+
+Las derivadas primera y segunda de las funciones exponenciales tienen propiedades notables. La primera derivada siempre es igual a la función original multiplicada por una constante, y la segunda derivada también es proporcional a la función original. Este comportamiento único de las funciones exponenciales las hace útiles en diversas aplicaciones científicas y matemáticas.
+
+"""
+
+
+
+
+
+
+
+
 
 #  II) Examples
 print("                                                                                  ")
@@ -717,3 +788,21 @@ print("                                                                         
 
 print(" • NOTA1:  ")
 print("                                                                                  ")
+
+
+"""
+    
+    
+growth_rate = a_exp_euler
+doubling_time = 70 / growth_rate
+print(f"The doubling time is approximately {doubling_time} units of time.")
+
+El tiempo de duplicación se refiere a la cantidad de tiempo que tarda una cantidad en duplicar su tamaño o valor a una tasa de crecimiento constante. A menudo se utiliza para medir el crecimiento exponencial. El tiempo de duplicación se puede calcular usando varias fórmulas, pero un método comúnmente utilizado es la regla de 70.
+
+La regla de 70 establece que para encontrar el tiempo de duplicación, divida el número 70 por la tasa de crecimiento (expresada como porcentaje). Esta regla proporciona una estimación rápida del tiempo de duplicación, suponiendo que la tasa de crecimiento permanece constante.
+Es importante tener en cuenta que la Regla del 70 es una aproximación y funciona mejor para tasas de crecimiento por debajo del 15 %. Para tasas de crecimiento más altas, se pueden requerir métodos y fórmulas más precisos.
+
+
+
+
+"""
