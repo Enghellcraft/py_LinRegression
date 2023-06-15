@@ -1,14 +1,14 @@
 # PENDIENTES:
-# [*] Hacer la funcion lineal una sola funcion que imprima todo
-# [*] Hacer la funcion cuadratica en base a la teoria que hice
-# [*] Hacer que la cuadratica imprima todo igual que la lineal
-# [ ] hacer la funcion exponencial en base a la teoria que hice
-# [ ] Hacer que la exponencial imprima todo igual que la lineal
-# [*] Hacer grafico para las 3 juntas donde diga el error de cada una
-# [ ] Hacer una funcion que tome los 3 errores y diga cual es el mejor fit
-# [ ] Buscar 3 dataset: uno ideal para lineal, otro para cuadrática y otro para exponencial
-# [ ] Dejar los numeros aleatorios pq ese va  a ser el tercer test
-# [*] Cambiar error a los R al grafico donde estan todas juntas
+# [ ] Teoria de Regresion polinomica
+# [ ] Teoria de Regresion exponencial sin Euler
+# [ ] Pasar Consigna
+# [ ] Codigo de Regresion exponencial sin Euler
+# [ ] Agregar grafico solo de exponencial sin euler y agregarla al total
+# [ ] Cambiar error a los R al grafico donde estan todas juntas
+# [ ] Hacer una nueva funcion donde tome los R de cada una de las curvas y diga cual es el mejor FIT para el dataset
+# [ ] Una vez que selecciona e imprime quien es la mejor, hacer la gráfica de esa función con la derivada primera y segunda
+# [ ] Hacer funcion para hacer la derivada primera y segunda de una funcion cualquiera
+# [ ] Hacer el cálculo de duplicación
 # COMENTAR EL CODIGO APB
 
 
@@ -165,6 +165,19 @@ def my_regressions(pares):
     error_cuad_lineal = np.sum((a_lin * X + b_lin - Y) ** 2)
     print(f"Error cuadratico: {error_cuad_lineal:.2f}")
 
+    # Cálculo R^2 de Lineal
+    # Formato de función
+    def lin_func(x, a, b):
+        return a*x + b
+    # Calce de función lineal en el dataset
+    a, b = find_ab_lin_reg(X, Y)
+    # Cálculo de R^2
+    residuals = Y - lin_func(X, a, b)
+    ss_res = np.sum(residuals**2)
+    ss_tot = np.sum((Y - np.mean(Y))**2)
+    r_lineal = 1 - (ss_res / ss_tot)
+    print("\nR para lineal es:", r_lineal)
+    
     # Plot Funcion Lineal
     f_lin = np.poly1d((a_lin, b_lin))
     print("La expresion de la función lineal es:")
@@ -196,21 +209,19 @@ def my_regressions(pares):
     error_cuad_cuad = np.sum((cuad_abc_mat[0] * X ** 2 + cuad_abc_mat[1] * X + cuad_abc_mat[2] - Y) ** 2)
     print(f"\nError cuadratico: {error_cuad_cuad:.2f}")
 
-    # Cálculo R Cuadrática
+        # Cálculo R^2 de Cuadrática
+    # Formato de función
     def quad_func(x, a, b, c):
-        return a * x ** 2 + b * x + c
-
-    # Fit the quadratic function to the data
-    a_quad, b_quad, c_quad = find_abc_quad_reg(X, Y)
-    popt = [a_quad, b_quad, c_quad]
-
-    # Calculate the R-squared value
+        return a*x**2 + b*x + c
+    # Calce de función cuadrática en el dataset
+    a, b, c = find_abc_quad_reg(X, Y)
+    popt = [a, b, c]
+    # Cálculo de R^2
     residuals = Y - quad_func(X, *popt)
-    ss_res = np.sum(residuals ** 2)
-    ss_tot = np.sum((Y - np.mean(Y)) ** 2)
-    r_squared = 1 - (ss_res / ss_tot)
-
-    print("\nR para cuadrática es:", r_squared)
+    ss_res = np.sum(residuals**2)
+    ss_tot = np.sum((Y - np.mean(Y))**2)
+    r_cuad = 1 - (ss_res / ss_tot)
+    print("\nR para cuadrática es:", r_cuad)
 
     # Plot Funcion Cuadratica
     f_cuad = np.poly1d(cuad_abc_mat)
@@ -246,20 +257,20 @@ def my_regressions(pares):
     error_cuad_poly = np.sum(b_poly * (X ** a_poly))
     print(f"\nError cuadratico: {error_cuad_poly:.2f}")
 
-    # Cálculo R polinómica
+    # Cálculo R^2 de polinómica
+    # Formato de función
     def exp_func(x, a, b):
-        return b * x ** a
-
-    a_poly, ln_b_poly = find_ab_lin_reg(np.log(X), np.log(Y), X_name="ln(X)", Y_name="ln(Y)", b_name="ln(b)")
-    b_poly = np.exp(ln_b_poly)
-    popt = [a_poly, b_poly]
-
+        return b * x**a
+    # Calce de función polinómica en el dataset
+    a_exp, ln_b_exp = find_ab_lin_reg(np.log(X), np.log(Y), X_name="ln(X)", Y_name="ln(Y)", b_name="ln(b)")
+    b_exp = np.exp(ln_b_exp)
+    popt = [a_exp, b_exp]
+    # Cálculo de R^2
     residuals = Y - exp_func(X, *popt)
-    ss_res = np.sum(residuals ** 2)
-    ss_tot = np.sum((Y - np.mean(Y)) ** 2)
+    ss_res = np.sum(residuals**2)
+    ss_tot = np.sum((Y - np.mean(Y))**2)
     r_poly = 1 - (ss_res / ss_tot)
-
-    print("\nR para polinómica es:", r_poly)
+    print("\nR para cuadrática es:", r_poly)
 
     # Plot Funcion Exponencial
     f_poly, f_poly_str = create_f_sym_exponential(a_poly, b_poly)
@@ -278,23 +289,20 @@ def my_regressions(pares):
     print(f"Valor de 'b': {round(b_exp_euler, 2)}")
     error_cuad_exp_euler = np.sum(b_exp_euler * np.exp(a_exp_euler * X))
 
-    # Define the exponential function to fit
+    # Cálculo R^2 de Exponencial Euler
+    # Formato de función
     def exp_func(x, a, b):
         return b * np.exp(a * x)
-
-    # # Fit the exponential function to the data
-    # ln_Y = np.log(Y)
-    # a_exp_euler, ln_b_exp_euler = np.polyfit(X, ln_Y, 1)
-    # b_exp_euler = np.exp(ln_b_exp_euler)
-
+    # Calce de función exponencial Euler en el dataset
+    ln_Y = np.log(Y)
+    a_exp_euler, ln_b_exp_euler = np.polyfit(X, ln_Y, 1)
+    b_exp_euler = np.exp(ln_b_exp_euler)
     popt, _ = curve_fit(exp_func, X, Y, p0=[a_exp_euler, b_exp_euler])
-
-    # Cálculo R^2 de Exponencial Euler
+    # Cálculo R^2 
     residuals = Y - exp_func(X, *popt)
-    ss_res = np.sum(residuals ** 2)
-    ss_tot = np.sum((Y - np.mean(Y)) ** 2)
+    ss_res = np.sum(residuals**2)
+    ss_tot = np.sum((Y - np.mean(Y))**2)
     r_exp_euler = 1 - (ss_res / ss_tot)
-
     print("\rR para exponencial Euler es:", r_exp_euler)
 
     # Plot Funcion Exponencial de Euler
@@ -313,8 +321,8 @@ def my_regressions(pares):
 
     regressions_graph(
         X, Y,
-        (a_lin, b_lin), error_cuad_lineal,  # TODO: hacer el calc de r lineal y ponerlo aca
-        cuad_abc_mat, r_squared,
+        (a_lin, b_lin), error_cuad_lineal,  # TODO: hacer el calc de r lineal y ponerlo aca -->>> es este: r_lineal
+        cuad_abc_mat, r_cuad,
         (a_poly, b_poly), r_poly,
         f_exp_euler, r_exp_euler,
         # TODO: poner aca la exponencial sin euler + el r
