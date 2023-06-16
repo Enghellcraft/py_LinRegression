@@ -144,6 +144,12 @@ def create_f_sym_exponential_euler(a_exp, b_exp):
     f = sym.lambdify(x, f_sym_euler)
     f_str = f"{round(b_exp, 2)} e^({round(a_exp, 2)} x)"
     return f, f_str
+def create_f_sym_exponential_eulerless(a_exp, b_exp):
+    x = sym.symbols('x')
+    f_sym_eulerless = round(b_exp, 2) * (round(a_exp, 2) ** x)
+    f = sym.lambdify(x, f_sym_eulerless)
+    f_str = f"{round(b_exp, 2)} {round(a_exp, 2)}^x"
+    return f, f_str
 
 
 # Prints
@@ -168,16 +174,17 @@ def my_regressions(pares):
     # Cálculo R^2 de Lineal
     # Formato de función
     def lin_func(x, a, b):
-        return a*x + b
+        return a * x + b
+
     # Calce de función lineal en el dataset
     a, b = find_ab_lin_reg(X, Y)
     # Cálculo de R^2
     residuals = Y - lin_func(X, a, b)
-    ss_res = np.sum(residuals**2)
-    ss_tot = np.sum((Y - np.mean(Y))**2)
+    ss_res = np.sum(residuals ** 2)
+    ss_tot = np.sum((Y - np.mean(Y)) ** 2)
     r_lineal = 1 - (ss_res / ss_tot)
     print(f"\nR para lineal es: {r_lineal:.2f} \n")
-    
+
     # Plot Funcion Lineal
     f_lin = np.poly1d((a_lin, b_lin))
     print("La expresion de la función lineal es:")
@@ -209,17 +216,18 @@ def my_regressions(pares):
     error_cuad_cuad = np.sum((cuad_abc_mat[0] * X ** 2 + cuad_abc_mat[1] * X + cuad_abc_mat[2] - Y) ** 2)
     print(f"\nError cuadratico: {error_cuad_cuad:.2f}")
 
-        # Cálculo R^2 de Cuadrática
+    # Cálculo R^2 de Cuadrática
     # Formato de función
     def quad_func(x, a, b, c):
-        return a*x**2 + b*x + c
+        return a * x ** 2 + b * x + c
+
     # Calce de función cuadrática en el dataset
     a, b, c = find_abc_quad_reg(X, Y)
     popt = [a, b, c]
     # Cálculo de R^2
     residuals = Y - quad_func(X, *popt)
-    ss_res = np.sum(residuals**2)
-    ss_tot = np.sum((Y - np.mean(Y))**2)
+    ss_res = np.sum(residuals ** 2)
+    ss_tot = np.sum((Y - np.mean(Y)) ** 2)
     r_cuad = 1 - (ss_res / ss_tot)
     print(f"\nR para cuadrática es: {r_cuad:.2f} \n")
 
@@ -243,7 +251,6 @@ def my_regressions(pares):
 
     print("===[REGRESIÓN POLINOMICA: y = b * x^a]===")
 
-
     # Intento de resolver exponencial (y = b * x^a) con la funcion modularizada
     # Resuelvo ln(y) = ln(b) + a * ln(x)
     a_poly, ln_b_poly = find_ab_lin_reg(np.log(X), np.log(Y), X_name="ln(X)", Y_name="ln(Y)", b_name="ln(b)")
@@ -255,16 +262,17 @@ def my_regressions(pares):
 
     # Cálculo R^2 de polinómica
     # Formato de función
-    def exp_func(x, a, b):
-        return b * x**a
+    def poly_func(x, a, b):
+        return b * x ** a
+
     # Calce de función polinómica en el dataset
     a_exp, ln_b_exp = find_ab_lin_reg(np.log(X), np.log(Y), X_name="ln(X)", Y_name="ln(Y)", b_name="ln(b)")
     b_exp = np.exp(ln_b_exp)
     popt = [a_exp, b_exp]
     # Cálculo de R^2
-    residuals = Y - exp_func(X, *popt)
-    ss_res = np.sum(residuals**2)
-    ss_tot = np.sum((Y - np.mean(Y))**2)
+    residuals = Y - poly_func(X, *popt)
+    ss_res = np.sum(residuals ** 2)
+    ss_tot = np.sum((Y - np.mean(Y)) ** 2)
     r_poly = 1 - (ss_res / ss_tot)
     print(f"\nR para polinómica es: {r_poly:.2f} \n")
 
@@ -282,22 +290,23 @@ def my_regressions(pares):
     # Intento de resolver exponencial ( y = b * e^(ax) ).
     a_exp_euler, ln_b_exp_euler = find_ab_lin_reg(X, np.log(Y), Y_name="ln(Y)", b_name="ln(b)")
     b_exp_euler = np.exp(ln_b_exp_euler)
-    print(f"Valor de 'b': {round(b_exp_euler, 2)}")
+    print(f"Valor de 'b': {b_exp_euler:.2f}")
     error_cuad_exp_euler = np.sum(b_exp_euler * np.exp(a_exp_euler * X))
 
     # Cálculo R^2 de Exponencial Euler
     # Formato de función
-    def exp_func(x, a, b):
+    def exp_euler_func(x, a, b):
         return b * np.exp(a * x)
-    # Calce de función exponencial Euler en el dataset
-    ln_Y = np.log(Y)
-    a_exp_euler, ln_b_exp_euler = np.polyfit(X, ln_Y, 1)
-    b_exp_euler = np.exp(ln_b_exp_euler)
-    popt, _ = curve_fit(exp_func, X, Y, p0=[a_exp_euler, b_exp_euler])
+
+    # # Calce de función exponencial Euler en el dataset
+    # ln_Y = np.log(Y)
+    # a_exp_euler, ln_b_exp_euler = np.polyfit(X, ln_Y, 1)
+    # b_exp_euler = np.exp(ln_b_exp_euler)
+    popt, _ = curve_fit(exp_euler_func, X, Y, p0=[a_exp_euler, b_exp_euler])
     # Cálculo R^2 
-    residuals = Y - exp_func(X, *popt)
-    ss_res = np.sum(residuals**2)
-    ss_tot = np.sum((Y - np.mean(Y))**2)
+    residuals = Y - exp_euler_func(X, *popt)
+    ss_res = np.sum(residuals ** 2)
+    ss_tot = np.sum((Y - np.mean(Y)) ** 2)
     r_exp_euler = 1 - (ss_res / ss_tot)
     print(f"\rR para exponencial Euler es: {r_exp_euler:.2f}\n")
 
@@ -311,7 +320,39 @@ def my_regressions(pares):
     # ***************************************************************************************************
 
     print("===[REGRESIÓN EXPONENCIAL SIN EULER: y = b * a^x]===")
-    print("TODO")
+
+    ln_a_exp_eulerless, ln_b_exp_eulerless = find_ab_lin_reg(
+        X,
+        np.log(Y),
+        Y_name="ln(Y)",
+        a_name="ln(a)",
+        b_name="ln(b)"
+    )
+    a_exp_eulerless = np.exp(ln_a_exp_eulerless)
+    b_exp_eulerless = np.exp(ln_b_exp_eulerless)
+    print(f"Valor de 'a': {a_exp_eulerless:.2f}")
+    print(f"Valor de 'b': {b_exp_eulerless:.2f}")
+    error_cuad_exp_eulerless = np.sum(b_exp_eulerless * (a_exp_eulerless ** X))
+
+    # Cálculo R^2 de Exponencial sin Euler
+    # Formato de función
+    def exp_func(x, a, b):
+        return b * (a ** x)
+
+    popt, _ = curve_fit(exp_func, X, Y, p0=[a_exp_eulerless, b_exp_eulerless])
+    # Cálculo R^2
+    residuals = Y - exp_func(X, *popt)
+    ss_res = np.sum(residuals ** 2)
+    ss_tot = np.sum((Y - np.mean(Y)) ** 2)
+    r_exp_eulerless = 1 - (ss_res / ss_tot)
+    print(f"\rR para exponencial sin Euler es: {r_exp_eulerless:.2f}\n")
+
+    # Plot Funcion Exponencial de Euler
+    f_exp_eulerless, f_exp_eulerless_str = create_f_sym_exponential_eulerless(a_exp_eulerless, b_exp_eulerless)
+    print("La expresion de la función exponencial sin Euler es:")
+    print(f_exp_eulerless_str)
+    regressions_graph_unit(X, Y, f_exp_eulerless, error_cuad_exp_eulerless, "Regresion exponencial sin Euler", 'indigo')
+    print()
 
     # ***************************************************************************************************
 
@@ -321,7 +362,7 @@ def my_regressions(pares):
         cuad_abc_mat, r_cuad,
         (a_poly, b_poly), r_poly,
         f_exp_euler, r_exp_euler,
-        # TODO: poner aca la exponencial sin euler + el r
+        f_exp_eulerless, r_exp_eulerless,
     )
 
 
@@ -332,7 +373,8 @@ def regressions_graph(X, Y,
                       ab_lineal, r_lineal,
                       cuad_mat, r_cuad,
                       exp_mat, r_exp,
-                      euler_lambda_exp, r_euler):
+                      euler_lambda_exp, r_euler,
+                      eulerless_lambda_exp, r_eulerless):
     plt.plot(X, Y, "o", label="Dataset", color='turquoise')
 
     a, b = ab_lineal
@@ -349,6 +391,9 @@ def regressions_graph(X, Y,
 
     label_euler = f"Regresión Exp. (Euler)\n[r = {r_euler:.2f}]"
     plt.plot(X, euler_lambda_exp(X), label=label_euler, color='tomato')
+
+    label_eulerless = f"Regresión Exp. (Sin Euler)\n[r = {r_eulerless:.2f}]"
+    plt.plot(X, eulerless_lambda_exp(X), label=label_eulerless, color='indigo')
 
     plt.ylim(0, Y.max() * 1.1)
     yax = plt.gca().yaxis
@@ -690,14 +735,6 @@ Las derivadas primera y segunda de las funciones exponenciales tienen propiedade
 
 """
 
-
-
-
-
-
-
-
-
 #  II) Examples
 print("                                                                                  ")
 print("**********************************************************************************")
@@ -709,25 +746,35 @@ pares = generador_pares(1, 50)
 # my_regressions(pares)
 
 pares_ejercicio = (
-(1, 1), (2, 1), (3, 2), (4, 8), (5, 9), (6, 12), (7, 17), (8, 19), (9, 21), (10, 31), (11, 34), (12, 45), (13, 56),
-(14, 76), (15, 78), (16, 97), (17, 128), (18, 158), (19, 225), (20, 265), (21, 301), (22, 385), (23, 502), (24, 588),
-(25, 689), (26, 744), (27, 819), (28, 965), (29, 1053), (30, 1132), (31, 1264), (32, 1352), (33, 1450), (34, 1553),
-(35, 1627), (36, 1715), (37, 1795), (38, 1894), (39, 1975), (40, 2142), (41, 2208), (42, 2277), (43, 2443), (44, 2571),
-(45, 2669), (46, 2758), (47, 2839), (48, 2941), (49, 3031), (50, 3144), (51, 3288), (52, 3435), (53, 3607), (54, 3780),
-(55, 3892), (56, 4003), (57, 4127), (58, 4285), (59, 4428), (60, 4532), (61, 4681), (62, 4783), (63, 4887), (64, 5020),
-(65, 5208), (66, 5371), (67, 5611), (68, 5776), (69, 6034), (70, 6265), (71, 6563), (72, 6879), (73, 7134), (74, 7479),
-(75, 7805), (76, 8068), (77, 8371), (78, 8809), (79, 9283), (80, 9931), (81, 10649), (82, 11353), (83, 12076),
-(84, 12628), (85, 13228), (86, 13933), (87, 14702), (88, 15419), (89, 16214), (90, 16851), (91, 17415), (92, 18319),
-(93, 19268), (94, 20197), (95, 21037), (96, 22020), (97, 22794), (98, 23620), (99, 24761), (100, 25987), (101, 27373),
-(102, 28764), (103, 30295), (104, 31577), (105, 32785), (106, 34159), (107, 35552), (108, 37510), (109, 39570),
-(110, 41204), (111, 42785), (112, 44931), (113, 47216), (114, 49851), (115, 52457), (116, 55343), (117, 57744),
-(118, 59933), (119, 62268), (120, 64530), (121, 67197), (122, 69941), (123, 72786), (124, 75376), (125, 77815),
-(126, 80447), (127, 83426), (128, 87030), (129, 90694), (130, 94060), (131, 97059), (132, 100166), (133, 103265),
-(134, 106910), (135, 111160), (136, 114783), (137, 119301), (138, 122524), (139, 126755), (140, 130774), (141, 136118),
-(142, 141900), (143, 148027), (144, 153520), (145, 158334), (146, 162526), (147, 167416), (148, 173355), (149, 178996),
-(150, 185373), (151, 191302), (152, 196543), (153, 201919), (154, 206743), (155, 213535), (156, 220682), (157, 228195),
-(158, 235677), (159, 241811), (160, 246499), (161, 253868), (162, 260911), (163, 268574), (164, 276072), (165, 282437),
-(166, 289100), (167, 294569), (168, 299126), (169, 305966))
+    (1, 1), (2, 1), (3, 2), (4, 8), (5, 9), (6, 12), (7, 17), (8, 19), (9, 21), (10, 31), (11, 34), (12, 45), (13, 56),
+    (14, 76), (15, 78), (16, 97), (17, 128), (18, 158), (19, 225), (20, 265), (21, 301), (22, 385), (23, 502),
+    (24, 588),
+    (25, 689), (26, 744), (27, 819), (28, 965), (29, 1053), (30, 1132), (31, 1264), (32, 1352), (33, 1450), (34, 1553),
+    (35, 1627), (36, 1715), (37, 1795), (38, 1894), (39, 1975), (40, 2142), (41, 2208), (42, 2277), (43, 2443),
+    (44, 2571),
+    (45, 2669), (46, 2758), (47, 2839), (48, 2941), (49, 3031), (50, 3144), (51, 3288), (52, 3435), (53, 3607),
+    (54, 3780),
+    (55, 3892), (56, 4003), (57, 4127), (58, 4285), (59, 4428), (60, 4532), (61, 4681), (62, 4783), (63, 4887),
+    (64, 5020),
+    (65, 5208), (66, 5371), (67, 5611), (68, 5776), (69, 6034), (70, 6265), (71, 6563), (72, 6879), (73, 7134),
+    (74, 7479),
+    (75, 7805), (76, 8068), (77, 8371), (78, 8809), (79, 9283), (80, 9931), (81, 10649), (82, 11353), (83, 12076),
+    (84, 12628), (85, 13228), (86, 13933), (87, 14702), (88, 15419), (89, 16214), (90, 16851), (91, 17415), (92, 18319),
+    (93, 19268), (94, 20197), (95, 21037), (96, 22020), (97, 22794), (98, 23620), (99, 24761), (100, 25987),
+    (101, 27373),
+    (102, 28764), (103, 30295), (104, 31577), (105, 32785), (106, 34159), (107, 35552), (108, 37510), (109, 39570),
+    (110, 41204), (111, 42785), (112, 44931), (113, 47216), (114, 49851), (115, 52457), (116, 55343), (117, 57744),
+    (118, 59933), (119, 62268), (120, 64530), (121, 67197), (122, 69941), (123, 72786), (124, 75376), (125, 77815),
+    (126, 80447), (127, 83426), (128, 87030), (129, 90694), (130, 94060), (131, 97059), (132, 100166), (133, 103265),
+    (134, 106910), (135, 111160), (136, 114783), (137, 119301), (138, 122524), (139, 126755), (140, 130774),
+    (141, 136118),
+    (142, 141900), (143, 148027), (144, 153520), (145, 158334), (146, 162526), (147, 167416), (148, 173355),
+    (149, 178996),
+    (150, 185373), (151, 191302), (152, 196543), (153, 201919), (154, 206743), (155, 213535), (156, 220682),
+    (157, 228195),
+    (158, 235677), (159, 241811), (160, 246499), (161, 253868), (162, 260911), (163, 268574), (164, 276072),
+    (165, 282437),
+    (166, 289100), (167, 294569), (168, 299126), (169, 305966))
 pares_ejercicio = [(long(x), long(y)) for (x, y) in pares_ejercicio]
 
 my_regressions(pares_ejercicio)
@@ -804,7 +851,6 @@ print("                                                                         
 
 print(" • NOTA1:  ")
 print("                                                                                  ")
-
 
 """
     
