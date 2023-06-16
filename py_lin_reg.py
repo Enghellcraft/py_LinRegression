@@ -1,9 +1,5 @@
 # PENDIENTES:
-# [ ] Teoria de Regresion polinomica
-# [ ] Teoria de Regresion exponencial sin Euler
 # [ ] Pasar Consigna
-# [ ] Codigo de Regresion exponencial sin Euler
-# [ ] Agregar grafico solo de exponencial sin euler y agregarla al total
 # [ ] Cambiar error a los R al grafico donde estan todas juntas
 # [ ] Hacer una nueva funcion donde tome los R de cada una de las curvas y diga cual es el mejor FIT para el dataset
 # [ ] Una vez que selecciona e imprime quien es la mejor, hacer la gráfica de esa función con la derivada primera y segunda
@@ -264,7 +260,6 @@ def my_regressions(pares):
     # Formato de función
     def poly_func(x, a, b):
         return b * x ** a
-
     # Calce de función polinómica en el dataset
     a_exp, ln_b_exp = find_ab_lin_reg(np.log(X), np.log(Y), X_name="ln(X)", Y_name="ln(Y)", b_name="ln(b)")
     b_exp = np.exp(ln_b_exp)
@@ -309,6 +304,11 @@ def my_regressions(pares):
     ss_tot = np.sum((Y - np.mean(Y)) ** 2)
     r_exp_euler = 1 - (ss_res / ss_tot)
     print(f"\rR para exponencial Euler es: {r_exp_euler:.2f}\n")
+    
+    # Tiempo de Duplicación
+    growth_rate = a_exp_euler
+    doubling_time = 70 / growth_rate
+    print(f"\nEl tiempo de Duplicación es aproximadamente {doubling_time}.\n")
 
     # Plot Funcion Exponencial de Euler
     f_exp_euler, f_exp_euler_str = create_f_sym_exponential_euler(a_exp_euler, b_exp_euler)
@@ -318,7 +318,6 @@ def my_regressions(pares):
     print()
 
     # ***************************************************************************************************
-
     print("===[REGRESIÓN EXPONENCIAL SIN EULER: y = b * a^x]===")
 
     ln_a_exp_eulerless, ln_b_exp_eulerless = find_ab_lin_reg(
@@ -338,7 +337,6 @@ def my_regressions(pares):
     # Formato de función
     def exp_func(x, a, b):
         return b * (a ** x)
-
     popt, _ = curve_fit(exp_func, X, Y, p0=[a_exp_eulerless, b_exp_eulerless])
     # Cálculo R^2
     residuals = Y - exp_func(X, *popt)
@@ -346,6 +344,11 @@ def my_regressions(pares):
     ss_tot = np.sum((Y - np.mean(Y)) ** 2)
     r_exp_eulerless = 1 - (ss_res / ss_tot)
     print(f"\rR para exponencial sin Euler es: {r_exp_eulerless:.2f}\n")
+    
+    # Tiempo de Duplicación
+    growth_rate = a_exp_eulerless
+    doubling_time = 70 / growth_rate
+    print(f"\nEl tiempo de Duplicación es aproximadamente {doubling_time}.\n")
 
     # Plot Funcion Exponencial de Euler
     f_exp_eulerless, f_exp_eulerless_str = create_f_sym_exponential_eulerless(a_exp_eulerless, b_exp_eulerless)
@@ -709,33 +712,40 @@ print("                         Representa la tasa de cambio de la función y pu
 print("                         identificar puntos críticos, extremos locales e intervalos")
 print("                         de comportamiento creciente o decreciente.                ")
 print("    a) Derivada Segunda: brinda información sobre la concavidad o curvatura de la función.")
-print("                         La segunda derivada es f''(x) = 2a, es decir, que la     ")
-print("                         es positiva (a > 0), la función cuadrática es cóncava    ")
-print("                         hacia arriba, si es negativa (a < 0), la función cuadrática")
-print("                         es cóncava hacia abajo. También ayuda a identificar los  ")
-print("                         puntos de inflexión.                                     ")
+print("                         Se obtiene derivando la primera derivada con respecto a x,")
+print("                         e indica cómo está cambiando la pendiente de la función. ")
+print("                         Si la segunda derivada es positiva, la función es cóncava")
+print("                         hacia arriba, y si es negativa, la función es cóncava hacia abajo.")
+print(" • EXPONENCIAL:                                                                    ")
+print("    a) Derivada Primera: representa la tasa de cambio de la función en cualquier punto dado. ")
+print("                         Para una función exponencial de la forma f(x) = a^x,    ")
+print("                         se obtiene derivando la función con respecto a x, es decir,")
+print("                         la primera derivada de una función exponencial es igual a")
+print("                         la función multiplicada por una constante.               ")
+print("                         Esta propiedad es exclusiva de las funciones exponenciales y")
+print("                         es el resultado de que la función exponencial es su propia derivada.")
+print("                         Por ejemplo, si f(x) = e^x, entonces f'(x) = e^x.        ")
+print("    a) Derivada Segunda: proporciona información sobre la curvatura de la función,")
+print("                         en cualquier punto x, es decir, cómo evoluciona su forma ")
+print("                         a medida que cambia x.                                   ")
+print("                         La segunda derivada de una función exponencial es igual  ")
+print("                         a la función multiplicada por una constante.             ")
+print("                         Por ejemplo, si f(x) = a^x, entonces la segunda derivada ")
+print("                         es f''(x) = (ln(a))^2 * a^x.                             ")
+print("   A considerar que la tasa de cambio es constante (cuando la base es e) o es una ")
+print("   tasa de cambio proporcional al logaritmo natural de la base (cuando la base no es e).")
+print("                                                                                  ")
+print("                    ********* Tiempo de Duplicación *********                     ")
+print("                                                                                  ")
+print(" El tiempo de duplicación se refiere a la cantidad de tiempo que tarda una cantidad")
+print(" en duplicar su tamaño o valor a una tasa de crecimiento constante.               ")
+print(" Se puede calcular usando varias fórmulas, pero comúnmente se utiliza la regla de 70.")
+print(" La regla de 70 establece que para encontrar el tiempo de duplicación, divida el  ")
+print(" número 70 por la tasa de crecimiento (expresada como porcentaje).                ")
+print(" Esto estima rápidamente el tiempo de duplicación, considerando una tasa de       ")
+print(" crecimiento constante.                                                           ")
 
-"""
- la segunda derivada de una función polinomial proporciona información sobre la concavidad o curvatura de la función. Te dice cómo está cambiando la pendiente de la función. Para una función polinomial f(x), la segunda derivada se obtiene derivando la primera derivada con respecto a x. La segunda derivada ayuda a identificar los puntos de inflexión, donde cambia la concavidad de la función. Si la segunda derivada es positiva, la función es cóncava hacia arriba, y si es negativa, la función es cóncava hacia abajo.
-
-
-
-
-derivar una función exponencial le da un resultado que destaca las propiedades únicas de la función exponencial, como la tasa de cambio constante (cuando la base es e) o una tasa de cambio proporcional al logaritmo natural de la base (cuando la base no es e).
-
-la segunda derivada f''(x) proporciona información sobre la curvatura de la función f(x) en cualquier punto x. Puede ayudarlo a comprender cómo la función cambia su tasa de cambio y cómo evoluciona su forma a medida que cambia x.
-
-a segunda derivada de una función exponencial le brinda información sobre la curvatura y la tasa de cambio de la función, lo que le permite analizar su comportamiento y forma más a fondo.
-
-Primera derivada: La primera derivada de una función exponencial representa la tasa de cambio de la función en cualquier punto dado. Para una función exponencial de la forma f(x) = a^x, donde a es la base, la primera derivada se obtiene derivando la función con respecto a x. La derivada de una función exponencial es proporcional a la propia función original. En otras palabras, la primera derivada de una función exponencial es igual a la función multiplicada por una constante. Esta propiedad es exclusiva de las funciones exponenciales y es el resultado de que la función exponencial es su propia derivada. Por ejemplo, si f(x) = e^x, entonces f'(x) = e^x.
-
-Segunda derivada: la segunda derivada de una función exponencial proporciona información sobre la curvatura de la función. Le dice cómo está cambiando la tasa de cambio. La segunda derivada de una función exponencial también es proporcional a la propia función original. En otras palabras, la segunda derivada de una función exponencial es igual a la función multiplicada por una constante. La constante se deriva de la base de la función exponencial. Por ejemplo, si f(x) = a^x, entonces la segunda derivada es f''(x) = (ln(a))^2 * a^x.
-
-Las derivadas primera y segunda de las funciones exponenciales tienen propiedades notables. La primera derivada siempre es igual a la función original multiplicada por una constante, y la segunda derivada también es proporcional a la función original. Este comportamiento único de las funciones exponenciales las hace útiles en diversas aplicaciones científicas y matemáticas.
-
-"""
-
-#  II) Examples
+#  II) Solution
 print("                                                                                  ")
 print("**********************************************************************************")
 print("*                                   SOLUCION                                     *")
@@ -849,22 +859,9 @@ print("   + No es confiable en casos que no tengas relaciones tipo exponencial. 
 print("   + Asume continuidad de datos y peude afectar las predicciones.                 ")
 print("                                                                                  ")
 
-print(" • NOTA1:  ")
+print(" • NOTA1: Es importante tener en cuenta que la Regla del 70 es una aproximación y funciona mejor para ")
+print(" tasas de crecimiento por debajo del 15 %. Para tasas de crecimiento más altas, se pueden requerir ")
+print(" métodos y fórmulas más precisos. ") 
 print("                                                                                  ")
 
-"""
-    
-    
-growth_rate = a_exp_euler
-doubling_time = 70 / growth_rate
-print(f"The doubling time is approximately {doubling_time} units of time.")
 
-El tiempo de duplicación se refiere a la cantidad de tiempo que tarda una cantidad en duplicar su tamaño o valor a una tasa de crecimiento constante. A menudo se utiliza para medir el crecimiento exponencial. El tiempo de duplicación se puede calcular usando varias fórmulas, pero un método comúnmente utilizado es la regla de 70.
-
-La regla de 70 establece que para encontrar el tiempo de duplicación, divida el número 70 por la tasa de crecimiento (expresada como porcentaje). Esta regla proporciona una estimación rápida del tiempo de duplicación, suponiendo que la tasa de crecimiento permanece constante.
-Es importante tener en cuenta que la Regla del 70 es una aproximación y funciona mejor para tasas de crecimiento por debajo del 15 %. Para tasas de crecimiento más altas, se pueden requerir métodos y fórmulas más precisos.
-
-
-
-
-"""
