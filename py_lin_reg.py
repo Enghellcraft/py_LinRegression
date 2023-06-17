@@ -215,7 +215,7 @@ def my_regressions(pares):
     # Plot Funcion Lineal
     f_lin, f_lin_str = create_f_sym_lin((a_lin, b_lin))
     print("La expresion de la función lineal es:")
-    print(f_lin)
+    print(np.poly1d((a_lin, b_lin)))
     f_name = "Regresion lineal"
     regressions_graph_unit(X, Y, f_lin, r_lineal, f_name, 'orange')
 
@@ -268,8 +268,7 @@ def my_regressions(pares):
     f_cuad, f_cuad_str = create_f_sym_cuad(cuad_abc_mat)
     # TODO: VER MANERA DE HACER FUNCION QUE DEVUELVA LA EVALUAUBLE Y UN STRING QUE best_fit_graph PUEDA DERIVAR Y GRAFICAR OK
     print("La expresion de la función cuadrática es:")
-    print(f_cuad)
-    print(f_cuad_str)
+    print(np.poly1d(cuad_abc_mat))
     f_name = "Regresion cuadrática"
     regressions_graph_unit(X, Y, f_cuad, r_cuad, f_name, 'purple')
 
@@ -420,8 +419,8 @@ def my_regressions(pares):
         (a_lin, b_lin), r_lineal,
         cuad_abc_mat, r_cuad,
         (a_poly, b_poly), r_poly,
-        f_exp_euler, r_exp_euler,
-        f_exp_eulerless, r_exp_eulerless,
+        f_exp_euler, r_exp_euler, a_exp_euler, b_exp_euler,
+        f_exp_eulerless, r_exp_eulerless, a_exp_eulerless, b_exp_eulerless
     )
 
     # Evaluacion de la funcion con mejor fit
@@ -438,26 +437,28 @@ def regressions_graph(X, Y,
                       ab_lineal, r_lineal,
                       cuad_mat, r_cuad,
                       exp_mat, r_exp,
-                      euler_lambda_exp, r_euler,
-                      eulerless_lambda_exp, r_eulerless):
+                      euler_lambda_exp, r_euler, a_euler, b_euler,
+                      eulerless_lambda_exp, r_eulerless, a_eulerless, b_eulerless):
+    
+    plt.figure(figsize=(10, 6))
     plt.plot(X, Y, "o", label="Dataset", color='turquoise')
 
     a, b = ab_lineal
-    label_lin = f"Regresión Lineal\n[r = {r_lineal:.2f}]"
+    label_lin = f"Regresión Lineal\nCoeficientes: a={round(a, 2)}, b={round(b, 2)}\n[r = {r_lineal:.2f}]"
     plt.plot(X, a * X + b, label=label_lin, color='orange')
 
     a_cuad, b_cuad, c_cuad = cuad_mat
-    label_cuad = f"Regresión Cuadrática\n[r = {r_cuad:.2f}]"
+    label_cuad = f"Regresión Cuadrática\nCoeficientes: a={round(a_cuad, 2)}, b={round(b_cuad, 2)}, c={round(c_cuad, 2)}\n[r = {r_cuad:.2f}]"
     plt.plot(X, a_cuad * (X ** 2) + b_cuad * X + c_cuad, label=label_cuad, color='purple')
 
     a_exp, b_exp = exp_mat
-    label_exp = f"Regresión Polinómica\n[r = {r_exp:.2f}]"
+    label_exp = f"Regresión Polinómica\nCoeficientes: a={round(a_exp, 2)}, b={round(b_exp, 2)}\n[r = {r_exp:.2f}]"
     plt.plot(X, b_exp * (X ** a_exp), label=label_exp, color='sienna')
 
-    label_euler = f"Regresión Exp. (Euler)\n[r = {r_euler:.2f}]"
+    label_euler = f"Regresión Exp. (Euler)\nCoeficientes: a={round(a_euler, 2)}, b={round(b_euler, 2)}\n[r = {r_euler:.2f}]"
     plt.plot(X, euler_lambda_exp(X), label=label_euler, color='tomato')
 
-    label_eulerless = f"Regresión Exp. (Sin Euler)\n[r = {r_eulerless:.2f}]"
+    label_eulerless = f"Regresión Exp. (Sin Euler)\nCoeficientes: a={round(a_eulerless, 2)}, b={round(b_eulerless, 2)}\n[r = {r_eulerless:.2f}]"
     plt.plot(X, eulerless_lambda_exp(X), label=label_eulerless, color='indigo')
 
     plt.ylim(0, Y.max() * 1.1)
@@ -471,7 +472,7 @@ def regressions_graph(X, Y,
     plt.title("Grafico de cuadrados mínimos")
     plt.grid()
     # plt.legend(loc='upper right', bbox_to_anchor=(1.2, 0.6))
-    plt.tight_layout()
+    # plt.tight_layout()
     plt.show()
 
 
@@ -513,6 +514,7 @@ def best_fit_graph(X, Y, func, r, f_name_str):
     print(f"La segunda derivada de la {f_name_str} es:")
     print(func_second_diff)
 
+    # se evalua si la funcion es graficable
     def have_x(func):
         return 'x' in str(func) 
     
