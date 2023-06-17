@@ -1,16 +1,7 @@
 # PENDIENTES:
-# [*] Hacer que cualquier funcion que reciba best_fit_graph grafique correctamente
-#     cualquier de las funciones que pueden tener mejor fit
-# lin anda
-# cuad anda
-# poly anda
-# exp euler anda
-# exp sin euler anda
-# [*] Funcion donde toma los R para mejor fit -> mejorarlo para posibles 2 funciones
-# [*] Una vez que selecciona e imprime quien es la mejor, hacer la gráfica de esa función con la derivada primera y segunda
-# [ ] Hacer funcion para hacer la derivada primera y segunda de una funcion cualquiera
-# [*] Hacer que en los graficos se muestren los a y b
-# COMENTAR EL CODIGO APB
+
+# [ ] Hacer la impresión de derivadas con 2 decimales a lo sumo
+
 
 #
 # TP Métodos Numéricos - 2023
@@ -20,7 +11,7 @@
 #          • Nava, Alejandro
 
 # Profesores: para poder correr adecuadamente el programa es necesario tenes instaladas las
-#             bibliotecas de sympy, numpy y matplotlib.
+#             bibliotecas de sympy, numpy, pandas, seaborn y matplotlib.
 #             Se puede ver el código comentado pero con "play" toda la teoría y práctica aplicada
 
 
@@ -42,26 +33,11 @@ from sklearn import metrics
 from sklearn.svm import SVC
 import seaborn as sns
 from fractions import Fraction
+import math
 
 
 # ------------------------------------------------------------------------------------------------------------
 # Funs
-
-# Generators
-def generador_pares(cota_minima, cota_maxima):
-    # Genera 20 pares de numeros enteros aleatorios según una cota mínima y máxima
-    rango = np.arange(cota_minima, cota_maxima)
-
-    # Para evitar errores de un mismo valor xi con varios yi, el replace=False hace que no peudan repetirse esos 
-    # numeros aleatorios. En el caso de yi puede repetirse. Cumpliendo con la Inyectividad
-    x_set = np.random.choice(rango, size=20, replace=True)
-    y_set = np.random.choice(rango, size=20, replace=True)
-
-    # Ordena los pares de forma ascendente
-    lista_pares = list(zip(x_set, y_set))
-    return sorted(lista_pares, key=lambda x: x[0])
-
-
 def separador_pares_x_y(pares):
     print()
     # Establece dos listas vacias para llenar con los valores de y y x
@@ -74,7 +50,6 @@ def separador_pares_x_y(pares):
     pares_x = np.array(pares_x)
     pares_y = np.array(pares_y)
     return pares_x, pares_y
-
 
 # Regressions
 # a) Linear
@@ -96,7 +71,6 @@ def find_ab_lin_reg(X_set, Y_set, X_name="X", Y_name="Y", a_name="a", b_name="b"
     print(f"\nValor de '{a_name}': {a:.2f}"
           f"\nValor de '{b_name}': {b:.2f}")
     return a, b
-
 
 # b) Cuadratic
 def find_abc_quad_reg(X_set, Y_set):
@@ -128,9 +102,7 @@ def find_abc_quad_reg(X_set, Y_set):
           f"\nValor de 'c': {c:.2f}")
     return a, b, c
 
-
 # c) Exponential
-
 def create_f_sym_lin(coeff):
     a_lin, b_lin = coeff
     f_lin = np.poly1d((a_lin, b_lin))
@@ -170,8 +142,7 @@ def create_f_sym_exponential_eulerless(a_exp, b_exp):
     f_str = f"{round(b_exp, 2)}*{round(a_exp, 2)}^x"
     return f, f_str
 
-
-# Busqueda del mejor resultado
+# Best Result Search
 def find_best_fit(results_list):
     # Encuentra el valor máximo en la lista
     max_value = max(results_list, key=lambda x: x[1])[1]
@@ -181,17 +152,13 @@ def find_best_fit(results_list):
     
     return best_fits
 
-
 # Prints
 # All Regressions
-
-
 def my_regressions(pares):
+    
+    # Dataset
     X, Y = separador_pares_x_y(pares)
     len_pares = len(X)
-    # sumaX = np.sum(X)
-    # sumaY = np.sum(Y)
-    # suma_X2 = np.sum(X ** 2)
     print(f"Los pares ordenados son:\n {pares}")
     print(X)
     print(Y)
@@ -230,20 +197,6 @@ def my_regressions(pares):
     results_list.append([f_lin_str, round(r_lineal, 2), f_name])
 
     print()
-    # suma_X4 = np.sum(X ** 4)
-    # suma_X3 = np.sum(X ** 3)
-    # sumaX2_Y = np.sum((X ** 2) * Y)
-
-    # # [VERSION DE ENUNCIADO ARIEL - DA RARO]
-    # sumaX2_2 = sum((X ** 2) * 2)
-    # a_diapo =  (len_pares * sumaX2_Y - sumaX2 * sumaY) / (len_pares * suma_X4 - sumaX2_2)
-    # b_diapo = (suma_X4 * sumaY - suma_X2 * sumaX2_Y) / (len_pares * suma_X4 - sumaX2_2)
-    # error_cuad_diapo = sum((a_diapo * X**2 + b_diapo - Y) ** 2)
-    # print("===[REGRESIÓN CUADRATICA (DIAPO)]===")
-    # print(f"\nPara este sistema:"
-    #       f"\nValor de 'a': {a_diapo:.2f}"
-    #       f"\nValor de 'b': {b_diapo:.2f}"
-    #       f"\nError cuadratico: {error_cuad_diapo:.2f}")
 
     # ***************************************************************************************************
     print("===[REGRESIÓN CUADRATICA]===")
@@ -279,16 +232,7 @@ def my_regressions(pares):
 
     # Guardar resultado
     results_list.append([f_cuad_str, round(r_cuad, 2), f_name])
-
     print()
-    # suma_lnX = np.sum(np.log(X))
-    # suma_lnX_lnX = np.sum(np.log(X) * np.log(X))
-    # suma_lnX_2 = np.sum(np.log(X)) ** 2
-    # suma_lnX_3 = np.sum(np.log(X)) ** 3
-    # suma_lnY = np.sum(np.log(Y))
-    # suma_x_lnY = np.sum(X * np.log(Y))
-    # suma_y_lnX = np.sum(Y * np.log(X))
-    # sumaX_2 = np.sum(X) ** 2
 
     # ***************************************************************************************************
 
@@ -356,11 +300,6 @@ def my_regressions(pares):
     ss_tot = np.sum((Y - np.mean(Y)) ** 2)
     r_exp_euler = 1 - (ss_res / ss_tot)
     print(f"\rR para exponencial Euler es: {r_exp_euler:.2f}\n")
-    
-    # Tiempo de Duplicación
-    growth_rate = a_exp_euler
-    doubling_time = 70 / growth_rate
-    print(f"\nEl tiempo de Duplicación es aproximadamente {doubling_time}.\n")
 
     # Plot Funcion Exponencial de Euler
     f_exp_euler, f_exp_euler_str = create_f_sym_exponential_euler(a_exp_euler, b_exp_euler)
@@ -400,11 +339,6 @@ def my_regressions(pares):
     ss_tot = np.sum((Y - np.mean(Y)) ** 2)
     r_exp_eulerless = 1 - (ss_res / ss_tot)
     print(f"\rR para exponencial sin Euler es: {r_exp_eulerless:.2f}\n")
-    
-    # Tiempo de Duplicación
-    growth_rate = a_exp_eulerless
-    doubling_time = 70 / growth_rate
-    print(f"\nEl tiempo de Duplicación es aproximadamente {doubling_time}.\n")
 
     # Plot Funcion Exponencial de Euler
     f_exp_eulerless, f_exp_eulerless_str = create_f_sym_exponential_eulerless(a_exp_eulerless, b_exp_eulerless)
@@ -438,7 +372,14 @@ def my_regressions(pares):
 
         print(f"Mejor FIT con:\n{best_fit_name}\nFunción = {f_best_fit}\nR = {r_best_fit:.2f}")
         best_fit_graph(X, Y, f_best_fit, r_best_fit, best_fit_name)
-
+        
+    # Doubbling Time
+    xf = Y[-1]
+    x0 = Y[0]
+    t = X[-1]
+    growth_rate = math.log(xf / x0) / t
+    doubling_time = math.log(2) / math.log(1 + growth_rate)
+    print(f"\nEl tiempo de Duplicación es: {doubling_time:.2f} " )
 
 # ------------------------------------------------------------------------------------------------------------
 # Plots
@@ -454,21 +395,21 @@ def regressions_graph(X, Y,
     plt.plot(X, Y, "o", label="Dataset", color='turquoise')
 
     a, b = ab_lineal
-    label_lin = f"Regresión Lineal\nCoeficientes: a={round(a, 2)}, b={round(b, 2)}\n[r = {r_lineal:.2f}]"
+    label_lin = f"Regresión Lineal\nCoeficientes: a={round(a, 2)}, b={round(b, 2)}\n[R = {r_lineal:.2f}]"
     plt.plot(X, a * X + b, label=label_lin, color='orange')
 
     a_cuad, b_cuad, c_cuad = cuad_mat
-    label_cuad = f"Regresión Cuadrática\nCoeficientes: a={round(a_cuad, 2)}, b={round(b_cuad, 2)}, c={round(c_cuad, 2)}\n[r = {r_cuad:.2f}]"
+    label_cuad = f"Regresión Cuadrática\nCoeficientes: a={round(a_cuad, 2)}, b={round(b_cuad, 2)}, c={round(c_cuad, 2)}\n[R = {r_cuad:.2f}]"
     plt.plot(X, a_cuad * (X ** 2) + b_cuad * X + c_cuad, label=label_cuad, color='purple')
 
     a_exp, b_exp = exp_mat
-    label_exp = f"Regresión Polinómica\nCoeficientes: a={round(a_exp, 2)}, b={round(b_exp, 2)}\n[r = {r_exp:.2f}]"
+    label_exp = f"Regresión Polinómica\nCoeficientes: a={round(a_exp, 2)}, b={round(b_exp, 2)}\n[R = {r_exp:.2f}]"
     plt.plot(X, b_exp * (X ** a_exp), label=label_exp, color='sienna')
 
-    label_euler = f"Regresión Exp. (Euler)\nCoeficientes: a={round(a_euler, 2)}, b={round(b_euler, 2)}\n[r = {r_euler:.2f}]"
+    label_euler = f"Regresión Exp. (Euler)\nCoeficientes: a={round(a_euler, 2)}, b={round(b_euler, 2)}\n[R = {r_euler:.2f}]"
     plt.plot(X, euler_lambda_exp(X), label=label_euler, color='tomato')
 
-    label_eulerless = f"Regresión Exp. (Sin Euler)\nCoeficientes: a={round(a_eulerless, 2)}, b={round(b_eulerless, 2)}\n[r = {r_eulerless:.2f}]"
+    label_eulerless = f"Regresión Exp. (Sin Euler)\nCoeficientes: a={round(a_eulerless, 2)}, b={round(b_eulerless, 2)}\n[R = {r_eulerless:.2f}]"
     plt.plot(X, eulerless_lambda_exp(X), label=label_eulerless, color='indigo')
 
     plt.ylim(0, Y.max() * 1.1)
@@ -490,7 +431,7 @@ def regressions_graph_unit(X, Y, func, r, msg, _color):
     plt.title(msg)
 
     plt.plot(X, Y, 'o', color='turquoise', markersize=5, label="Dataset")
-    plt.plot(X, func(X), color=_color, linestyle='-', linewidth=2, label=msg + f" [r = {r:.2f}]")
+    plt.plot(X, func(X), color=_color, linestyle='-', linewidth=2, label=msg + f" [R = {r:.2f}]")
 
     plt.xlabel("Días", fontweight='bold')
     plt.ylabel("Acumulación de individuos infectados", fontweight='bold')
@@ -865,7 +806,11 @@ print(" Se puede calcular usando varias fórmulas, pero comúnmente se utiliza l
 print(" La regla de 70 establece que para encontrar el tiempo de duplicación, divida el  ")
 print(" número 70 por la tasa de crecimiento (expresada como porcentaje).                ")
 print(" Esto estima rápidamente el tiempo de duplicación, considerando una tasa de       ")
-print(" crecimiento constante.                                                           ")
+print(" Se calcula primero la variación de crecimiento: r = ln(xf / x0) / t, y luego     ")
+print(" el tiempo de duplicacion doubling time = log(2) / log(1 + r), donde xf es el valor")
+print(" final, x0 el valor inicial y t el tiempo trasncurrido total.                      ")
+print(" Cabe destacar que el tiempo de duplicación es típicamente calculado para los casos")
+print(" de exponenciales, y que en ambos casos con o sin euler, el cálculo será igual.    ")
 
 #  II) Solution
 print("                                                                                  ")
@@ -874,8 +819,6 @@ print("*                                   SOLUCION                             
 print("**********************************************************************************")
 print(" Para este proyecto contamos con un dataset provisto donde se toman la cantidad de")
 print(" días trasncurridos vs la cantidad de contagiados.")
-pares = generador_pares(1, 50)
-# my_regressions(pares)
 
 pares_ejercicio = (
     (1, 1), (2, 1), (3, 2), (4, 8), (5, 9), (6, 12), (7, 17), (8, 19), (9, 21), (10, 31), (11, 34), (12, 45), (13, 56),
@@ -971,19 +914,45 @@ print("                                                                         
 print(" • La Regresión Exponencial es ideal para casos de crecimiento o decrecimiento    ")
 print(" exponencial, es de técnica robusta pero no sirve para todos los sistemas.        ")
 print("                                                                                  ")
-print(" • VENTAJAS DE REGRESION EXPONENCIAL:                                              ")
-print("   + Es excelente en casos de crecimiento o decrecimiento exponencial.             ")
+print(" • VENTAJAS DE REGRESION EXPONENCIAL:                                             ")
+print("   + Es excelente en casos de crecimiento o decrecimiento exponencial.            ")
 print("   + Suele ser mas robusta incluso que algunos polinomios.                        ")
 print("                                                                                  ")
-print(" • DESVENTAJAS DE REGRESION EXPONENCIAL:                                           ")
+print(" • DESVENTAJAS DE REGRESION EXPONENCIAL y EXPONENCIAL EULER:                      ")
 print("   + No es bueno con casos de variacion de datos.                                 ")
 print("   + No es confiable en casos que no tengas relaciones tipo exponencial.          ")
 print("   + Asume continuidad de datos y peude afectar las predicciones.                 ")
 print("                                                                                  ")
-
-print(" • NOTA1: Es importante tener en cuenta que la Regla del 70 es una aproximación y funciona mejor para ")
-print(" tasas de crecimiento por debajo del 15 %. Para tasas de crecimiento más altas, se pueden requerir ")
-print(" métodos y fórmulas más precisos. ") 
+print("                                 ****************                                 ")
+print("                                                                                  ")
+print(" Realizando las regresiones lineal, cuadrática, polinómica, exponencial y         ")
+print(" exponencial euler, se puede observar que en crecimientos biológicos hay una      ")
+print(" notable relación exponencial. En este caso el número de infectados por día,      ")
+print(" tiene un R = 1 en casos de exponencial y exponencial euler. Si bien las gráficas ")
+print(" no son iguales, sus corrimientos respecto del data set son equivalentes y por ello")
+print(" ambas son las más adecuadas para explicar la curva de contagios.                 ")
+print("                                                                                  ")
+print("                                 ****************                                 ")
+print("                                                                                  ")
+print(" Las derivadas se realizaron sobre los dos mejores calces que fueron la exponencial")
+print(" y la exponencial euler. Es visible en las gráficas, como la tasa de cambio de la ")
+print(" derivada primera acompaña a la curva exponencial, ya que en la medida que avanza  ")
+print(" mayor es su cambio en la curvatura (típico de exponencial). En el caso de la     ")
+print(" derivada segunda su curvatura se ve menos pronunciada ya que muestra la evolución")
+print(" de la curvatura de la función obtenida. En ambas exponenciales las derivadas tienen")
+print(" relación con los coeficientes 'a' para la expoenencial y 'e' para la exponencial euler.")
+print("                                                                                  ")
+print("                                 ****************                                 ")
+print("                                                                                  ")
+print(" El tiempo de duplicación obtenido es de 9.62, lo que implica que el número de    ")
+print(" contagiados se duplica cada 9.62 días.                                           ")
+print("                                                                                  ")
+print("                                 ****************                                 ")
+print("                                                                                  ")
+print(" • NOTA: Es importante tener en cuenta que la Regla del 70 es una aproximación y  ")
+print("         funciona mejor paratasas de crecimiento por debajo del 15 %. Para tasas  ")
+print("         de crecimiento más altas, se pueden requerir métodos y fórmulas          ") 
+print("         más precisos.                                                            ") 
 print("                                                                                  ")
 
 
