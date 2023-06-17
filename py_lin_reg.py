@@ -1,4 +1,6 @@
 # PENDIENTES:
+# [ ] Hacer que cualquier funcion que reciba best_fit_graph grafique correctamente
+#     Ver que en caso de comentar  lineas 354 y 398 rompe al evaluar la cuadratica
 # [ ] Funcion donde toma los R para mejor fit -> mejorarlo para posibles 2 funciones
 # [ ] Una vez que selecciona e imprime quien es la mejor, hacer la gráfica de esa función con la derivada primera y segunda
 # [ ] Hacer funcion para hacer la derivada primera y segunda de una funcion cualquiera
@@ -122,7 +124,16 @@ def find_abc_quad_reg(X_set, Y_set):
 
 
 # c) Exponential
-def create_f_sym_exponential(a_exp, b_exp):
+def create_f_sym_cuad(coeff):
+    a, b, c = coeff
+    f_cuad_str = f"({round(a, 4)})*x^2+({round(b, 4)})*x+({round(c, 4)})"
+    x = sym.symbols('x')
+    f_cuad_sym = sym.sympify(f_cuad_str)
+    f_cuad_sym = sym.lambdify(x, f_cuad_sym)
+    return f_cuad_sym, f_cuad_str
+
+
+def create_f_sym_poly(a_exp, b_exp):
     x = sym.symbols('x')
     f_sym = round(b_exp, 2) * (x ** round(a_exp, 2))
     f = sym.lambdify(x, f_sym)
@@ -239,14 +250,15 @@ def my_regressions(pares):
     print(f"\nR para cuadrática es: {r_cuad:.2f} \n")
 
     # Plot Funcion Cuadratica
-    f_cuad = np.poly1d(cuad_abc_mat)
+    f_cuad, f_cuad_str = create_f_sym_cuad(cuad_abc_mat)
     print("La expresion de la función cuadrática es:")
     print(f_cuad)
+    print(f_cuad_str)
     f_name = "Regresion cuadrática"
     regressions_graph_unit(X, Y, f_cuad, r_cuad, f_name, 'purple')
 
     # Guardar resultado
-    results_list.append([f_cuad, r_cuad, f_name])
+    results_list.append([f_cuad_str, r_cuad, f_name])
 
     print()
     # suma_lnX = np.sum(np.log(X))
@@ -287,14 +299,14 @@ def my_regressions(pares):
     print(f"\nR para polinómica es: {r_poly:.2f} \n")
 
     # Plot Funcion Exponencial
-    f_poly, f_poly_str = create_f_sym_exponential(a_poly, b_poly)
+    f_poly, f_poly_str = create_f_sym_poly(a_poly, b_poly)
     print("La expresion de la función polinomica es:")
     print(f_poly_str)
     f_name = "Regresion polinómica"
     regressions_graph_unit(X, Y, f_poly, r_poly, f_name, 'sienna')
 
     # Guardar resultado
-    results_list.append([f_poly, r_poly, f_name])
+    results_list.append([f_poly_str, r_poly, f_name])
 
     print()
 
@@ -468,26 +480,23 @@ def regressions_graph_unit(X, Y, func, r, msg, _color):
     plt.show()
 
 
-def best_fit_graph(X, Y, func, r, f_name_str):
+def best_fit_graph(X, Y, func, r, f_name_str):  
     plt.title('Funcion con mejor FIT para el Dataset\n' + f_name_str)
 
     x = sym.symbols('x')
     func_str = str(func).replace("^", "**")
+    print(func_str)
     # func_sym = sym.sympify(func_str, evaluate=False)
     func_lamb = sym.lambdify(x, func_str, 'numpy')
     func_first_diff = sym.diff(func_lamb(x), x, evaluate=False)
-    func_first_diff_lamb2 = sym.lambdify(x, func_first_diff.doit(), 'numpy')
-    func_second_diff = sym.diff(func_first_diff_lamb2(x), x, evaluate=False)
-    func_second_diff_lamb2 = sym.lambdify(x, func_second_diff.doit(), 'numpy')
+    func_first_diff_lamb = sym.lambdify(x, func_first_diff.doit(), 'numpy')
+    func_second_diff = sym.diff(func_first_diff_lamb(x), x, evaluate=False)
+    func_second_diff_lamb = sym.lambdify(x, func_second_diff.doit(), 'numpy')
     
-    print(str(func_lamb))
-    print(func_first_diff.doit())
-    # func_sec_diff
-
     plt.plot(X, Y, 'o', color='turquoise', markersize=5, label="Dataset")
     plt.plot(X, func_lamb(X), color='forestgreen', linestyle='-', linewidth=2, label=f_name_str + f" [r = {r:.2f}]")
-    plt.plot(X, func_first_diff_lamb2(X), color='darkorange', linewidth=1, label='Primera Derivada')
-    plt.plot(X, func_second_diff_lamb2(X), color='lightcoral', linewidth=2, label='Segunda Derivada')
+    plt.plot(X, func_first_diff_lamb(X), color='darkorange', linewidth=1, label='Primera Derivada')
+    plt.plot(X, func_second_diff_lamb(X), color='lightcoral', linewidth=2, label='Segunda Derivada')
 
     plt.xlabel("Días", fontweight='bold')
     plt.ylabel("Acumulación de individuos infectados", fontweight='bold')
