@@ -6,10 +6,10 @@
 # poly anda
 # exp euler anda
 # exp sin euler anda
-# [ ] Funcion donde toma los R para mejor fit -> mejorarlo para posibles 2 funciones
+# [*] Funcion donde toma los R para mejor fit -> mejorarlo para posibles 2 funciones
 # [*] Una vez que selecciona e imprime quien es la mejor, hacer la gráfica de esa función con la derivada primera y segunda
 # [ ] Hacer funcion para hacer la derivada primera y segunda de una funcion cualquiera
-# [ ] Hacer que en los graficos se muestren los a y b
+# [*] Hacer que en los graficos se muestren los a y b
 # COMENTAR EL CODIGO APB
 
 #
@@ -173,8 +173,13 @@ def create_f_sym_exponential_eulerless(a_exp, b_exp):
 
 # Busqueda del mejor resultado
 def find_best_fit(results_list):
-    # Encuentra el elemento con el mayor valor de R
-    return max(results_list, key=lambda x: x[1])
+    # Encuentra el valor máximo en la lista
+    max_value = max(results_list, key=lambda x: x[1])[1]
+    
+    # Filtra los elementos que tengan el valor máximo
+    best_fits = [item for item in results_list if item[1] == max_value]
+    
+    return best_fits
 
 
 # Prints
@@ -222,7 +227,7 @@ def my_regressions(pares):
     # Guardar resultado en una lista que contiene otra lista de:
     # La funcion, el r y el nombre
     results_list = []
-    results_list = [[f_lin_str, r_lineal, f_name]]
+    results_list.append([f_lin_str, round(r_lineal, 2), f_name])
 
     print()
     # suma_X4 = np.sum(X ** 4)
@@ -273,7 +278,7 @@ def my_regressions(pares):
     regressions_graph_unit(X, Y, f_cuad, r_cuad, f_name, 'purple')
 
     # Guardar resultado
-    results_list.append([f_cuad_str, r_cuad, f_name])
+    results_list.append([f_cuad_str, round(r_cuad, 2), f_name])
 
     print()
     # suma_lnX = np.sum(np.log(X))
@@ -321,7 +326,7 @@ def my_regressions(pares):
     regressions_graph_unit(X, Y, f_poly, r_poly, f_name, 'sienna')
 
     # Guardar resultado
-    results_list.append([f_poly_str, r_poly, f_name])
+    results_list.append([f_poly_str, round(r_poly, 2), f_name])
 
     print()
 
@@ -365,7 +370,7 @@ def my_regressions(pares):
     regressions_graph_unit(X, Y, f_exp_euler, r_exp_euler, f_name, 'tomato')
 
     # Guardar resultado
-    results_list.append([f_exp_euler_str, r_exp_euler, f_name])
+    results_list.append([f_exp_euler_str, round(r_exp_euler, 2), f_name])
     print()
 
     # ***************************************************************************************************
@@ -409,7 +414,7 @@ def my_regressions(pares):
     regressions_graph_unit(X, Y, f_exp_eulerless, r_exp_eulerless, f_name, 'indigo')
     
     # Guardar resultado
-    results_list.append([f_exp_eulerless_str, r_exp_eulerless, f_name])
+    results_list.append([f_exp_eulerless_str, round(r_exp_eulerless, 2), f_name])
     print()
 
     # ***************************************************************************************************
@@ -424,10 +429,15 @@ def my_regressions(pares):
     )
 
     # Evaluacion de la funcion con mejor fit
-    f_best_fit, r_best_fit, best_fit_name = find_best_fit(results_list)
+    # print(results_list)
+    bests_fits = find_best_fit(results_list)
+    # print(bests_fits)
 
-    print(f"Mejor FIT con:\n{best_fit_name}\nFunción = {f_best_fit}\nR = {r_best_fit:.2f}")
-    best_fit_graph(X, Y, f_best_fit, r_best_fit, best_fit_name)
+    for e in bests_fits:
+        f_best_fit, r_best_fit, best_fit_name = e
+
+        print(f"Mejor FIT con:\n{best_fit_name}\nFunción = {f_best_fit}\nR = {r_best_fit:.2f}")
+        best_fit_graph(X, Y, f_best_fit, r_best_fit, best_fit_name)
 
 
 # ------------------------------------------------------------------------------------------------------------
