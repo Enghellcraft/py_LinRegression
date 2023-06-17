@@ -1,12 +1,8 @@
 # PENDIENTES:
-# [ ] Pasar Consigna
-# [ ] Cambiar error a los R al grafico donde estan todas juntas
-# [ ] Hacer una nueva funcion donde tome los R de cada una de las curvas y diga cual es el mejor FIT para el dataset
+# [ ] Funcion donde toma los R para mejor fit -> mejorarlo para posibles 2 funciones
 # [ ] Una vez que selecciona e imprime quien es la mejor, hacer la gráfica de esa función con la derivada primera y segunda
 # [ ] Hacer funcion para hacer la derivada primera y segunda de una funcion cualquiera
-# [ ] Hacer el cálculo de duplicación
 # COMENTAR EL CODIGO APB
-
 
 #
 # TP Métodos Numéricos - 2023
@@ -130,26 +126,36 @@ def create_f_sym_exponential(a_exp, b_exp):
     x = sym.symbols('x')
     f_sym = round(b_exp, 2) * (x ** round(a_exp, 2))
     f = sym.lambdify(x, f_sym)
-    f_str = str(sym.sympify(f_sym)).replace("**", "^").replace("*", " ")
+    f_str = str(sym.sympify(f_sym)).replace("**", "^")
     return f, f_str
 
 
 def create_f_sym_exponential_euler(a_exp, b_exp):
     x = sym.symbols('x')
     f_sym_euler = round(b_exp, 2) * sym.exp(round(a_exp, 2) * x)
+    # print('f_sym_euler', f_sym_euler)
     f = sym.lambdify(x, f_sym_euler)
-    f_str = f"{round(b_exp, 2)} e^({round(a_exp, 2)} x)"
+    f_str = f"{round(b_exp, 2)}*e^({round(a_exp, 2)}*x)"
     return f, f_str
+
 def create_f_sym_exponential_eulerless(a_exp, b_exp):
     x = sym.symbols('x')
     f_sym_eulerless = round(b_exp, 2) * (round(a_exp, 2) ** x)
     f = sym.lambdify(x, f_sym_eulerless)
-    f_str = f"{round(b_exp, 2)} {round(a_exp, 2)}^x"
+    f_str = f"{round(b_exp, 2)}*{round(a_exp, 2)}^x"
     return f, f_str
+
+
+# Busqueda del mejor resultado
+def find_best_fit(results_list):
+    # Encuentra el elemento con el mayor valor de R
+    return max(results_list, key=lambda x: x[1])
 
 
 # Prints
 # All Regressions
+
+
 def my_regressions(pares):
     X, Y = separador_pares_x_y(pares)
     len_pares = len(X)
@@ -185,9 +191,14 @@ def my_regressions(pares):
     f_lin = np.poly1d((a_lin, b_lin))
     print("La expresion de la función lineal es:")
     print(f_lin)
-    regressions_graph_unit(X, Y, f_lin, error_cuad_lineal, "Regresion lineal", 'orange')
-    print()
+    f_name = "Regresion lineal"
+    regressions_graph_unit(X, Y, f_lin, r_lineal, f_name, 'orange')
 
+    # Guardar resultado en una lista que contiene otra lista de:
+    # La funcion, el r y el nombre
+    results_list = [[f_lin, r_lineal, f_name]]
+
+    print()
     # suma_X4 = np.sum(X ** 4)
     # suma_X3 = np.sum(X ** 3)
     # sumaX2_Y = np.sum((X ** 2) * Y)
@@ -231,9 +242,13 @@ def my_regressions(pares):
     f_cuad = np.poly1d(cuad_abc_mat)
     print("La expresion de la función cuadrática es:")
     print(f_cuad)
-    regressions_graph_unit(X, Y, f_cuad, error_cuad_cuad, "Regresion cuadrática", 'purple')
-    print()
+    f_name = "Regresion cuadrática"
+    regressions_graph_unit(X, Y, f_cuad, r_cuad, f_name, 'purple')
 
+    # Guardar resultado
+    results_list.append([f_cuad, r_cuad, f_name])
+
+    print()
     # suma_lnX = np.sum(np.log(X))
     # suma_lnX_lnX = np.sum(np.log(X) * np.log(X))
     # suma_lnX_2 = np.sum(np.log(X)) ** 2
@@ -275,7 +290,12 @@ def my_regressions(pares):
     f_poly, f_poly_str = create_f_sym_exponential(a_poly, b_poly)
     print("La expresion de la función polinomica es:")
     print(f_poly_str)
-    regressions_graph_unit(X, Y, f_poly, error_cuad_poly, "Regresion polinómica", 'sienna')
+    f_name = "Regresion polinómica"
+    regressions_graph_unit(X, Y, f_poly, r_poly, f_name, 'sienna')
+
+    # Guardar resultado
+    results_list.append([f_poly, r_poly, f_name])
+
     print()
 
     # ***************************************************************************************************
@@ -293,10 +313,10 @@ def my_regressions(pares):
     def exp_euler_func(x, a, b):
         return b * np.exp(a * x)
 
-    # # Calce de función exponencial Euler en el dataset
-    # ln_Y = np.log(Y)
-    # a_exp_euler, ln_b_exp_euler = np.polyfit(X, ln_Y, 1)
-    # b_exp_euler = np.exp(ln_b_exp_euler)
+    # Calce de función exponencial Euler en el dataset
+    ln_Y = np.log(Y)
+    a_exp_euler, ln_b_exp_euler = np.polyfit(X, ln_Y, 1)
+    b_exp_euler = np.exp(ln_b_exp_euler)
     popt, _ = curve_fit(exp_euler_func, X, Y, p0=[a_exp_euler, b_exp_euler])
     # Cálculo R^2 
     residuals = Y - exp_euler_func(X, *popt)
@@ -311,10 +331,15 @@ def my_regressions(pares):
     print(f"\nEl tiempo de Duplicación es aproximadamente {doubling_time}.\n")
 
     # Plot Funcion Exponencial de Euler
+    # x = sym.symbols('x')
     f_exp_euler, f_exp_euler_str = create_f_sym_exponential_euler(a_exp_euler, b_exp_euler)
     print("La expresion de la función exponencial Euler es:")
+    f_name = "Regresion exponencial Euler"
     print(f_exp_euler_str)
-    regressions_graph_unit(X, Y, f_exp_euler, error_cuad_exp_euler, "Regresion exponencial Euler", 'tomato')
+    regressions_graph_unit(X, Y, f_exp_euler, r_exp_euler, f_name, 'tomato')
+
+    # Guardar resultado
+    results_list.append([f_exp_euler_str, r_exp_euler, f_name])
     print()
 
     # ***************************************************************************************************
@@ -352,9 +377,13 @@ def my_regressions(pares):
 
     # Plot Funcion Exponencial de Euler
     f_exp_eulerless, f_exp_eulerless_str = create_f_sym_exponential_eulerless(a_exp_eulerless, b_exp_eulerless)
+    f_name = "Regresion exponencial sin Euler"
     print("La expresion de la función exponencial sin Euler es:")
     print(f_exp_eulerless_str)
-    regressions_graph_unit(X, Y, f_exp_eulerless, error_cuad_exp_eulerless, "Regresion exponencial sin Euler", 'indigo')
+    regressions_graph_unit(X, Y, f_exp_eulerless, r_exp_eulerless, f_name, 'indigo')
+    
+    # Guardar resultado
+    results_list.append([f_exp_eulerless_str, r_exp_eulerless, f_name])
     print()
 
     # ***************************************************************************************************
@@ -367,6 +396,12 @@ def my_regressions(pares):
         f_exp_euler, r_exp_euler,
         f_exp_eulerless, r_exp_eulerless,
     )
+
+    # Evaluacion de la funcion con mejor fit
+    f_best_fit, r_best_fit, best_fit_name = find_best_fit(results_list)
+
+    print(f"Mejor FIT con:\n{best_fit_name}\nFunción = {f_best_fit}\nR = {r_best_fit:.2f}")
+    best_fit_graph(X, Y, f_best_fit, r_best_fit, best_fit_name)
 
 
 # ------------------------------------------------------------------------------------------------------------
@@ -413,11 +448,46 @@ def regressions_graph(X, Y,
     plt.show()
 
 
-def regressions_graph_unit(X, Y, func, err, msg, c):
+def regressions_graph_unit(X, Y, func, r, msg, _color):
     plt.title(msg)
 
     plt.plot(X, Y, 'o', color='turquoise', markersize=5, label="Dataset")
-    plt.plot(X, func(X), color=c, linestyle='-', linewidth=2, label=msg + f" [E = {err:.2f}]")
+    plt.plot(X, func(X), color=_color, linestyle='-', linewidth=2, label=msg + f" [r = {r:.2f}]")
+
+    plt.xlabel("Días", fontweight='bold')
+    plt.ylabel("Acumulación de individuos infectados", fontweight='bold')
+    plt.legend()
+
+    yax = plt.gca().yaxis
+    for item in yax.get_ticklabels():
+        item.set_rotation(45)
+
+    plt.grid(True, linestyle='--', alpha=0.5)
+    plt.tight_layout()
+    plt.ylim(0, Y.max() * 1.1)
+    plt.show()
+
+
+def best_fit_graph(X, Y, func, r, f_name_str):
+    plt.title('Funcion con mejor FIT para el Dataset\n' + f_name_str)
+
+    x = sym.symbols('x')
+    func_str = str(func).replace("^", "**")
+    # func_sym = sym.sympify(func_str, evaluate=False)
+    func_lamb = sym.lambdify(x, func_str, 'numpy')
+    func_first_diff = sym.diff(func_lamb(x), x, evaluate=False)
+    func_first_diff_lamb2 = sym.lambdify(x, func_first_diff.doit(), 'numpy')
+    func_second_diff = sym.diff(func_first_diff_lamb2(x), x, evaluate=False)
+    func_second_diff_lamb2 = sym.lambdify(x, func_second_diff.doit(), 'numpy')
+    
+    print(str(func_lamb))
+    print(func_first_diff.doit())
+    # func_sec_diff
+
+    plt.plot(X, Y, 'o', color='turquoise', markersize=5, label="Dataset")
+    plt.plot(X, func_lamb(X), color='forestgreen', linestyle='-', linewidth=2, label=f_name_str + f" [r = {r:.2f}]")
+    plt.plot(X, func_first_diff_lamb2(X), color='darkorange', linewidth=1, label='Primera Derivada')
+    plt.plot(X, func_second_diff_lamb2(X), color='lightcoral', linewidth=2, label='Segunda Derivada')
 
     plt.xlabel("Días", fontweight='bold')
     plt.ylabel("Acumulación de individuos infectados", fontweight='bold')
@@ -448,12 +518,17 @@ print("                                                                         
 print("**********************************************************************************")
 print("*                                   OBJETIVO                                     *")
 print("**********************************************************************************")
-print("  Lograr regresión lineal, cuadrática y exponencial de un set de datos dados      ")
+print("  Lograr regresión lineal, polinómica y exponencial de un set de datos dados      ")
 print("                                                                                  ")
 print("**********************************************************************************")
 print("*                                   CONSIGNAS                                    *")
 print("**********************************************************************************")
 print("                                                                                  ")
+print("  Dado un dataset provisto en excell sobre individuos invfectados a lo largo de n días,")
+print("  definir el tipo de relación, realizando reagresión lineal, polinómica y exponencial.")
+print("  Graficar con los datos las curvas y mostrar en ellas 'a', 'b' y R.              ")
+print("  De la regresión con mejor calce calcular las derivadas primera y segunda.       ")
+print("  Calcular el tiempo de duplicación.                                              ")
 print("                                                                                  ")
 
 #  I) Theory
