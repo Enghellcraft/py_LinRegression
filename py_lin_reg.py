@@ -1,9 +1,15 @@
 # PENDIENTES:
-# [ ] Hacer que cualquier funcion que reciba best_fit_graph grafique correctamente
-#     Ver que en caso de comentar  lineas 354 y 398 rompe al evaluar la cuadratica
+# [*] Hacer que cualquier funcion que reciba best_fit_graph grafique correctamente
+#     cualquier de las funciones que pueden tener mejor fit
+# lin anda
+# cuad anda
+# poly anda
+# exp euler anda
+# exp sin euler anda
 # [ ] Funcion donde toma los R para mejor fit -> mejorarlo para posibles 2 funciones
-# [ ] Una vez que selecciona e imprime quien es la mejor, hacer la gráfica de esa función con la derivada primera y segunda
+# [*] Una vez que selecciona e imprime quien es la mejor, hacer la gráfica de esa función con la derivada primera y segunda
 # [ ] Hacer funcion para hacer la derivada primera y segunda de una funcion cualquiera
+# [ ] Hacer que en los graficos se muestren los a y b
 # COMENTAR EL CODIGO APB
 
 #
@@ -124,6 +130,14 @@ def find_abc_quad_reg(X_set, Y_set):
 
 
 # c) Exponential
+
+def create_f_sym_lin(coeff):
+    a_lin, b_lin = coeff
+    f_lin = np.poly1d((a_lin, b_lin))
+    f_lin_str = f'({a_lin})*x+({b_lin})'
+    return f_lin, f_lin_str
+
+
 def create_f_sym_cuad(coeff):
     a, b, c = coeff
     f_cuad_str = f"({round(a, 4)})*x^2+({round(b, 4)})*x+({round(c, 4)})"
@@ -199,7 +213,7 @@ def my_regressions(pares):
     print(f"\nR para lineal es: {r_lineal:.2f} \n")
 
     # Plot Funcion Lineal
-    f_lin = np.poly1d((a_lin, b_lin))
+    f_lin, f_lin_str = create_f_sym_lin((a_lin, b_lin))
     print("La expresion de la función lineal es:")
     print(f_lin)
     f_name = "Regresion lineal"
@@ -207,7 +221,8 @@ def my_regressions(pares):
 
     # Guardar resultado en una lista que contiene otra lista de:
     # La funcion, el r y el nombre
-    results_list = [[f_lin, r_lineal, f_name]]
+    results_list = []
+    results_list = [[f_lin_str, r_lineal, f_name]]
 
     print()
     # suma_X4 = np.sum(X ** 4)
@@ -251,6 +266,7 @@ def my_regressions(pares):
 
     # Plot Funcion Cuadratica
     f_cuad, f_cuad_str = create_f_sym_cuad(cuad_abc_mat)
+    # TODO: VER MANERA DE HACER FUNCION QUE DEVUELVA LA EVALUAUBLE Y UN STRING QUE best_fit_graph PUEDA DERIVAR Y GRAFICAR OK
     print("La expresion de la función cuadrática es:")
     print(f_cuad)
     print(f_cuad_str)
@@ -343,7 +359,6 @@ def my_regressions(pares):
     print(f"\nEl tiempo de Duplicación es aproximadamente {doubling_time}.\n")
 
     # Plot Funcion Exponencial de Euler
-    # x = sym.symbols('x')
     f_exp_euler, f_exp_euler_str = create_f_sym_exponential_euler(a_exp_euler, b_exp_euler)
     print("La expresion de la función exponencial Euler es:")
     f_name = "Regresion exponencial Euler"
@@ -485,18 +500,29 @@ def best_fit_graph(X, Y, func, r, f_name_str):
 
     x = sym.symbols('x')
     func_str = str(func).replace("^", "**")
-    print(func_str)
+    # print(func_str)
     # func_sym = sym.sympify(func_str, evaluate=False)
-    func_lamb = sym.lambdify(x, func_str, 'numpy')
-    func_first_diff = sym.diff(func_lamb(x), x, evaluate=False)
-    func_first_diff_lamb = sym.lambdify(x, func_first_diff.doit(), 'numpy')
-    func_second_diff = sym.diff(func_first_diff_lamb(x), x, evaluate=False)
-    func_second_diff_lamb = sym.lambdify(x, func_second_diff.doit(), 'numpy')
+    func_lamb = sym.lambdify(x, func_str)
+    func_first_diff = sym.diff(func_lamb(x), x)
+    func_first_diff_lamb = sym.lambdify(x, func_first_diff.doit())
+    func_second_diff = sym.diff(func_first_diff_lamb(x), x)
+    func_second_diff_lamb = sym.lambdify(x, func_second_diff.doit())
+
+    print(f"La primera derivada de la {f_name_str} es:")
+    print(func_first_diff)
+    print(f"La segunda derivada de la {f_name_str} es:")
+    print(func_second_diff)
+
+    def have_x(func):
+        return 'x' in str(func) 
     
     plt.plot(X, Y, 'o', color='turquoise', markersize=5, label="Dataset")
     plt.plot(X, func_lamb(X), color='forestgreen', linestyle='-', linewidth=2, label=f_name_str + f" [r = {r:.2f}]")
-    plt.plot(X, func_first_diff_lamb(X), color='darkorange', linewidth=1, label='Primera Derivada')
-    plt.plot(X, func_second_diff_lamb(X), color='lightcoral', linewidth=2, label='Segunda Derivada')
+    if have_x(func_first_diff):
+        plt.plot(X, func_first_diff_lamb(X), color='darkorange', linewidth=2, label='Primera Derivada')
+    if have_x(func_second_diff):
+        plt.plot(X, func_second_diff_lamb(X), color='lightcoral', linewidth=2, label='Segunda Derivada')
+
 
     plt.xlabel("Días", fontweight='bold')
     plt.ylabel("Acumulación de individuos infectados", fontweight='bold')
