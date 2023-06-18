@@ -1,7 +1,6 @@
-# PENDIENTES:
-
-# [ ] Hacer la impresión de derivadas con 2 decimales a lo sumo
-
+# PENDIENTES
+# [ ] Mejorar print de funciones y derivadas en consola
+# [ ] Arreglar error por long_scalars
 
 #
 # TP Métodos Numéricos - 2023
@@ -235,7 +234,7 @@ def my_regressions(pares):
     print()
 
     # ***************************************************************************************************
-
+    print("                                                                                  ")
     print("===[REGRESIÓN POLINOMICA: y = b * x^a]===")
 
     # Intento de resolver exponencial (y = b * x^a) con la funcion modularizada
@@ -362,7 +361,7 @@ def my_regressions(pares):
         f_exp_eulerless, r_exp_eulerless, a_exp_eulerless, b_exp_eulerless
     )
 
-    # Evaluacion de la funcion con mejor fit
+    # Evaluacion de la funcion con mejor calce
     # print(results_list)
     bests_fits = find_best_fit(results_list)
     # print(bests_fits)
@@ -370,7 +369,7 @@ def my_regressions(pares):
     for e in bests_fits:
         f_best_fit, r_best_fit, best_fit_name = e
 
-        print(f"Mejor FIT con:\n{best_fit_name}\nFunción = {f_best_fit}\nR = {r_best_fit:.2f}")
+        print(f"• Mejor calce con:\n* {best_fit_name}\nFunción = {f_best_fit}\nR = {r_best_fit:.2f}\n")
         best_fit_graph(X, Y, f_best_fit, r_best_fit, best_fit_name)
         
     # Doubbling Time
@@ -460,10 +459,10 @@ def best_fit_graph(X, Y, func, r, f_name_str):
     func_second_diff = sym.diff(func_first_diff_lamb(x), x)
     func_second_diff_lamb = sym.lambdify(x, func_second_diff.doit())
 
-    print(f"La primera derivada de la {f_name_str} es:")
-    print(func_first_diff)
-    print(f"La segunda derivada de la {f_name_str} es:")
-    print(func_second_diff)
+    print(f"\nLa primera derivada de la {f_name_str} es:")
+    print(f"{(func_first_diff).evalf(n=2)}")
+    print(f"\nLa segunda derivada de la {f_name_str} es:")
+    print(f"{(func_second_diff).evalf(n=2)}")
 
     # se evalua si la funcion es graficable
     def have_x(func):
@@ -817,6 +816,7 @@ print("                                                                         
 print("**********************************************************************************")
 print("*                                   SOLUCION                                     *")
 print("**********************************************************************************")
+print("                                                                                  ")
 print(" Para este proyecto contamos con un dataset provisto donde se toman la cantidad de")
 print(" días trasncurridos vs la cantidad de contagiados.")
 
@@ -950,7 +950,7 @@ print("                                                                         
 print("                                 ****************                                 ")
 print("                                                                                  ")
 print(" • NOTA: Es importante tener en cuenta que la Regla del 70 es una aproximación y  ")
-print("         funciona mejor paratasas de crecimiento por debajo del 15 %. Para tasas  ")
+print("         funciona mejor para tasas de crecimiento por debajo del 15 %. Para tasas ")
 print("         de crecimiento más altas, se pueden requerir métodos y fórmulas          ") 
 print("         más precisos.                                                            ") 
 print("                                                                                  ")
