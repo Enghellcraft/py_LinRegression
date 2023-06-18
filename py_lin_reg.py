@@ -167,7 +167,7 @@ def my_regressions(pares):
     # la mejor recta que se aproxime a todos los puntos, con el minimo valor de error posible
     a_lin, b_lin = find_ab_lin_reg(X, Y)
     error_cuad_lineal = np.sum((a_lin * X + b_lin - Y) ** 2)
-    print(f"Error cuadratico: {error_cuad_lineal:.2f}")
+    print(f"Error cuadrático: {error_cuad_lineal:.2f}")
 
     # Cálculo R^2 de Lineal
     # Formato de función
@@ -185,8 +185,8 @@ def my_regressions(pares):
 
     # Plot Funcion Lineal
     f_lin, f_lin_str = create_f_sym_lin((a_lin, b_lin))
-    print("La expresion de la función lineal es:")
-    print(np.poly1d((a_lin, b_lin)))
+    print("La expresión de la función lineal es:")
+    print(f"F(x) = {np.poly1d((a_lin, b_lin))}")
     f_name = "Regresion lineal"
     regressions_graph_unit(X, Y, f_lin, r_lineal, f_name, 'orange')
 
@@ -204,7 +204,7 @@ def my_regressions(pares):
     cuad_abc_mat = find_abc_quad_reg(X, Y)
 
     error_cuad_cuad = np.sum((cuad_abc_mat[0] * X ** 2 + cuad_abc_mat[1] * X + cuad_abc_mat[2] - Y) ** 2)
-    print(f"\nError cuadratico: {error_cuad_cuad:.2f}")
+    print(f"\nError cuadrático: {error_cuad_cuad:.2f}")
 
     # Cálculo R^2 de Cuadrática
     # Formato de función
@@ -224,8 +224,8 @@ def my_regressions(pares):
     # Plot Funcion Cuadratica
     f_cuad, f_cuad_str = create_f_sym_cuad(cuad_abc_mat)
     # TODO: VER MANERA DE HACER FUNCION QUE DEVUELVA LA EVALUAUBLE Y UN STRING QUE best_fit_graph PUEDA DERIVAR Y GRAFICAR OK
-    print("La expresion de la función cuadrática es:")
-    print(np.poly1d(cuad_abc_mat))
+    print("La expresión de la función cuadrática es:")
+    print(f"F(x) = {np.poly1d(cuad_abc_mat)}")
     f_name = "Regresion cuadrática"
     regressions_graph_unit(X, Y, f_cuad, r_cuad, f_name, 'purple')
 
@@ -244,7 +244,7 @@ def my_regressions(pares):
     b_poly = np.exp(ln_b_poly)
     print(f"Valor de 'b': {round(b_poly, 2)}")
     error_cuad_poly = np.sum(b_poly * (X ** a_poly))
-    print(f"\nError cuadratico: {error_cuad_poly:.2f}")
+    print(f"\nError cuadrático: {error_cuad_poly:.2f}")
 
     # Cálculo R^2 de polinómica
     # Formato de función
@@ -263,8 +263,8 @@ def my_regressions(pares):
 
     # Plot Funcion Exponencial
     f_poly, f_poly_str = create_f_sym_poly(a_poly, b_poly)
-    print("La expresion de la función polinomica es:")
-    print(f_poly_str)
+    print("La expresión de la función polinómica es:")
+    print(f"F(x) = {f_poly_str}")
     f_name = "Regresion polinómica"
     regressions_graph_unit(X, Y, f_poly, r_poly, f_name, 'sienna')
 
@@ -282,6 +282,7 @@ def my_regressions(pares):
     b_exp_euler = np.exp(ln_b_exp_euler)
     print(f"Valor de 'b': {b_exp_euler:.2f}")
     error_cuad_exp_euler = np.sum(b_exp_euler * np.exp(a_exp_euler * X))
+    print(f"\nError cuadrático: {error_cuad_exp_euler:.2f}")
 
     # Cálculo R^2 de Exponencial Euler
     # Formato de función
@@ -302,9 +303,9 @@ def my_regressions(pares):
 
     # Plot Funcion Exponencial de Euler
     f_exp_euler, f_exp_euler_str = create_f_sym_exponential_euler(a_exp_euler, b_exp_euler)
-    print("La expresion de la función exponencial Euler es:")
-    f_name = "Regresion exponencial Euler"
-    print(f_exp_euler_str)
+    print("La expresión de la función exponencial Euler es:")
+    f_name = "Regresión exponencial Euler"
+    print(f"F(x) = {f_exp_euler_str}")
     regressions_graph_unit(X, Y, f_exp_euler, r_exp_euler, f_name, 'tomato')
 
     # Guardar resultado
@@ -326,6 +327,7 @@ def my_regressions(pares):
     print(f"Valor de 'a': {a_exp_eulerless:.2f}")
     print(f"Valor de 'b': {b_exp_eulerless:.2f}")
     error_cuad_exp_eulerless = np.sum(b_exp_eulerless * (a_exp_eulerless ** X))
+    print(f"\nError cuadrático: {error_cuad_exp_eulerless:.2f}")
 
     # Cálculo R^2 de Exponencial sin Euler
     # Formato de función
@@ -342,8 +344,8 @@ def my_regressions(pares):
     # Plot Funcion Exponencial de Euler
     f_exp_eulerless, f_exp_eulerless_str = create_f_sym_exponential_eulerless(a_exp_eulerless, b_exp_eulerless)
     f_name = "Regresion exponencial sin Euler"
-    print("La expresion de la función exponencial sin Euler es:")
-    print(f_exp_eulerless_str)
+    print("La expresión de la función exponencial sin Euler es:")
+    print(f"F(x) = {f_exp_eulerless_str}")
     regressions_graph_unit(X, Y, f_exp_eulerless, r_exp_eulerless, f_name, 'indigo')
     
     # Guardar resultado
