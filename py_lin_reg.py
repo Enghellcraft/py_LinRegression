@@ -162,7 +162,8 @@ def my_regressions(pares):
     print(X)
     print(Y)
 
-    print("===[REGRESIÓN LINEAL]===")
+    print("                                                                                  ")
+    print("                    ===[REGRESIÓN LINEAL: y = ax + b]===")
     # Cálculo de 'a'(pendiente) y 'b'(ordenada de origen) de la ecuacion 'y = ax + b' para encontrar
     # la mejor recta que se aproxime a todos los puntos, con el minimo valor de error posible
     a_lin, b_lin = find_ab_lin_reg(X, Y)
@@ -198,7 +199,7 @@ def my_regressions(pares):
     print()
 
     # ***************************************************************************************************
-    print("===[REGRESIÓN CUADRATICA]===")
+    print("                ===[REGRESIÓN CUADRATICA: y = ax^2 + bx +c ]===")
 
     # Calculo de los tres coeficientes del sistema cuadratico. Al ser más complejo se resuelve via numpy.
     cuad_abc_mat = find_abc_quad_reg(X, Y)
@@ -234,8 +235,7 @@ def my_regressions(pares):
     print()
 
     # ***************************************************************************************************
-    print("                                                                                  ")
-    print("===[REGRESIÓN POLINOMICA: y = b * x^a]===")
+    print("                ===[REGRESIÓN POLINOMICA: y = b * x^a]===")
 
     # Intento de resolver exponencial (y = b * x^a) con la funcion modularizada
     # Resuelvo ln(y) = ln(b) + a * ln(x)
@@ -275,7 +275,7 @@ def my_regressions(pares):
 
     # ***************************************************************************************************
 
-    print("===[REGRESIÓN EXPONENCIAL EULER: y = b * e^(a*x)]===")
+    print("           ===[REGRESIÓN EXPONENCIAL EULER: y = b * e^(a*x)]===")
 
     # Intento de resolver exponencial ( y = b * e^(ax) ).
     a_exp_euler, ln_b_exp_euler = find_ab_lin_reg(X, np.log(Y), Y_name="ln(Y)", b_name="ln(b)")
@@ -313,7 +313,7 @@ def my_regressions(pares):
     print()
 
     # ***************************************************************************************************
-    print("===[REGRESIÓN EXPONENCIAL SIN EULER: y = b * a^x]===")
+    print("           ===[REGRESIÓN EXPONENCIAL SIN EULER: y = b * a^x]===")
 
     ln_a_exp_eulerless, ln_b_exp_eulerless = find_ab_lin_reg(
         X,
@@ -367,7 +367,9 @@ def my_regressions(pares):
     # print(results_list)
     bests_fits = find_best_fit(results_list)
     # print(bests_fits)
-
+    print("                                                                                  ")
+    print("                         ********* Mejor Calce *********                          ")
+    print("                                                                                  ")
     for e in bests_fits:
         f_best_fit, r_best_fit, best_fit_name = e
 
@@ -380,6 +382,9 @@ def my_regressions(pares):
     t = X[-1]
     growth_rate = math.log(xf / x0) / t
     doubling_time = math.log(2) / math.log(1 + growth_rate)
+    print("                                                                                  ")
+    print("                     ********* Tiempo de Duplicación *********                    ")
+    print("                                                                                  ")
     print(f"\nEl tiempo de Duplicación es: {doubling_time:.2f} " )
 
 # ------------------------------------------------------------------------------------------------------------
