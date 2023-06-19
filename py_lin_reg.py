@@ -65,8 +65,8 @@ def find_ab_lin_reg(X_set, Y_set, X_name="X", Y_name="Y", a_name="a", b_name="b"
           f"\n\t- La suma total de todos los '{X_name}' al cuadrado: {suma_X2}"
           f"\n\t- El cuadrado de la suma de todos los '{X_name}': {sumaX_2}"
           "                                                              ")
-    a = (len_pares * sumaXY - sumaX * sumaY) / (len_pares * suma_X2 - sumaX_2)
-    b = (suma_X2 * sumaY - sumaX * sumaXY) / (len_pares * suma_X2 - sumaX_2)
+    a = (len_pares * sumaXY - sumaX * sumaY) / np.float64(len_pares * suma_X2 - sumaX_2)
+    b = (suma_X2 * sumaY - sumaX * sumaXY) / np.float64(len_pares * suma_X2 - sumaX_2)
     print(f"\nValor de '{a_name}': {a:.2f}"
           f"\nValor de '{b_name}': {b:.2f}")
     return a, b
@@ -159,8 +159,8 @@ def my_regressions(pares):
     X, Y = separador_pares_x_y(pares)
     len_pares = len(X)
     print(f"Los pares ordenados son:\n {pares}")
-    print(X)
-    print(Y)
+    print(f"\nLos valores de X son:\n {X}")
+    print(f"\nLos valores de Y son:\n {Y}")
 
     print("                                                                                  ")
     print("                    ===[REGRESIÓN LINEAL: y = ax + b]===")
