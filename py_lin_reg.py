@@ -1,7 +1,3 @@
-# PENDIENTES
-# [ ] Mejorar print de funciones y derivadas en consola
-# [ ] Arreglar error por long_scalars
-
 #
 # TP Métodos Numéricos - 2023
 # Alumnos: 
@@ -33,7 +29,6 @@ from sklearn.svm import SVC
 import seaborn as sns
 from fractions import Fraction
 import math
-
 
 # ------------------------------------------------------------------------------------------------------------
 # Funs
@@ -363,17 +358,17 @@ def my_regressions(pares):
         f_exp_eulerless, r_exp_eulerless, a_exp_eulerless, b_exp_eulerless
     )
 
-    # Evaluacion de la funcion con mejor calce
+    # Evaluacion de la funcion con mejor ajuste
     # print(results_list)
     bests_fits = find_best_fit(results_list)
     # print(bests_fits)
     print("                                                                                  ")
-    print("                         ********* Mejor Calce *********                          ")
+    print("                         ********* Mejor Ajuste *********                          ")
     print("                                                                                  ")
     for e in bests_fits:
         f_best_fit, r_best_fit, best_fit_name = e
 
-        print(f"• Mejor calce con:\n* {best_fit_name}\nFunción = {f_best_fit}\nR = {r_best_fit:.2f}\n")
+        print(f"• Mejor Ajuste con:\n* {best_fit_name}\nFunción = {f_best_fit}\nR = {r_best_fit:.2f}\n")
         best_fit_graph(X, Y, f_best_fit, r_best_fit, best_fit_name)
         
     # Doubbling Time
@@ -495,7 +490,6 @@ def best_fit_graph(X, Y, func, r, f_name_str):
     plt.tight_layout()
     plt.ylim(0, Y.max() * 1.1)
     plt.show()
-
 
 # ------------------------------------------------------------------------------------------------------------
 # Prints
@@ -961,5 +955,3 @@ print("         funciona mejor para tasas de crecimiento por debajo del 15 %. Pa
 print("         de crecimiento más altas, se pueden requerir métodos y fórmulas          ") 
 print("         más precisos.                                                            ") 
 print("                                                                                  ")
-
-
