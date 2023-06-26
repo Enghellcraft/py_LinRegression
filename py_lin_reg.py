@@ -365,7 +365,7 @@ def my_regressions(pares):
     print("                                                                                  ")
     print("                         ********* Mejor Ajuste *********                          ")
     print("                                                                                  ")
-    for e in bests_fits:
+    for e in results_list:
         f_best_fit, r_best_fit, best_fit_name = e
 
         print(f"• Mejor Ajuste con:\n* {best_fit_name}\nFunción = {f_best_fit}\nR = {r_best_fit:.2f}\n")
@@ -473,10 +473,13 @@ def best_fit_graph(X, Y, func, r, f_name_str):
     plt.plot(X, Y, 'o', color='turquoise', markersize=5, label="Dataset")
     plt.plot(X, func_lamb(X), color='forestgreen', linestyle='-', linewidth=2, label=f_name_str + f" [r = {r:.2f}]")
     if have_x(func_first_diff):
-        plt.plot(X, func_first_diff_lamb(X), color='darkorange', linewidth=2, label='Primera Derivada')
+        plt.plot(X, func_first_diff_lamb(X), color='darkorange', linestyle='--',linewidth=2, label='Primera Derivada')
+    else:
+        plt.axhline(y=float(func_first_diff), color='darkorange', linestyle='--', label='Primera Derivada')
     if have_x(func_second_diff):
-        plt.plot(X, func_second_diff_lamb(X), color='lightcoral', linewidth=2, label='Segunda Derivada')
-
+        plt.plot(X, func_second_diff_lamb(X), color='lightcoral', linestyle='--', linewidth=2, label='Segunda Derivada')
+    else:
+        plt.axhline(y=float(func_second_diff), color='lightcoral', linestyle='--', label='Segunda Derivada')
 
     plt.xlabel("Días", fontweight='bold')
     plt.ylabel("Acumulación de individuos infectados", fontweight='bold')
