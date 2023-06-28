@@ -9,6 +9,8 @@
 #             bibliotecas de sympy, numpy, pandas, seaborn y matplotlib.
 #             Se puede ver el código comentado pero con "play" toda la teoría y práctica aplicada
 
+###### ATENCION! VERSION PARA PARCIAL SE COMENTAN GRAFICOS DE EXPONENCIAL CON EULER PORQUE SE PINCHA AHI
+
 
 # ------------------------------------------------------------------------------------------------------------
 # Imports
@@ -106,7 +108,7 @@ def create_f_sym_lin(coeff):
 
 def create_f_sym_cuad(coeff):
     a, b, c = coeff
-    f_cuad_str = f"({round(a, 4)})*x^2+({round(b, 4)})*x+({round(c, 4)})"
+    f_cuad_str = f"({round(a, 6)})*x^2+({round(b, 6)})*x+({round(c, 6)})"
     x = sym.symbols('x')
     f_cuad_sym = sym.sympify(f_cuad_str)
     f_cuad_sym = sym.lambdify(x, f_cuad_sym)
@@ -115,7 +117,7 @@ def create_f_sym_cuad(coeff):
 
 def create_f_sym_poly(a_exp, b_exp):
     x = sym.symbols('x')
-    f_sym = round(b_exp, 2) * (x ** round(a_exp, 2))
+    f_sym = round(b_exp, 6) * (x ** round(a_exp, 6))
     f = sym.lambdify(x, f_sym)
     f_str = str(sym.sympify(f_sym)).replace("**", "^")
     return f, f_str
@@ -123,17 +125,17 @@ def create_f_sym_poly(a_exp, b_exp):
 
 def create_f_sym_exponential_euler(a_exp, b_exp):
     x = sym.symbols('x')
-    f_sym_euler = round(b_exp, 2) * sym.exp(round(a_exp, 2) * x)
+    f_sym_euler = round(b_exp, 6) * sym.exp(round(a_exp, 6) * x)
     # print('f_sym_euler', f_sym_euler)
     f = sym.lambdify(x, f_sym_euler)
-    f_str = f"{round(b_exp, 2)}*e^({round(a_exp, 2)}*x)"
+    f_str = f"{round(b_exp, 6)}*e^({round(a_exp, 6)}*x)"
     return f, f_str
 
 def create_f_sym_exponential_eulerless(a_exp, b_exp):
     x = sym.symbols('x')
-    f_sym_eulerless = round(b_exp, 2) * (round(a_exp, 2) ** x)
+    f_sym_eulerless = round(b_exp, 6) * (round(a_exp, 6) ** x)
     f = sym.lambdify(x, f_sym_eulerless)
-    f_str = f"{round(b_exp, 2)}*{round(a_exp, 2)}^x"
+    f_str = f"{round(b_exp, 6)}*{round(a_exp, 6)}^x"
     return f, f_str
 
 # Best Result Search
@@ -189,7 +191,7 @@ def my_regressions(pares):
     # Guardar resultado en una lista que contiene otra lista de:
     # La funcion, el r y el nombre
     results_list = []
-    results_list.append([f_lin_str, round(r_lineal, 2), f_name])
+    results_list.append([f_lin_str, round(r_lineal, 6), f_name])
 
     print()
 
@@ -226,7 +228,7 @@ def my_regressions(pares):
     regressions_graph_unit(X, Y, f_cuad, r_cuad, f_name, 'purple')
 
     # Guardar resultado
-    results_list.append([f_cuad_str, round(r_cuad, 2), f_name])
+    results_list.append([f_cuad_str, round(r_cuad, 6), f_name])
     print()
 
     # ***************************************************************************************************
@@ -237,7 +239,7 @@ def my_regressions(pares):
     a_poly, ln_b_poly = find_ab_lin_reg(np.log(X), np.log(Y), X_name="ln(X)", Y_name="ln(Y)", b_name="ln(b)")
     # Luego potencio con euler para obtener los valores que quiero
     b_poly = np.exp(ln_b_poly)
-    print(f"Valor de 'b': {round(b_poly, 2)}")
+    print(f"Valor de 'b': {round(b_poly, 6)}")
     error_cuad_poly = np.sum(b_poly * (X ** a_poly))
     print(f"\nError cuadrático: {error_cuad_poly:.2f}")
 
@@ -264,7 +266,7 @@ def my_regressions(pares):
     regressions_graph_unit(X, Y, f_poly, r_poly, f_name, 'sienna')
 
     # Guardar resultado
-    results_list.append([f_poly_str, round(r_poly, 2), f_name])
+    results_list.append([f_poly_str, round(r_poly, 6), f_name])
 
     print()
 
@@ -301,10 +303,10 @@ def my_regressions(pares):
     print("La expresión de la función exponencial Euler es:")
     f_name = "Regresión exponencial Euler"
     print(f"F(x) = {f_exp_euler_str}")
-    regressions_graph_unit(X, Y, f_exp_euler, r_exp_euler, f_name, 'tomato')
+    # regressions_graph_unit(X, Y, f_exp_euler, r_exp_euler, f_name, 'tomato')
 
     # Guardar resultado
-    results_list.append([f_exp_euler_str, round(r_exp_euler, 2), f_name])
+    results_list.append([f_exp_euler_str, round(r_exp_euler, 6), f_name])
     print()
 
     # ***************************************************************************************************
@@ -344,7 +346,7 @@ def my_regressions(pares):
     regressions_graph_unit(X, Y, f_exp_eulerless, r_exp_eulerless, f_name, 'indigo')
     
     # Guardar resultado
-    results_list.append([f_exp_eulerless_str, round(r_exp_eulerless, 2), f_name])
+    results_list.append([f_exp_eulerless_str, round(r_exp_eulerless, 6), f_name])
     print()
 
     # ***************************************************************************************************
@@ -396,21 +398,21 @@ def regressions_graph(X, Y,
     plt.plot(X, Y, "o", label="Dataset", color='turquoise')
 
     a, b = ab_lineal
-    label_lin = f"Regresión Lineal\nCoeficientes: a={round(a, 2)}, b={round(b, 2)}\n[R = {r_lineal:.2f}]"
+    label_lin = f"Regresión Lineal\nCoeficientes: a={round(a, 6)}, b={round(b, 6)}\n[R = {r_lineal:.2f}]"
     plt.plot(X, a * X + b, label=label_lin, color='orange')
 
     a_cuad, b_cuad, c_cuad = cuad_mat
-    label_cuad = f"Regresión Cuadrática\nCoeficientes: a={round(a_cuad, 2)}, b={round(b_cuad, 2)}, c={round(c_cuad, 2)}\n[R = {r_cuad:.2f}]"
+    label_cuad = f"Regresión Cuadrática\nCoeficientes: a={round(a_cuad, 6)}, b={round(b_cuad, 6)}, c={round(c_cuad, 6)}\n[R = {r_cuad:.2f}]"
     plt.plot(X, a_cuad * (X ** 2) + b_cuad * X + c_cuad, label=label_cuad, color='purple')
 
     a_exp, b_exp = exp_mat
-    label_exp = f"Regresión Polinómica\nCoeficientes: a={round(a_exp, 2)}, b={round(b_exp, 2)}\n[R = {r_exp:.2f}]"
+    label_exp = f"Regresión Polinómica\nCoeficientes: a={round(a_exp, 6)}, b={round(b_exp, 6)}\n[R = {r_exp:.2f}]"
     plt.plot(X, b_exp * (X ** a_exp), label=label_exp, color='sienna')
 
-    label_euler = f"Regresión Exp. (Euler)\nCoeficientes: a={round(a_euler, 2)}, b={round(b_euler, 2)}\n[R = {r_euler:.2f}]"
-    plt.plot(X, euler_lambda_exp(X), label=label_euler, color='tomato')
+    label_euler = f"Regresión Exp. (Euler)\nCoeficientes: a={round(a_euler, 2)}, b={round(b_euler, 6)}\n[R = {r_euler:.2f}]"
+    # plt.plot(X, euler_lambda_exp(X), label=label_euler, color='tomato')
 
-    label_eulerless = f"Regresión Exp. (Sin Euler)\nCoeficientes: a={round(a_eulerless, 2)}, b={round(b_eulerless, 2)}\n[R = {r_eulerless:.2f}]"
+    label_eulerless = f"Regresión Exp. (Sin Euler)\nCoeficientes: a={round(a_eulerless, 6)}, b={round(b_eulerless, 6)}\n[R = {r_eulerless:.2f}]"
     plt.plot(X, eulerless_lambda_exp(X), label=label_eulerless, color='indigo')
 
     plt.ylim(0, Y.max() * 1.1)
@@ -824,37 +826,107 @@ print("                                                                         
 print(" Para este proyecto contamos con un dataset provisto donde se toman la cantidad de")
 print(" días trasncurridos vs la cantidad de contagiados.")
 
-pares_ejercicio = (
-    (1, 1), (2, 1), (3, 2), (4, 8), (5, 9), (6, 12), (7, 17), (8, 19), (9, 21), (10, 31), (11, 34), (12, 45), (13, 56),
-    (14, 76), (15, 78), (16, 97), (17, 128), (18, 158), (19, 225), (20, 265), (21, 301), (22, 385), (23, 502),
-    (24, 588),
-    (25, 689), (26, 744), (27, 819), (28, 965), (29, 1053), (30, 1132), (31, 1264), (32, 1352), (33, 1450), (34, 1553),
-    (35, 1627), (36, 1715), (37, 1795), (38, 1894), (39, 1975), (40, 2142), (41, 2208), (42, 2277), (43, 2443),
-    (44, 2571),
-    (45, 2669), (46, 2758), (47, 2839), (48, 2941), (49, 3031), (50, 3144), (51, 3288), (52, 3435), (53, 3607),
-    (54, 3780),
-    (55, 3892), (56, 4003), (57, 4127), (58, 4285), (59, 4428), (60, 4532), (61, 4681), (62, 4783), (63, 4887),
-    (64, 5020),
-    (65, 5208), (66, 5371), (67, 5611), (68, 5776), (69, 6034), (70, 6265), (71, 6563), (72, 6879), (73, 7134),
-    (74, 7479),
-    (75, 7805), (76, 8068), (77, 8371), (78, 8809), (79, 9283), (80, 9931), (81, 10649), (82, 11353), (83, 12076),
-    (84, 12628), (85, 13228), (86, 13933), (87, 14702), (88, 15419), (89, 16214), (90, 16851), (91, 17415), (92, 18319),
-    (93, 19268), (94, 20197), (95, 21037), (96, 22020), (97, 22794), (98, 23620), (99, 24761), (100, 25987),
-    (101, 27373),
-    (102, 28764), (103, 30295), (104, 31577), (105, 32785), (106, 34159), (107, 35552), (108, 37510), (109, 39570),
-    (110, 41204), (111, 42785), (112, 44931), (113, 47216), (114, 49851), (115, 52457), (116, 55343), (117, 57744),
-    (118, 59933), (119, 62268), (120, 64530), (121, 67197), (122, 69941), (123, 72786), (124, 75376), (125, 77815),
-    (126, 80447), (127, 83426), (128, 87030), (129, 90694), (130, 94060), (131, 97059), (132, 100166), (133, 103265),
-    (134, 106910), (135, 111160), (136, 114783), (137, 119301), (138, 122524), (139, 126755), (140, 130774),
-    (141, 136118),
-    (142, 141900), (143, 148027), (144, 153520), (145, 158334), (146, 162526), (147, 167416), (148, 173355),
-    (149, 178996),
-    (150, 185373), (151, 191302), (152, 196543), (153, 201919), (154, 206743), (155, 213535), (156, 220682),
-    (157, 228195),
-    (158, 235677), (159, 241811), (160, 246499), (161, 253868), (162, 260911), (163, 268574), (164, 276072),
-    (165, 282437),
-    (166, 289100), (167, 294569), (168, 299126), (169, 305966))
-pares_ejercicio = [(long(x), long(y)) for (x, y) in pares_ejercicio]
+pares_ejercicio = ((32.2702	,5.6745),
+(32.9674,5.6868),
+(34.8581,5.9386),
+(35.1473,5.9076),
+(35.6296,5.9092),
+(39.1562,6.1280),
+(39.5552,5.9794),
+(39.7744,6.0436),
+(40.7433,6.1254),
+(40.9054,6.1492),
+(41.2195,6.0739),
+(41.8161,6.1340),
+(44.4150,6.2896),
+(44.8380,6.3691),
+(44.8854,6.3843),
+(45.7541,6.3073),
+(45.9190,6.3185),
+(46.5888,6.3310),
+(47.0211,6.4364),
+(47.8599,6.3099),
+(48.4649,6.4960),
+(50.2960,6.4741),
+(50.9571,6.5390),
+(50.9883,6.4883),
+(51.9320,6.6805),
+(52.0422,6.5915),
+(52.8092,6.6344),
+(56.3101,6.8158),
+(56.4911,6.7682),
+(56.5912,6.7769),
+(57.2331,6.7777),
+(57.8319,6.7882),
+(58.2628,6.7681),
+(58.5727,6.8047),
+(60.0595,6.8860),
+(61.9133,6.9964),
+(62.9535,6.9576),
+(63.1946,6.9654),
+(63.4130,6.9287),
+(64.0193,6.9283),
+(64.6937,7.0845),
+(66.5853,7.0099),
+(66.6770,7.1048),
+(67.8107,7.0861),
+(68.0386,7.0949),
+(69.4166,7.1839),
+(70.1468,7.2246),
+(70.1853,7.1784),
+(71.3976,7.2134),
+(72.4401,7.2292),
+(72.6654,7.2619),
+(72.9306,7.3109),
+(73.9547,7.1978),
+(74.4871,7.2277),
+(76.6267,7.2590),
+(77.5153,7.3862),
+(77.9626,7.3111),
+(79.7644,7.4515),
+(81.2376,7.4023),
+(82.6902,7.5061),
+(84.4190,7.4729),
+(86.7395,7.6446),
+(87.6058,7.6179),
+(88.6515,7.6060),
+(89.6937,7.6719),
+(91.2310,7.6807),
+(93.6806,7.6677),
+(93.6849,7.7926),
+(94.4412,7.6750),
+(94.7886,7.7367),
+(95.5811,7.7939),
+(95.7119,7.7288),
+(95.9591,7.8261),
+(97.1080,7.8460),
+(98.6228,7.8728),
+(99.9107,7.8848),
+(100.6529,7.8590),
+(100.8758,7.8100),
+(100.9651,7.9888),
+(102.0701,7.9162),
+(102.5811,7.9261),
+(104.7916,7.9443),
+(105.0161,7.9394),
+(106.0068,8.0429),
+(106.2154,7.9258),
+(110.8414,8.0963),
+(111.0447,8.1342),
+(112.4933,8.0591),
+(112.6426,8.1541),
+(113.9041,8.0829),
+(114.4009,8.1549),
+(115.8457,8.1625),
+(118.1493,8.1124),
+(119.6929,8.1339),
+(121.0759,8.2750),
+(124.6084,8.3077),
+(126.7667,8.4253),
+(127.1589,8.2983),
+(129.9416,8.3094),
+(129.9807,8.4282))
+# pares_ejercicio = [(long(x), long(y)) for (x, y) in pares_ejercicio]
 
 my_regressions(pares_ejercicio)
 
