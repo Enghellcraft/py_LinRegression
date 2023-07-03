@@ -32,6 +32,7 @@ import seaborn as sns
 from fractions import Fraction
 import math
 
+
 # ------------------------------------------------------------------------------------------------------------
 # Funs
 def separador_pares_x_y(pares):
@@ -46,6 +47,7 @@ def separador_pares_x_y(pares):
     pares_x = np.array(pares_x)
     pares_y = np.array(pares_y)
     return pares_x, pares_y
+
 
 # Regressions
 # a) Linear
@@ -67,6 +69,7 @@ def find_ab_lin_reg(X_set, Y_set, X_name="X", Y_name="Y", a_name="a", b_name="b"
     print(f"\nValor de '{a_name}': {a:.2f}"
           f"\nValor de '{b_name}': {b:.2f}")
     return a, b
+
 
 # b) Cuadratic
 def find_abc_quad_reg(X_set, Y_set):
@@ -98,6 +101,7 @@ def find_abc_quad_reg(X_set, Y_set):
           f"\nValor de 'c': {c:.2f}")
     return a, b, c
 
+
 # c) Exponential
 def create_f_sym_lin(coeff):
     a_lin, b_lin = coeff
@@ -108,7 +112,7 @@ def create_f_sym_lin(coeff):
 
 def create_f_sym_cuad(coeff):
     a, b, c = coeff
-    f_cuad_str = f"({round(a, 6)})*x^2+({round(b, 6)})*x+({round(c, 6)})"
+    f_cuad_str = f"({a})*x^2+({b})*x+({c})"
     x = sym.symbols('x')
     f_cuad_sym = sym.sympify(f_cuad_str)
     f_cuad_sym = sym.lambdify(x, f_cuad_sym)
@@ -117,7 +121,7 @@ def create_f_sym_cuad(coeff):
 
 def create_f_sym_poly(a_exp, b_exp):
     x = sym.symbols('x')
-    f_sym = round(b_exp, 6) * (x ** round(a_exp, 6))
+    f_sym = b_exp * (x ** a_exp)
     f = sym.lambdify(x, f_sym)
     f_str = str(sym.sympify(f_sym)).replace("**", "^")
     return f, f_str
@@ -125,33 +129,35 @@ def create_f_sym_poly(a_exp, b_exp):
 
 def create_f_sym_exponential_euler(a_exp, b_exp):
     x = sym.symbols('x')
-    f_sym_euler = round(b_exp, 6) * sym.exp(round(a_exp, 6) * x)
+    f_sym_euler = b_exp, 6 * sym.exp(a_exp * x)
     # print('f_sym_euler', f_sym_euler)
     f = sym.lambdify(x, f_sym_euler)
-    f_str = f"{round(b_exp, 6)}*e^({round(a_exp, 6)}*x)"
+    f_str = f"{b_exp}*e^({a_exp}*x)"
     return f, f_str
+
 
 def create_f_sym_exponential_eulerless(a_exp, b_exp):
     x = sym.symbols('x')
-    f_sym_eulerless = round(b_exp, 6) * (round(a_exp, 6) ** x)
+    f_sym_eulerless = b_exp * (a_exp ** x)
     f = sym.lambdify(x, f_sym_eulerless)
-    f_str = f"{round(b_exp, 6)}*{round(a_exp, 6)}^x"
+    f_str = f"{b_exp}*{a_exp}^x"
     return f, f_str
+
 
 # Best Result Search
 def find_best_fit(results_list):
     # Encuentra el valor máximo en la lista
     max_value = max(results_list, key=lambda x: x[1])[1]
-    
+
     # Filtra los elementos que tengan el valor máximo
     best_fits = [item for item in results_list if item[1] == max_value]
-    
+
     return best_fits
+
 
 # Prints
 # All Regressions
 def my_regressions(pares):
-    
     # Dataset
     X, Y = separador_pares_x_y(pares)
     len_pares = len(X)
@@ -247,6 +253,7 @@ def my_regressions(pares):
     # Formato de función
     def poly_func(x, a, b):
         return b * x ** a
+
     # Calce de función polinómica en el dataset
     a_exp, ln_b_exp = find_ab_lin_reg(np.log(X), np.log(Y), X_name="ln(X)", Y_name="ln(Y)", b_name="ln(b)")
     b_exp = np.exp(ln_b_exp)
@@ -330,6 +337,7 @@ def my_regressions(pares):
     # Formato de función
     def exp_func(x, a, b):
         return b * (a ** x)
+
     popt, _ = curve_fit(exp_func, X, Y, p0=[a_exp_eulerless, b_exp_eulerless])
     # Cálculo R^2
     residuals = Y - exp_func(X, *popt)
@@ -344,7 +352,7 @@ def my_regressions(pares):
     print("La expresión de la función exponencial sin Euler es:")
     print(f"F(x) = {f_exp_eulerless_str}")
     regressions_graph_unit(X, Y, f_exp_eulerless, r_exp_eulerless, f_name, 'indigo')
-    
+
     # Guardar resultado
     results_list.append([f_exp_eulerless_str, round(r_exp_eulerless, 6), f_name])
     print()
@@ -370,9 +378,9 @@ def my_regressions(pares):
     for e in results_list:
         f_best_fit, r_best_fit, best_fit_name = e
 
-        print(f"• Mejor Ajuste con:\n* {best_fit_name}\nFunción = {f_best_fit}\nR = {r_best_fit:.2f}\n")
+        print(f"\n\n• Mejor Ajuste con: {best_fit_name}\n\t· Función = {f_best_fit}\n\t· R = {r_best_fit:.2f}\n")
         best_fit_graph(X, Y, f_best_fit, r_best_fit, best_fit_name)
-        
+
     # Doubbling Time
     xf = Y[-1]
     x0 = Y[0]
@@ -382,7 +390,8 @@ def my_regressions(pares):
     print("                                                                                  ")
     print("                     ********* Tiempo de Duplicación *********                    ")
     print("                                                                                  ")
-    print(f"\nEl tiempo de Duplicación es: {doubling_time:.2f} " )
+    print(f"\nEl tiempo de Duplicación es: {doubling_time:.2f} ")
+
 
 # ------------------------------------------------------------------------------------------------------------
 # Plots
@@ -393,26 +402,25 @@ def regressions_graph(X, Y,
                       exp_mat, r_exp,
                       euler_lambda_exp, r_euler, a_euler, b_euler,
                       eulerless_lambda_exp, r_eulerless, a_eulerless, b_eulerless):
-    
     plt.figure(figsize=(10, 6))
     plt.plot(X, Y, "o", label="Dataset", color='turquoise')
 
     a, b = ab_lineal
-    label_lin = f"Regresión Lineal\nCoeficientes: a={round(a, 6)}, b={round(b, 6)}\n[R = {r_lineal:.2f}]"
+    label_lin = f"Regresión Lineal\nCoeficientes: a={round(a, 6)}, b={round(b, 6)}\n[R = {r_lineal:.6f}]"
     plt.plot(X, a * X + b, label=label_lin, color='orange')
 
     a_cuad, b_cuad, c_cuad = cuad_mat
-    label_cuad = f"Regresión Cuadrática\nCoeficientes: a={round(a_cuad, 6)}, b={round(b_cuad, 6)}, c={round(c_cuad, 6)}\n[R = {r_cuad:.2f}]"
+    label_cuad = f"Regresión Cuadrática\nCoeficientes: a={round(a_cuad, 6)}, b={round(b_cuad, 6)}, c={round(c_cuad, 6)}\n[R = {r_cuad:.6f}]"
     plt.plot(X, a_cuad * (X ** 2) + b_cuad * X + c_cuad, label=label_cuad, color='purple')
 
     a_exp, b_exp = exp_mat
-    label_exp = f"Regresión Polinómica\nCoeficientes: a={round(a_exp, 6)}, b={round(b_exp, 6)}\n[R = {r_exp:.2f}]"
+    label_exp = f"Regresión Polinómica\nCoeficientes: a={round(a_exp, 6)}, b={round(b_exp, 6)}\n[R = {r_exp:.6f}]"
     plt.plot(X, b_exp * (X ** a_exp), label=label_exp, color='sienna')
 
-    label_euler = f"Regresión Exp. (Euler)\nCoeficientes: a={round(a_euler, 2)}, b={round(b_euler, 6)}\n[R = {r_euler:.2f}]"
+    label_euler = f"Regresión Exp. (Euler)\nCoeficientes: a={round(a_euler, 2)}, b={round(b_euler, 6)}\n[R = {r_euler:.6f}]"
     # plt.plot(X, euler_lambda_exp(X), label=label_euler, color='tomato')
 
-    label_eulerless = f"Regresión Exp. (Sin Euler)\nCoeficientes: a={round(a_eulerless, 6)}, b={round(b_eulerless, 6)}\n[R = {r_eulerless:.2f}]"
+    label_eulerless = f"Regresión Exp. (Sin Euler)\nCoeficientes: a={round(a_eulerless, 6)}, b={round(b_eulerless, 6)}\n[R = {r_eulerless:.6f}]"
     plt.plot(X, eulerless_lambda_exp(X), label=label_eulerless, color='indigo')
 
     plt.ylim(0, Y.max() * 1.1)
@@ -434,7 +442,7 @@ def regressions_graph_unit(X, Y, func, r, msg, _color):
     plt.title(msg)
 
     plt.plot(X, Y, 'o', color='turquoise', markersize=5, label="Dataset")
-    plt.plot(X, func(X), color=_color, linestyle='-', linewidth=2, label=msg + f" [R = {r:.2f}]")
+    plt.plot(X, func(X), color=_color, linestyle='-', linewidth=2, label=msg + f" [R = {r:.6f}]")
 
     plt.xlabel("Días", fontweight='bold')
     plt.ylabel("Acumulación de individuos infectados", fontweight='bold')
@@ -450,7 +458,7 @@ def regressions_graph_unit(X, Y, func, r, msg, _color):
     plt.show()
 
 
-def best_fit_graph(X, Y, func, r, f_name_str):  
+def best_fit_graph(X, Y, func, r, f_name_str):
     plt.title('Funcion con mejor FIT para el Dataset\n' + f_name_str)
 
     x = sym.symbols('x')
@@ -464,18 +472,18 @@ def best_fit_graph(X, Y, func, r, f_name_str):
     func_second_diff_lamb = sym.lambdify(x, func_second_diff.doit())
 
     print(f"\nLa primera derivada de la {f_name_str} es:")
-    print(f"{(func_first_diff).evalf(n=2)}")
+    print(f"{(func_first_diff).evalf(n=6)}")
     print(f"\nLa segunda derivada de la {f_name_str} es:")
-    print(f"{(func_second_diff).evalf(n=2)}")
+    print(f"{(func_second_diff).evalf(n=6)}")
 
     # se evalua si la funcion es graficable
     def have_x(func):
-        return 'x' in str(func) 
-    
+        return 'x' in str(func)
+
     plt.plot(X, Y, 'o', color='turquoise', markersize=5, label="Dataset")
     plt.plot(X, func_lamb(X), color='forestgreen', linestyle='-', linewidth=2, label=f_name_str + f" [r = {r:.2f}]")
     if have_x(func_first_diff):
-        plt.plot(X, func_first_diff_lamb(X), color='darkorange', linestyle='--',linewidth=2, label='Primera Derivada')
+        plt.plot(X, func_first_diff_lamb(X), color='darkorange', linestyle='--', linewidth=2, label='Primera Derivada')
     else:
         plt.axhline(y=float(func_first_diff), color='darkorange', linestyle='--', label='Primera Derivada')
     if have_x(func_second_diff):
@@ -495,6 +503,7 @@ def best_fit_graph(X, Y, func, r, f_name_str):
     plt.tight_layout()
     plt.ylim(0, Y.max() * 1.1)
     plt.show()
+
 
 # ------------------------------------------------------------------------------------------------------------
 # Prints
@@ -826,106 +835,106 @@ print("                                                                         
 print(" Para este proyecto contamos con un dataset provisto donde se toman la cantidad de")
 print(" días trasncurridos vs la cantidad de contagiados.")
 
-pares_ejercicio = ((32.2702	,5.6745),
-(32.9674,5.6868),
-(34.8581,5.9386),
-(35.1473,5.9076),
-(35.6296,5.9092),
-(39.1562,6.1280),
-(39.5552,5.9794),
-(39.7744,6.0436),
-(40.7433,6.1254),
-(40.9054,6.1492),
-(41.2195,6.0739),
-(41.8161,6.1340),
-(44.4150,6.2896),
-(44.8380,6.3691),
-(44.8854,6.3843),
-(45.7541,6.3073),
-(45.9190,6.3185),
-(46.5888,6.3310),
-(47.0211,6.4364),
-(47.8599,6.3099),
-(48.4649,6.4960),
-(50.2960,6.4741),
-(50.9571,6.5390),
-(50.9883,6.4883),
-(51.9320,6.6805),
-(52.0422,6.5915),
-(52.8092,6.6344),
-(56.3101,6.8158),
-(56.4911,6.7682),
-(56.5912,6.7769),
-(57.2331,6.7777),
-(57.8319,6.7882),
-(58.2628,6.7681),
-(58.5727,6.8047),
-(60.0595,6.8860),
-(61.9133,6.9964),
-(62.9535,6.9576),
-(63.1946,6.9654),
-(63.4130,6.9287),
-(64.0193,6.9283),
-(64.6937,7.0845),
-(66.5853,7.0099),
-(66.6770,7.1048),
-(67.8107,7.0861),
-(68.0386,7.0949),
-(69.4166,7.1839),
-(70.1468,7.2246),
-(70.1853,7.1784),
-(71.3976,7.2134),
-(72.4401,7.2292),
-(72.6654,7.2619),
-(72.9306,7.3109),
-(73.9547,7.1978),
-(74.4871,7.2277),
-(76.6267,7.2590),
-(77.5153,7.3862),
-(77.9626,7.3111),
-(79.7644,7.4515),
-(81.2376,7.4023),
-(82.6902,7.5061),
-(84.4190,7.4729),
-(86.7395,7.6446),
-(87.6058,7.6179),
-(88.6515,7.6060),
-(89.6937,7.6719),
-(91.2310,7.6807),
-(93.6806,7.6677),
-(93.6849,7.7926),
-(94.4412,7.6750),
-(94.7886,7.7367),
-(95.5811,7.7939),
-(95.7119,7.7288),
-(95.9591,7.8261),
-(97.1080,7.8460),
-(98.6228,7.8728),
-(99.9107,7.8848),
-(100.6529,7.8590),
-(100.8758,7.8100),
-(100.9651,7.9888),
-(102.0701,7.9162),
-(102.5811,7.9261),
-(104.7916,7.9443),
-(105.0161,7.9394),
-(106.0068,8.0429),
-(106.2154,7.9258),
-(110.8414,8.0963),
-(111.0447,8.1342),
-(112.4933,8.0591),
-(112.6426,8.1541),
-(113.9041,8.0829),
-(114.4009,8.1549),
-(115.8457,8.1625),
-(118.1493,8.1124),
-(119.6929,8.1339),
-(121.0759,8.2750),
-(124.6084,8.3077),
-(126.7667,8.4253),
-(127.1589,8.2983),
-(129.9416,8.3094),
-(129.9807,8.4282))
+pares_ejercicio = ((32.2702, 5.6745),
+                   (32.9674, 5.6868),
+                   (34.8581, 5.9386),
+                   (35.1473, 5.9076),
+                   (35.6296, 5.9092),
+                   (39.1562, 6.1280),
+                   (39.5552, 5.9794),
+                   (39.7744, 6.0436),
+                   (40.7433, 6.1254),
+                   (40.9054, 6.1492),
+                   (41.2195, 6.0739),
+                   (41.8161, 6.1340),
+                   (44.4150, 6.2896),
+                   (44.8380, 6.3691),
+                   (44.8854, 6.3843),
+                   (45.7541, 6.3073),
+                   (45.9190, 6.3185),
+                   (46.5888, 6.3310),
+                   (47.0211, 6.4364),
+                   (47.8599, 6.3099),
+                   (48.4649, 6.4960),
+                   (50.2960, 6.4741),
+                   (50.9571, 6.5390),
+                   (50.9883, 6.4883),
+                   (51.9320, 6.6805),
+                   (52.0422, 6.5915),
+                   (52.8092, 6.6344),
+                   (56.3101, 6.8158),
+                   (56.4911, 6.7682),
+                   (56.5912, 6.7769),
+                   (57.2331, 6.7777),
+                   (57.8319, 6.7882),
+                   (58.2628, 6.7681),
+                   (58.5727, 6.8047),
+                   (60.0595, 6.8860),
+                   (61.9133, 6.9964),
+                   (62.9535, 6.9576),
+                   (63.1946, 6.9654),
+                   (63.4130, 6.9287),
+                   (64.0193, 6.9283),
+                   (64.6937, 7.0845),
+                   (66.5853, 7.0099),
+                   (66.6770, 7.1048),
+                   (67.8107, 7.0861),
+                   (68.0386, 7.0949),
+                   (69.4166, 7.1839),
+                   (70.1468, 7.2246),
+                   (70.1853, 7.1784),
+                   (71.3976, 7.2134),
+                   (72.4401, 7.2292),
+                   (72.6654, 7.2619),
+                   (72.9306, 7.3109),
+                   (73.9547, 7.1978),
+                   (74.4871, 7.2277),
+                   (76.6267, 7.2590),
+                   (77.5153, 7.3862),
+                   (77.9626, 7.3111),
+                   (79.7644, 7.4515),
+                   (81.2376, 7.4023),
+                   (82.6902, 7.5061),
+                   (84.4190, 7.4729),
+                   (86.7395, 7.6446),
+                   (87.6058, 7.6179),
+                   (88.6515, 7.6060),
+                   (89.6937, 7.6719),
+                   (91.2310, 7.6807),
+                   (93.6806, 7.6677),
+                   (93.6849, 7.7926),
+                   (94.4412, 7.6750),
+                   (94.7886, 7.7367),
+                   (95.5811, 7.7939),
+                   (95.7119, 7.7288),
+                   (95.9591, 7.8261),
+                   (97.1080, 7.8460),
+                   (98.6228, 7.8728),
+                   (99.9107, 7.8848),
+                   (100.6529, 7.8590),
+                   (100.8758, 7.8100),
+                   (100.9651, 7.9888),
+                   (102.0701, 7.9162),
+                   (102.5811, 7.9261),
+                   (104.7916, 7.9443),
+                   (105.0161, 7.9394),
+                   (106.0068, 8.0429),
+                   (106.2154, 7.9258),
+                   (110.8414, 8.0963),
+                   (111.0447, 8.1342),
+                   (112.4933, 8.0591),
+                   (112.6426, 8.1541),
+                   (113.9041, 8.0829),
+                   (114.4009, 8.1549),
+                   (115.8457, 8.1625),
+                   (118.1493, 8.1124),
+                   (119.6929, 8.1339),
+                   (121.0759, 8.2750),
+                   (124.6084, 8.3077),
+                   (126.7667, 8.4253),
+                   (127.1589, 8.2983),
+                   (129.9416, 8.3094),
+                   (129.9807, 8.4282))
 # pares_ejercicio = [(long(x), long(y)) for (x, y) in pares_ejercicio]
 
 my_regressions(pares_ejercicio)
@@ -1027,6 +1036,6 @@ print("                                 ****************                        
 print("                                                                                  ")
 print(" • NOTA: Es importante tener en cuenta que la Regla del 70 es una aproximación y  ")
 print("         funciona mejor para tasas de crecimiento por debajo del 15 %. Para tasas ")
-print("         de crecimiento más altas, se pueden requerir métodos y fórmulas          ") 
-print("         más precisos.                                                            ") 
+print("         de crecimiento más altas, se pueden requerir métodos y fórmulas          ")
+print("         más precisos.                                                            ")
 print("                                                                                  ")
