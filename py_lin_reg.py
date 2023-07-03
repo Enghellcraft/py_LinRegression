@@ -129,7 +129,7 @@ def create_f_sym_poly(a_exp, b_exp):
 
 def create_f_sym_exponential_euler(a_exp, b_exp):
     x = sym.symbols('x')
-    f_sym_euler = b_exp, 6 * sym.exp(a_exp * x)
+    f_sym_euler = b_exp * sym.exp(a_exp * x)
     # print('f_sym_euler', f_sym_euler)
     f = sym.lambdify(x, f_sym_euler)
     f_str = f"{b_exp}*e^({a_exp}*x)"
@@ -197,7 +197,7 @@ def my_regressions(pares):
     # Guardar resultado en una lista que contiene otra lista de:
     # La funcion, el r y el nombre
     results_list = []
-    results_list.append([f_lin_str, round(r_lineal, 6), f_name])
+    results_list.append([f_lin_str, r_lineal, f_name])
 
     print()
 
@@ -234,7 +234,7 @@ def my_regressions(pares):
     regressions_graph_unit(X, Y, f_cuad, r_cuad, f_name, 'purple')
 
     # Guardar resultado
-    results_list.append([f_cuad_str, round(r_cuad, 6), f_name])
+    results_list.append([f_cuad_str, r_cuad, f_name])
     print()
 
     # ***************************************************************************************************
@@ -273,7 +273,7 @@ def my_regressions(pares):
     regressions_graph_unit(X, Y, f_poly, r_poly, f_name, 'sienna')
 
     # Guardar resultado
-    results_list.append([f_poly_str, round(r_poly, 6), f_name])
+    results_list.append([f_poly_str, r_poly, f_name])
 
     print()
 
@@ -310,10 +310,10 @@ def my_regressions(pares):
     print("La expresión de la función exponencial Euler es:")
     f_name = "Regresión exponencial Euler"
     print(f"F(x) = {f_exp_euler_str}")
-    # regressions_graph_unit(X, Y, f_exp_euler, r_exp_euler, f_name, 'tomato')
+    regressions_graph_unit(X, Y, f_exp_euler, r_exp_euler, f_name, 'tomato')
 
     # Guardar resultado
-    results_list.append([f_exp_euler_str, round(r_exp_euler, 6), f_name])
+    results_list.append([f_exp_euler_str, r_exp_euler, f_name])
     print()
 
     # ***************************************************************************************************
@@ -354,7 +354,7 @@ def my_regressions(pares):
     regressions_graph_unit(X, Y, f_exp_eulerless, r_exp_eulerless, f_name, 'indigo')
 
     # Guardar resultado
-    results_list.append([f_exp_eulerless_str, round(r_exp_eulerless, 6), f_name])
+    results_list.append([f_exp_eulerless_str, r_exp_eulerless, f_name])
     print()
 
     # ***************************************************************************************************
@@ -418,7 +418,7 @@ def regressions_graph(X, Y,
     plt.plot(X, b_exp * (X ** a_exp), label=label_exp, color='sienna')
 
     label_euler = f"Regresión Exp. (Euler)\nCoeficientes: a={round(a_euler, 2)}, b={round(b_euler, 6)}\n[R = {r_euler:.6f}]"
-    # plt.plot(X, euler_lambda_exp(X), label=label_euler, color='tomato')
+    plt.plot(X, euler_lambda_exp(X), label=label_euler, color='tomato')
 
     label_eulerless = f"Regresión Exp. (Sin Euler)\nCoeficientes: a={round(a_eulerless, 6)}, b={round(b_eulerless, 6)}\n[R = {r_eulerless:.6f}]"
     plt.plot(X, eulerless_lambda_exp(X), label=label_eulerless, color='indigo')
@@ -481,7 +481,7 @@ def best_fit_graph(X, Y, func, r, f_name_str):
         return 'x' in str(func)
 
     plt.plot(X, Y, 'o', color='turquoise', markersize=5, label="Dataset")
-    plt.plot(X, func_lamb(X), color='forestgreen', linestyle='-', linewidth=2, label=f_name_str + f" [r = {r:.2f}]")
+    plt.plot(X, func_lamb(X), color='forestgreen', linestyle='-', linewidth=2, label=f_name_str + f" [r = {r:.6f}]")
     if have_x(func_first_diff):
         plt.plot(X, func_first_diff_lamb(X), color='darkorange', linestyle='--', linewidth=2, label='Primera Derivada')
     else:
